@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Compartilhar tela · Discordo</title>
+  <style>
+    body { box-sizing: border-box; height: 100vh; margin: 0; padding: 20px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 16px; color: #faf3ff; background: #1b1325; font: 14px system-ui, sans-serif; color-scheme: dark; }
+    h1 { margin: 0; font-size: 20px; }
+    #status { margin: 4px 0 0; color: #d2b4e3; }
+    #sources { overflow: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-content: start; gap: 10px; padding: 3px; }
+    #sources label { position: relative; min-width: 0; border: 1px solid #51355c; border-radius: 10px; padding: 8px; background: #281a32; cursor: pointer; }
+    #sources label:has(input:checked) { border-color: #ffdb38; }
+    #sources label:focus-within { outline: 2px solid #d2b4e3; }
+    #sources input { position: absolute; top: 10px; left: 10px; accent-color: #ffdb38; }
+    #sources img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #130e1a; border-radius: 6px; }
+    #sources span { display: block; margin-top: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    footer label { margin-right: auto; }
+    button { border: 1px solid #694575; border-radius: 7px; padding: 8px 14px; background: #342341; color: inherit; font: inherit; cursor: pointer; }
+    #share { background: #ffdb38; color: #160d1a; border-color: #ffdb38; font-weight: 650; }
+    button:disabled { opacity: .5; cursor: default; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Compartilhar tela</h1>
+    <p id="status" role="status">Escolha uma tela ou janela para transmitir.</p>
+  </header>
+  <div id="sources" role="group" aria-label="Fontes de compartilhamento"></div>
+  <footer>
+    <label hidden><input id="sound" type="checkbox"> Incluir áudio do sistema</label>
+    <button id="cancel" type="button">Cancelar</button>
+    <button id="share" type="button" disabled>Compartilhar</button>
+  </footer>
+</body>
+</html>

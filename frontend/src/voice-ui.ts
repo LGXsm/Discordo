@@ -195,6 +195,7 @@ export function mountVoice(call: ReturnType<typeof createVoiceCall>, workspace: 
   const roomButtons = workspace.querySelectorAll<HTMLButtonElement>('[data-voice-room]');
   const sidebarLists = workspace.querySelectorAll<HTMLUListElement>('[data-voice-members]');
   const lifetime = new AbortController();
+  let wasConnected = false;
   previews.addEventListener('wheel', event => {
     if (event.ctrlKey || event.deltaX || !event.deltaY || previews.scrollWidth <= previews.clientWidth) return;
     const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16
@@ -951,6 +952,10 @@ export function mountVoice(call: ReturnType<typeof createVoiceCall>, workspace: 
     renderSidebar();
     syncSpeaking();
     const active = session?.state === 'connected';
+    if (active !== wasConnected) {
+      wasConnected = active;
+      document.dispatchEvent(new Event('discordo:voice-shortcuts-changed'));
+    }
     const demo = active && isDemoRoom(session?.room);
     const connecting = session?.state === 'connecting';
     const muted = session && session.state !== 'ended' ? Boolean(session.microphoneLocked || session.self?.muted) : call.muted || call.deafened;

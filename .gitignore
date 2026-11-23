@@ -15,3 +15,4 @@ __pycache__/
 /deploy/
 /Imagens/discord-style.png
 *.mwb.bak
+/desktop/out/

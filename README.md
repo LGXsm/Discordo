@@ -28,6 +28,29 @@ As imagens otimizadas utilizadas pelo aplicativo ficam em `frontend/public/art/`
 Os originais não são publicados. Veja `docs/ESTRUTURA.md` para os destinos dos
 arquivos e os itens que podem ser removidos mediante autorização.
 
+## Discordo para Windows
+
+O cliente em `desktop/` abre o Discordo hospedado em uma janela própria, com
+armazenamento de sessão separado do navegador. Ele usa o mesmo backend e as
+mesmas contas do site. A beta para Windows x64 pode ser baixada nas
+[Releases do Discordo](https://github.com/LGXsm/Discordo/releases).
+O instalador beta é distribuído sem assinatura digital e pode exibir um aviso do Windows.
+
+```powershell
+npm --prefix desktop ci
+npm --prefix desktop start
+npm --prefix desktop run make
+```
+
+O npm instala o Electron como dependência. O comando `make` gera
+`Discordo-Setup.exe` em `desktop/out/make/squirrel.windows/x64/`.
+
+Durante uma chamada, use **Tela** para escolher um monitor ou janela.
+O áudio do sistema é opcional e está disponível ao compartilhar um monitor.
+Em **Configurações de usuário → Atalhos**, use Ctrl + Alt + uma letra, número
+ou tecla de função (F1–F24) para controlar microfone e áudio com outro aplicativo
+em foco, desde que a combinação esteja livre no Windows.
+
 ## Banco de dados
 
 As contas, sessões, perfis e mensagens são gravados no MySQL ou MariaDB. O PHP guarda as imagens de perfil em `discordo-profile-media` e os anexos do chat em `discordo-chat-videos`, ao lado do arquivo privado de configuração do banco. As preferências de voz e os atalhos ficam no navegador, separados por conta.

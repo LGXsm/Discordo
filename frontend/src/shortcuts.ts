@@ -1,5 +1,13 @@
 type Action = 'microphone' | 'audio';
 type Bindings = Partial<Record<Action, string>>;
+declare global {
+  interface Window {
+    discordoDesktop?: {
+      setVoiceShortcuts: (configuration: Bindings & { active: boolean }) => Promise<void>;
+      onVoiceShortcut: (listener: (action: Action) => void) => () => void;
+    };
+  }
+}
 const actions = { microphone: 'Silenciar ou reativar microfone', audio: 'Silenciar ou reativar áudio' } as const;
 const storageKey = (email: string) => `discordo:shortcuts:${email}`;
 
@@ -46,7 +54,7 @@ function shortcutLabel(binding: string) {
 export const shortcutSettingsMarkup = `
   <section class="settings-section" id="settings-shortcuts" aria-labelledby="settings-shortcuts-title" hidden>
     <h3 id="settings-shortcuts-title">Atalhos</h3>
-    <p class="settings-description">Use o teclado para controlar a chamada enquanto a aba do Discordo estiver em foco.</p>
+    <p class="settings-description">Use o teclado para controlar a chamada enquanto o Discordo estiver em foco.</p>
     <h4 class="settings-group-title" id="shortcut-bindings">Teclas de atalho</h4>
     ${(Object.keys(actions) as Action[]).map(action => `
       <div class="shortcut-row">
@@ -55,8 +63,10 @@ export const shortcutSettingsMarkup = `
         <button type="button" class="settings-button" data-clear="${action}" aria-describedby="shortcut-${action}">Limpar</button>
       </div>`).join('')}
     <p class="settings-hint">Escolha uma tecla ou combinação. Alguns atalhos do navegador e do sistema são reservados.</p>
-    <h4 class="settings-group-title" id="shortcut-extension">Extensão do Chrome</h4>
-    <p class="settings-hint">Para usar atalhos com outro aplicativo em foco, <a href="${import.meta.env.BASE_URL}discordo-atalhos.zip" download>baixe a extensão do Chrome</a>.</p>
+    ${window.discordoDesktop
+      ? '<p class="settings-hint">Durante a chamada, Ctrl + Alt + uma letra, número ou F1–F24 também funciona fora do app se a combinação estiver livre no Windows.</p>'
+      : `<h4 class="settings-group-title" id="shortcut-extension">Extensão do Chrome</h4>
+         <p class="settings-hint">Para usar atalhos com outro aplicativo em foco, <a href="${import.meta.env.BASE_URL}discordo-atalhos.zip" download>baixe a extensão do Chrome</a>.</p>`}
     <p class="settings-status" role="status" data-shortcut-status></p>
   </section>`;
 
@@ -144,12 +154,34 @@ export function mountShortcutSettings(section: HTMLElement, email: string, onCha
       localStorage.setItem(storageKey(email), JSON.stringify(bindings));
       saved = bindings;
       status.textContent = '';
+      document.dispatchEvent(new Event('discordo:voice-shortcuts-changed'));
     },
   };
 }
 
 export function listenForVoiceShortcuts(email: string, controls: Record<Action, HTMLButtonElement>,
   inCall: () => boolean, signal: AbortSignal) {
+  const desktop = window.discordoDesktop;
+  if (desktop) {
+    let previous = '';
+    function syncDesktop() {
+      const active = inCall();
+      const configuration = active ? { ...readBindings(email), active } : { active };
+      const state = JSON.stringify(configuration);
+      if (state === previous) return;
+      previous = state;
+      void desktop!.setVoiceShortcuts(configuration).catch(console.error);
+    }
+    const unsubscribe = desktop.onVoiceShortcut(action => {
+      if (inCall() && !controls[action].disabled) controls[action].click();
+    });
+    document.addEventListener('discordo:voice-shortcuts-changed', syncDesktop, { signal });
+    signal.addEventListener('abort', () => {
+      unsubscribe();
+      void desktop.setVoiceShortcuts({ active: false }).catch(console.error);
+    }, { once: true });
+    syncDesktop();
+  }
   let pendingModifier: string | undefined;
   function available(event: KeyboardEvent) {
     return inCall() && !event.defaultPrevented && !document.querySelector('dialog[open], :popover-open') &&
