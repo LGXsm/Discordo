@@ -1,0 +1,17 @@
+node_modules/
+dist/
+
+archive/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+
+# Configuração privada e dados locais do Discordo
+/.discordo-*
+/discordo-*/
+/ftp_config.json
+/deploy/
+/Imagens/discord-style.png
+*.mwb.bak

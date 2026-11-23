@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sopro cartoon · Discordo</title>
+<style>
+  * { box-sizing: border-box; }
+  :root { color-scheme: dark; }
+  body { margin: 0; min-height: 100dvh; padding: 32px 12px; background: radial-gradient(ellipse at 30% 0%, #292039, transparent 62%), #15111d; color: #f5effc; font: 15px/1.45 system-ui, sans-serif; }
+  main { width: min(100%, 350px); margin-inline: auto; }
+  h1 { margin: 0 0 16px; font-size: 29px; letter-spacing: -.045em; line-height: 1.1; }
+  h2, p { margin: 0; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  button, select { font: inherit; color: inherit; border: 1px solid #655278; background: #30243e; border-radius: 7px; padding: 7px 10px; font-size: 13px; }
+  button, select { cursor: pointer; }
+  :focus-visible { outline: 2px solid #e1bdff; outline-offset: 2px; }
+  .replay { background: #ead7fa; color: #261834; border-color: transparent; font-weight: 650; }
+  .card { position: relative; isolation: isolate; width: min(350px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow: hidden; border: 1px solid #6d5486; border-radius: 13px; background: #21172e; box-shadow: 0 18px 45px #0d081480; }
+  .card[data-layout="narrow"] { width: min(272px, calc(100vw - 24px)); border-color: #456c88; background: #13263a; }
+  .content { max-height: calc(100dvh - 26px); overflow: auto; }
+  .banner { display: block; width: 100%; height: 116px; color: #b381da; background: #382256; }
+  [data-layout="narrow"] .banner { color: #76aace; background: #1b3e61; }
+  .identity { display: grid; justify-items: start; gap: 7px; padding: 0 16px 16px; }
+  .avatar { position: relative; display: block; width: 76px; height: 76px; border: 4px solid #21172e; border-radius: 50%; margin-top: -36px; background: #7553aa; }
+  [data-layout="narrow"] .avatar { border-color: #13263a; background: #42739b; }
+  h2 { font-size: 20px; color: #ecd4ff; }
+  [data-layout="narrow"] h2 { color: #b9e8ff; }
+  .bio { color: #f1e8f6; font-size: 13px; }
+  .roles { display: flex; flex-wrap: wrap; gap: 5px; margin: 1px 0 5px; }
+  .roles span { padding: 2px 7px; border-radius: 4px; background: #ffffff18; font-size: 12px; }
+  .frame, .effect { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; border-radius: inherit; overflow: hidden; }
+  .frame { z-index: 1; box-shadow: inset 0 0 0 2px #d1a6fd38; }
+  [data-layout="narrow"] .frame { box-shadow: inset 0 0 0 2px #a6dffd36; }
+  .effect { z-index: 2; }
+  .close { position: absolute; z-index: 3; top: 8px; right: 8px; width: 30px; height: 30px; padding: 0; background: #171321e8; font-size: 20px; line-height: 1; }
+  #debug { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; font-size: 13px; }
+  #debug[hidden] { display: none; }
+  #debug input { flex: 1; accent-color: #d2adff; }
+  #debug output { width: 5em; font-variant-numeric: tabular-nums; }
+  @media (max-width: 380px) { body { padding-top: 16px; } }
+  @media (prefers-reduced-motion: reduce) { .effect { display: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sopro cartoon</h1>
+  <div class="toolbar">
+    <button class="replay" type="button">Reproduzir efeito</button>
+    <select id="layout" aria-label="Largura do cartão">
+      <option value="standard">Padrão · 350 px</option>
+      <option value="narrow">Estreito · 272 px</option>
+    </select>
+    <select id="bio-size" aria-label="Tamanho da bio">
+      <option value="short">Bio curta</option>
+      <option value="long">Bio longa</option>
+    </select>
+  </div>
+  <label id="debug" hidden>Tempo <input id="scrub" type="range" min="0" max="5" step="0.01" value="0"> <output for="scrub">0,00 s</output></label>
+  <article class="card" data-layout="standard" aria-label="Cartão de perfil de Nox">
+    <div class="content">
+      <svg class="banner" viewBox="0 0 350 116" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <circle cx="243" cy="38" r="26" fill="currentColor" opacity=".64"/>
+        <path d="M0 79 51 57 74 65l40-33 52 44 48-12 19 13 45-26 72 26v39H0Z" fill="currentColor" opacity=".3"/>
+        <path d="M0 100 48 89l39 8 51-25 46 25 39 7 30-13 46 9 51-12v28H0Z" fill="#141022" opacity=".55"/>
+        <path d="M16 25h28m-18 6h12m116-10h17m115 14h38m-22 7h12m-98 14h11" fill="none" stroke="currentColor" stroke-linecap="round" opacity=".5"/>
+      </svg>
+      <div class="identity">
+        <svg class="avatar" viewBox="0 0 68 68" aria-hidden="true">
+          <path d="M6 68q2-15 21-19h15q16 4 21 19" fill="#292439"/>
+          <path d="m24 40 1 12 11 10 9-11-3-12" fill="#ac6277"/>
+          <path d="M20 28c0-19 30-21 33-4l-1 8 5 5-6 2q0 13-11 13-10 0-15-11-8-1-5-8Z" fill="#f3bca0" stroke="#34263e" stroke-width="1.8"/>
+          <path d="M22 37 16 29q-5-8 1-13 1-10 12-10 13-5 23 5 9 2 5 12l-5 6-3-10q-7 6-18 8l-4 11Z" fill="#262239"/>
+          <path d="M20 20q5-9 20-10m-14 8q8-5 15-5" stroke="#77628f" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <path d="M43 30q3-2 6-1m-3 4h3m-1 9 5-1" stroke="#3a2940" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h2>Nox</h2>
+        <p class="bio">Entre nuvens e jogos depois da meia-noite.</p>
+        <div class="roles" aria-label="Cargos"><span>✦ Madrugada</span><span>Ilustração</span></div>
+        <button class="action" type="button">Enviar mensagem</button>
+        <p class="action-feedback" role="status" hidden>Perfil de teste.</p>
+      </div>
+    </div>
+    <div class="frame" aria-hidden="true"></div>
+    <canvas class="effect" aria-hidden="true"></canvas>
+    <button class="close" type="button" aria-label="Fechar perfil">×</button>
+  </article>
+</main>
+<script src="motion.js?v=3"></script>
+</body>
+</html>
+

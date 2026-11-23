@@ -1,0 +1,1417 @@
+{
+  "movimentos": [
+    [
+      "public/art/voice-disconnected.webp",
+      "Imagens/voice-disconnected.webp"
+    ],
+    [
+      "public/art/voice-punished.webp",
+      "Imagens/voice-punished.webp"
+    ],
+    [
+      "public/art/mural.webp",
+      "Imagens/mural.webp"
+    ],
+    [
+      "public/art/caramelo.webp",
+      "Imagens/caramelo.webp"
+    ],
+    [
+      "public/art/cactus.webp",
+      "Imagens/cactus.webp"
+    ],
+    [
+      "public/art/breaker.webp",
+      "Imagens/breaker.webp"
+    ],
+    [
+      "server/role-colors.sql",
+      "database/migrations/role-colors.sql"
+    ],
+    [
+      "server/server-invites.sql",
+      "database/migrations/server-invites.sql"
+    ],
+    [
+      "server/gameplay.sql",
+      "database/migrations/gameplay.sql"
+    ],
+    [
+      "server/chat-video.sql",
+      "database/migrations/chat-video.sql"
+    ],
+    [
+      "server/server-permissions.sql",
+      "database/migrations/server-permissions.sql"
+    ],
+    [
+      "src",
+      "frontend/src"
+    ],
+    [
+      "public",
+      "frontend/public"
+    ],
+    [
+      "index.html",
+      "frontend/index.html"
+    ],
+    [
+      "server",
+      "backend/src"
+    ],
+    [
+      "voice-channels.json",
+      "shared/voice-channels.json"
+    ],
+    [
+      "rnnoise-main",
+      "vendor/rnnoise"
+    ],
+    [
+      "extension",
+      "extensions"
+    ],
+    [
+      "previas-animacoes",
+      "prototypes/animations"
+    ],
+    [
+      "publish-hostgator.py",
+      "scripts/publish-hostgator.py"
+    ],
+    [
+      "dist",
+      "archive/build-anterior"
+    ],
+    [
+      "discordo-esquema-atual.sql",
+      "database/discordo-esquema-atual.sql"
+    ],
+    [
+      "discordo_multiservidor.sql",
+      "database/historico/discordo_multiservidor.sql"
+    ],
+    [
+      "discordo.sql",
+      "database/historico/discordo.sql"
+    ],
+    [
+      "discordoBrasil.mwb",
+      "database/modelos/discordoBrasil.mwb"
+    ],
+    [
+      "discordoBrasil.mwb.bak",
+      "database/modelos/discordoBrasil.mwb.bak"
+    ],
+    [
+      "Referencias/animação-reference-2.jpg",
+      "Imagens/animação-reference-2.jpg"
+    ],
+    [
+      "Referencias/animação-reference.jpg",
+      "Imagens/animação-reference.jpg"
+    ],
+    [
+      "Referencias/background-style-1.jpg",
+      "Imagens/background-style-1.jpg"
+    ],
+    [
+      "Referencias/background-style-2.jpg",
+      "Imagens/background-style-2.jpg"
+    ],
+    [
+      "Referencias/background-style-3.jpg",
+      "Imagens/background-style-3.jpg"
+    ],
+    [
+      "Referencias/background-style-4.jpg",
+      "Imagens/background-style-4.jpg"
+    ],
+    [
+      "Referencias/background.jpg",
+      "Imagens/background.jpg"
+    ],
+    [
+      "Referencias/caramelho-grafit.png",
+      "Imagens/caramelho-grafit.png"
+    ],
+    [
+      "Referencias/desenhos 1.jpg",
+      "Imagens/desenhos 1.jpg"
+    ],
+    [
+      "Referencias/desenhos 2.jpg",
+      "Imagens/desenhos 2.jpg"
+    ],
+    [
+      "Referencias/desenhos 3.jpg",
+      "Imagens/desenhos 3.jpg"
+    ],
+    [
+      "Referencias/desenhos 4.jpg",
+      "Imagens/desenhos 4.jpg"
+    ],
+    [
+      "Referencias/desenhos 5.jpg",
+      "Imagens/desenhos 5.jpg"
+    ],
+    [
+      "Referencias/discord-style.png",
+      "Imagens/discord-style.png"
+    ],
+    [
+      "Referencias/new-background.png",
+      "Imagens/new-background.png"
+    ]
+  ],
+  "arquivos": [
+    {
+      "original": "public/art/voice-disconnected.webp",
+      "destino": "Imagens/voice-disconnected.webp",
+      "sha256": "b434cb33e7afc5c054cf29393c78aaab790e3382c3257d7a6c97dfbff54877a9"
+    },
+    {
+      "original": "public/art/voice-punished.webp",
+      "destino": "Imagens/voice-punished.webp",
+      "sha256": "24706fad936c276e6f2c65587fbd000d600de287eedb88af84531b0d07894d30"
+    },
+    {
+      "original": "public/art/mural.webp",
+      "destino": "Imagens/mural.webp",
+      "sha256": "953e62c3bd7b7df2b24bfa8b6bd04825666e01e0a6a7b4cc7a87563a7e18aead"
+    },
+    {
+      "original": "public/art/caramelo.webp",
+      "destino": "Imagens/caramelo.webp",
+      "sha256": "09f1c5a7118b97623050bc4542b3f18f6361b1590ac80e6bb2ccf04e9a47f4d1"
+    },
+    {
+      "original": "public/art/cactus.webp",
+      "destino": "Imagens/cactus.webp",
+      "sha256": "120c92ba7f31aca83fc1029ee34640a4e2b736cc4d8663365399bb1b840d29b3"
+    },
+    {
+      "original": "public/art/breaker.webp",
+      "destino": "Imagens/breaker.webp",
+      "sha256": "aa3443558c6aca1a4ee74018a91daf7b39140390e81a829eece44f6ede3a1b65"
+    },
+    {
+      "original": "server/role-colors.sql",
+      "destino": "database/migrations/role-colors.sql",
+      "sha256": "613cf538be2c48146746aa0ba5bb41aff78af59f5f237c13c5dc392edbb41805"
+    },
+    {
+      "original": "server/server-invites.sql",
+      "destino": "database/migrations/server-invites.sql",
+      "sha256": "46f919771177d77c149012f5ca78bf934cd167f2305f5b9516a7a0214ab9f3ea"
+    },
+    {
+      "original": "server/gameplay.sql",
+      "destino": "database/migrations/gameplay.sql",
+      "sha256": "e1c8a0855d079f872056fbed654cb5c3d538f2a1c5b02ba53c43d40109869627"
+    },
+    {
+      "original": "server/chat-video.sql",
+      "destino": "database/migrations/chat-video.sql",
+      "sha256": "a483fb62a8589baf600e105e0dcdd64300c89e5960fc72ba2194de3e4f8176ee"
+    },
+    {
+      "original": "server/server-permissions.sql",
+      "destino": "database/migrations/server-permissions.sql",
+      "sha256": "7a960389dcd618080f842f0e6aa13283604d3ca7a7dc2c53bcf2845f3ca04f2a"
+    },
+    {
+      "original": "src/accounts.ts",
+      "destino": "frontend/src/accounts.ts",
+      "sha256": "d9315f86ca6419f58610586c541f09946d716239febe09c4a2d242bf6f44ab00"
+    },
+    {
+      "original": "src/audio-permissions.ts",
+      "destino": "frontend/src/audio-permissions.ts",
+      "sha256": "90e3ddd946b84b3ebec40eda24f461c21f5e41eb77d2fb8884921d9a685b478a"
+    },
+    {
+      "original": "src/avatar-editor.ts",
+      "destino": "frontend/src/avatar-editor.ts",
+      "sha256": "aa416e21d734e802733d4819ddbb2efbb0b5c1fe56cbea06e65deb6f248a49b9"
+    },
+    {
+      "original": "src/avatar.ts",
+      "destino": "frontend/src/avatar.ts",
+      "sha256": "72577b421c7856c3760e6338c6599047d75393ec7ea81d832b6869ff56faedff"
+    },
+    {
+      "original": "src/channel-resize.ts",
+      "destino": "frontend/src/channel-resize.ts",
+      "sha256": "12f5fa1d502e86628851729b2926782bc900312cdbc121c9f97eeffcaef724af"
+    },
+    {
+      "original": "src/dialog-dismiss.ts",
+      "destino": "frontend/src/dialog-dismiss.ts",
+      "sha256": "098186d99235ea4121627cc3ecb8f32024b9e2ba2b733fcd1d03d9f93cae7c5b"
+    },
+    {
+      "original": "src/gameplay.ts",
+      "destino": "frontend/src/gameplay.ts",
+      "sha256": "a271bd469df95bc2a2c4b68cc8aa0193e787a71e47af2e6feb890630f5bd6884"
+    },
+    {
+      "original": "src/icons.ts",
+      "destino": "frontend/src/icons.ts",
+      "sha256": "91a5abf0427b5e5db507331e8f33aa1aa42b76f3e4956e61982205cff5779fcb"
+    },
+    {
+      "original": "src/main.ts",
+      "destino": "frontend/src/main.ts",
+      "sha256": "a42e13b16eabafda74da54209f44c20c82cafa436318d5f51a181ed438d297d5"
+    },
+    {
+      "original": "src/profile-appearance.ts",
+      "destino": "frontend/src/profile-appearance.ts",
+      "sha256": "37945964b531412d5ca5dabb59cd3b5967b845164ecf919730ed987c779a637f"
+    },
+    {
+      "original": "src/profile-card-details.ts",
+      "destino": "frontend/src/profile-card-details.ts",
+      "sha256": "d516f87207c9d5a7a351ad24537cf4459237b3483953d4884b9bc6ceaae3bd29"
+    },
+    {
+      "original": "src/profile-opening.ts",
+      "destino": "frontend/src/profile-opening.ts",
+      "sha256": "bd2a96eb5839dbd0e1b69457f54a1097b8e1e28771cfa4d379ed29caa141effe"
+    },
+    {
+      "original": "src/profile-sounds.ts",
+      "destino": "frontend/src/profile-sounds.ts",
+      "sha256": "6d57caa546361bf1dec628ba103c6efdb322823f18b02add1eff880028986ec5"
+    },
+    {
+      "original": "src/profile-theme-colors.ts",
+      "destino": "frontend/src/profile-theme-colors.ts",
+      "sha256": "a11ef7e413f4aea9510f3254e60ebd4a9c95a03b226e18aa2414ff9ab91341fa"
+    },
+    {
+      "original": "src/rnnoise-worklet.js",
+      "destino": "frontend/src/rnnoise-worklet.js",
+      "sha256": "ba881d14e3b946fabb21a7652386703ee7a3d36c8791f726bb8ed4ec2e9e1e37"
+    },
+    {
+      "original": "src/rnnoise.ts",
+      "destino": "frontend/src/rnnoise.ts",
+      "sha256": "2c6efc8549cb0279665793805e023e806bb3bd52de8127e12db829e1e2acdf0d"
+    },
+    {
+      "original": "src/rnnoise.wasm",
+      "destino": "frontend/src/rnnoise.wasm",
+      "sha256": "64a76458c23b195220fa05b1851e18eea4696e234cd0c0001f7387bd6de2a584"
+    },
+    {
+      "original": "src/screen-playback.ts",
+      "destino": "frontend/src/screen-playback.ts",
+      "sha256": "83b25d17cda5d2a3cf71304129b162ee29c15467b26913c39008a8311ba74fd1"
+    },
+    {
+      "original": "src/servers.ts",
+      "destino": "frontend/src/servers.ts",
+      "sha256": "5eff3ed04d9483aefb3fb763d8f31e05653ea4085453916034b81d9e6b15d764"
+    },
+    {
+      "original": "src/settings-confirm.ts",
+      "destino": "frontend/src/settings-confirm.ts",
+      "sha256": "f78be241c317c36f8673e2540d0435dbdfd281a397079772c4247e6ccbb7b85f"
+    },
+    {
+      "original": "src/settings.ts",
+      "destino": "frontend/src/settings.ts",
+      "sha256": "3a556f20a003e3bc45321562ec3917c18a8542314bd64429b003042efafb9be8"
+    },
+    {
+      "original": "src/shortcuts.ts",
+      "destino": "frontend/src/shortcuts.ts",
+      "sha256": "9e259f3fd5e9c37b69517a650665592cb267c343f5a7c24003942dd83964474c"
+    },
+    {
+      "original": "src/sounds.ts",
+      "destino": "frontend/src/sounds.ts",
+      "sha256": "a0533fc6f0fbe0d74898ba9695ff55a0528b8158d2cd0b7c38432727a6e2ae9c"
+    },
+    {
+      "original": "src/style.css",
+      "destino": "frontend/src/style.css",
+      "sha256": "970b9eef2fb8dd221351f2542a917d0282a98fa898efc34e9b82b2dec76306d3"
+    },
+    {
+      "original": "src/text-chat.ts",
+      "destino": "frontend/src/text-chat.ts",
+      "sha256": "c4512a3b5ec7cee33ca37e4e626c18b3b251b1b88e9ffe126d31727bb052be4f"
+    },
+    {
+      "original": "src/tutorial.ts",
+      "destino": "frontend/src/tutorial.ts",
+      "sha256": "c0358034c41e49a93c213592d1ea612c5df437e72abc375a6d2267f62628afd7"
+    },
+    {
+      "original": "src/voice-demo.ts",
+      "destino": "frontend/src/voice-demo.ts",
+      "sha256": "a6bec8fdafa5b4e9d62496e19994a5e5bc144c3469394452c6e056f957cbbf1c"
+    },
+    {
+      "original": "src/voice-http-client.ts",
+      "destino": "frontend/src/voice-http-client.ts",
+      "sha256": "797237cbaf75a8d397b96f830284856a0ff9d59c0df0ff9b8267e7b1cf299a8e"
+    },
+    {
+      "original": "src/voice-http.ts",
+      "destino": "frontend/src/voice-http.ts",
+      "sha256": "02899787875ee03bc7a0670421d3b7c958903966809984a9c022757b9813f5f4"
+    },
+    {
+      "original": "src/voice-member-menu.ts",
+      "destino": "frontend/src/voice-member-menu.ts",
+      "sha256": "3789d393f2b716f04b0c61e19f662fb2b89c2e507fcb0dd7669eb61616361820"
+    },
+    {
+      "original": "src/voice-microphone.ts",
+      "destino": "frontend/src/voice-microphone.ts",
+      "sha256": "327faaa1418d79743219c7b82c6962933342f1e5ed0a8037b4ad03a02467832e"
+    },
+    {
+      "original": "src/voice-moderation-alert.ts",
+      "destino": "frontend/src/voice-moderation-alert.ts",
+      "sha256": "2a87ae0749d96ae0cbe331ad52e302e730b2217739ccdd2a1e4e1d1a7fbcfe16"
+    },
+    {
+      "original": "src/voice-preferences.ts",
+      "destino": "frontend/src/voice-preferences.ts",
+      "sha256": "c42206d4b33508b4191e5473c7a077231d2631a8760833222aeae14c641c0600"
+    },
+    {
+      "original": "src/voice-quick-settings.ts",
+      "destino": "frontend/src/voice-quick-settings.ts",
+      "sha256": "c647ba8b4f75c49321c84bc741c95723ef2770b88f1218887ea4f16c04e8b09e"
+    },
+    {
+      "original": "src/voice-session.ts",
+      "destino": "frontend/src/voice-session.ts",
+      "sha256": "6a8485e40282f307cbd7bd73834b44ea0a30b023f5d8b7f2566a1b323f599554"
+    },
+    {
+      "original": "src/voice-settings.ts",
+      "destino": "frontend/src/voice-settings.ts",
+      "sha256": "b232befda97379e24562d9e28bd953525787de77f9272ecc9ce1f09a3f825dc1"
+    },
+    {
+      "original": "src/voice-transport.ts",
+      "destino": "frontend/src/voice-transport.ts",
+      "sha256": "e089b42e669f8457317a8212ce8eeaf138594ba73a4b9e76499f4c45fe69de0d"
+    },
+    {
+      "original": "src/voice-ui.ts",
+      "destino": "frontend/src/voice-ui.ts",
+      "sha256": "dc2e27392cf4a2ee3fe75cd56f9a138f1e521a1fa780118d7c49796ab0c68f97"
+    },
+    {
+      "original": "src/voice-worker.ts",
+      "destino": "frontend/src/voice-worker.ts",
+      "sha256": "1f08651aa1359ad4b438d663c6c290a4357fa1296b8413239ec8e56e14509fb2"
+    },
+    {
+      "original": "src/profile-effects/alien-thumb.webp",
+      "destino": "frontend/src/profile-effects/alien-thumb.webp",
+      "sha256": "cd0df2cb7d4f88090f86004bb8178a9aa12650a63e31f6997954241c11c74f5f"
+    },
+    {
+      "original": "src/profile-effects/alien.svg",
+      "destino": "frontend/src/profile-effects/alien.svg",
+      "sha256": "e5859690986369727942515705850d7aca964d63c2751f2754b2b07f2f43412b"
+    },
+    {
+      "original": "src/profile-effects/smoke-physics.ts",
+      "destino": "frontend/src/profile-effects/smoke-physics.ts",
+      "sha256": "b32747d5fe5808ff77d3420ea87a2ff083029e48b216759d2bf5f97e4d29185a"
+    },
+    {
+      "original": "src/profile-effects/smoke-renderer.ts",
+      "destino": "frontend/src/profile-effects/smoke-renderer.ts",
+      "sha256": "a19a7fc6523bbd2a5c7a88bc983c136b4835f2e1cf2dd378826f919754338644"
+    },
+    {
+      "original": "src/profile-effects/smoke-thumb.webp",
+      "destino": "frontend/src/profile-effects/smoke-thumb.webp",
+      "sha256": "7bf3d62369a3cccb1885a6c1ac6415e0af896fa292f744f1f3930574c574dd4c"
+    },
+    {
+      "original": "src/profile-effects/smoke.svg",
+      "destino": "frontend/src/profile-effects/smoke.svg",
+      "sha256": "2a1a869df37b6fd58f366148a823131516731f8ab61ca787b6ca7c6adf7cfecc"
+    },
+    {
+      "original": "src/sounds/README.md",
+      "destino": "frontend/src/sounds/README.md",
+      "sha256": "72828ced3f8b4172b3e05494d18200527b6a9c4858553105fbd956d725d754f4"
+    },
+    {
+      "original": "public/discordo-atalhos.zip",
+      "destino": "frontend/public/discordo-atalhos.zip",
+      "sha256": "75ebd1c538eb74ca3ee4734f604cb6e4eac5dc28d18478ada563067dcbc61e50"
+    },
+    {
+      "original": "public/art/logo-pequena.webp",
+      "destino": "frontend/public/art/logo-pequena.webp",
+      "sha256": "72c21945127daf611bcd8fc01c792768e74e84fa5e0b951a5d13f17b8412faa8"
+    },
+    {
+      "original": "public/art/logo.webp",
+      "destino": "frontend/public/art/logo.webp",
+      "sha256": "46fa35cf791c7b57e74173403cf780e2b21a780c7b5edae8cf48da6ba3937e12"
+    },
+    {
+      "original": "public/art/voice-recua-fascista.webp",
+      "destino": "frontend/public/art/voice-recua-fascista.webp",
+      "sha256": "b08080d28d7b96d2f595ba9c71d87433b0f7c22792d753691cea95f5e07d8fe3"
+    },
+    {
+      "original": "public/art/voice-se-fudeu.webp",
+      "destino": "frontend/public/art/voice-se-fudeu.webp",
+      "sha256": "95b34d93c31aba8df7c47f486a1f207e394e9606c5571dde4276904f405d984b"
+    },
+    {
+      "original": "public/art/wall.webp",
+      "destino": "frontend/public/art/wall.webp",
+      "sha256": "b72a3ea6dd389ed33936381fa9aaa5085e07f56a5aea23ce89493d635769b47f"
+    },
+    {
+      "original": "index.html",
+      "destino": "frontend/index.html",
+      "sha256": "18234aca42db60ca0cac38c43cf5c844a46e5ee867ef1262adbdbe18bd8503a8"
+    },
+    {
+      "original": "server/account-alias.php",
+      "destino": "backend/src/account-alias.php",
+      "sha256": "7809c83d46647ca2c210cf32bc39a675750b9e306331e4faaecad0f42073424b"
+    },
+    {
+      "original": "server/account-deletion.php",
+      "destino": "backend/src/account-deletion.php",
+      "sha256": "64a005bb533260dc2b9a016d61306a168d86e9d0cb893d8c9e7d6cd5b35100cc"
+    },
+    {
+      "original": "server/account-verification.php",
+      "destino": "backend/src/account-verification.php",
+      "sha256": "31fc361f973f751fc53f0c46bf571f41a3a192c2f1d318d2bee3f64a4a673fd3"
+    },
+    {
+      "original": "server/account.php",
+      "destino": "backend/src/account.php",
+      "sha256": "d0d5e301657cc2e8ede0c6c8c619f8710819540142d98a06d4cffb518174a3e9"
+    },
+    {
+      "original": "server/channel-voice-limit.php",
+      "destino": "backend/src/channel-voice-limit.php",
+      "sha256": "71af5b14e784da8fa93d26b3b1ae4517be5f749abdf111b49992b5aa6ff6ff15"
+    },
+    {
+      "original": "server/chat-alias.php",
+      "destino": "backend/src/chat-alias.php",
+      "sha256": "636f877707d5b4dbe3fee6b52eca2acdb43852a7c9051a8f89309ef565db537f"
+    },
+    {
+      "original": "server/chat-media.php",
+      "destino": "backend/src/chat-media.php",
+      "sha256": "949a94842d5a5f13755648cfa05fe3840fa7c891d230bd126c8d282e4f36d7a9"
+    },
+    {
+      "original": "server/chat.php",
+      "destino": "backend/src/chat.php",
+      "sha256": "ceda84923fa7615010b6b0f5b7c5a8cc9f6bd4a8b991c10f8ec1db5457efb831"
+    },
+    {
+      "original": "server/database.php",
+      "destino": "backend/src/database.php",
+      "sha256": "00eba14765194259de012873d58dae859af131651dfefcf1e510a0a6cc57e0a7"
+    },
+    {
+      "original": "server/gameplay.php",
+      "destino": "backend/src/gameplay.php",
+      "sha256": "e43972c2643af2708afda512cce00606bc9feeedd1c02fd6e0cd709ff645e0e5"
+    },
+    {
+      "original": "server/hostgator-alias.htaccess",
+      "destino": "backend/src/hostgator-alias.htaccess",
+      "sha256": "1c867ae83499786c878b26d617e2ff7a4a50b5a28a3a053ca747d8f2d728750a"
+    },
+    {
+      "original": "server/hostgator.htaccess",
+      "destino": "backend/src/hostgator.htaccess",
+      "sha256": "2e551efbdc54184e62ccc6128f6e15b6548956c36d7dc1cabbb738a3d43a873a"
+    },
+    {
+      "original": "server/profile-appearance.php",
+      "destino": "backend/src/profile-appearance.php",
+      "sha256": "5203c8f0b5a0de53e589b6922a2de46b62aa03fc8343876009bc5f2de8f00d5e"
+    },
+    {
+      "original": "server/profile-media.php",
+      "destino": "backend/src/profile-media.php",
+      "sha256": "dfddb68a017bb12599b7d49f76fe82a842c730ac4238e613890806d473272684"
+    },
+    {
+      "original": "server/profile-sounds.php",
+      "destino": "backend/src/profile-sounds.php",
+      "sha256": "4aaa1deabb020796946fce93be6c0bc6ac1a85eb13928ed575e750a1c2536c75"
+    },
+    {
+      "original": "server/reserved-role-colors.php",
+      "destino": "backend/src/reserved-role-colors.php",
+      "sha256": "8f1642cca36b676eb8787b62a867942b9c647e50f619b7e9d2f23588021b4cb1"
+    },
+    {
+      "original": "server/role-order.php",
+      "destino": "backend/src/role-order.php",
+      "sha256": "186a7c3fe62c3ddf81803e3691f0c401323031e44fbf80e63027b9c4c3b7f98e"
+    },
+    {
+      "original": "server/server-access.php",
+      "destino": "backend/src/server-access.php",
+      "sha256": "366d0b9792441571aa4f9217492bac484ae4225fe44a638ee3bc1d4c38f92a44"
+    },
+    {
+      "original": "server/server-invites.php",
+      "destino": "backend/src/server-invites.php",
+      "sha256": "abcfd4a9f0b21996e99e4b5594b986f843898ff4ff3396591861407c5ea64d22"
+    },
+    {
+      "original": "server/servers-alias.php",
+      "destino": "backend/src/servers-alias.php",
+      "sha256": "7f429056654befcd818e3bd46ae01b8a65b638f9a33d66885a5897b059baa1f1"
+    },
+    {
+      "original": "server/servers.php",
+      "destino": "backend/src/servers.php",
+      "sha256": "f1af6e301c2137c46f578b7588db3001184363547a579295b6efee18b870b74a"
+    },
+    {
+      "original": "server/start.mjs",
+      "destino": "backend/src/start.mjs",
+      "sha256": "fc71e648e121fbe7b718ef906b4ddcb1df1ef33c95de2a7bdc755907f61ccd6a"
+    },
+    {
+      "original": "server/voice-alias.php",
+      "destino": "backend/src/voice-alias.php",
+      "sha256": "b69a9c63e9a88ed500e9ce3ba6e3f0c5ddac426c8c98c0e0967e06d0bda7355a"
+    },
+    {
+      "original": "server/voice.mjs",
+      "destino": "backend/src/voice.mjs",
+      "sha256": "805226b783ee928a4a3e7281081dc258cf5aff135e7abac20bd0e8820cebfaa4"
+    },
+    {
+      "original": "server/voice.php",
+      "destino": "backend/src/voice.php",
+      "sha256": "2d577bb08e329111bb906e1d03742c2cd634f9dd76d6050befb45f82a86ee2fc"
+    },
+    {
+      "original": "voice-channels.json",
+      "destino": "shared/voice-channels.json",
+      "sha256": "94abe4fff70a44cf2363297a34eafb2e636616efc6fff4c4a4e7c9d1eb1cdaa5"
+    },
+    {
+      "original": "rnnoise-main/.gitlab-ci.yml",
+      "destino": "vendor/rnnoise/.gitlab-ci.yml",
+      "sha256": "fb96a117ef51411c6e95d714ebf4f595e9be9a10930f2bf196137ffd62f4978f"
+    },
+    {
+      "original": "rnnoise-main/AUTHORS",
+      "destino": "vendor/rnnoise/AUTHORS",
+      "sha256": "348b0956050157b718a11e1464633619b709b19b45172f336cef2205aa0cec63"
+    },
+    {
+      "original": "rnnoise-main/autogen.sh",
+      "destino": "vendor/rnnoise/autogen.sh",
+      "sha256": "b2b20ed9449907b7c0f34c72e693fc09bafb1edc7856c279179701206730ba5c"
+    },
+    {
+      "original": "rnnoise-main/browser.c",
+      "destino": "vendor/rnnoise/browser.c",
+      "sha256": "3df5edbddf856a3bac2bda9b7f8876cb8be9157d533bcea7799d3a1ffc005a70"
+    },
+    {
+      "original": "rnnoise-main/configure.ac",
+      "destino": "vendor/rnnoise/configure.ac",
+      "sha256": "87fa5e8b6da2411968cb8b11c26f343d29961eb71f487d9784ef561f3d2db954"
+    },
+    {
+      "original": "rnnoise-main/COPYING",
+      "destino": "vendor/rnnoise/COPYING",
+      "sha256": "45d37ca1cdb278c088e1aa85e0e65ca3a534ed86a28dcc96ca16810248a61d35"
+    },
+    {
+      "original": "rnnoise-main/datasets.txt",
+      "destino": "vendor/rnnoise/datasets.txt",
+      "sha256": "2fc9a7509b242af0dd65c1d29aef0a57af4d1aca8de65b60ed2aca7eed829ada"
+    },
+    {
+      "original": "rnnoise-main/download_model.sh",
+      "destino": "vendor/rnnoise/download_model.sh",
+      "sha256": "ec8c7cfd4aeddccf869514e5f18963eac4dc8640e06029450e5b4393f4772d3e"
+    },
+    {
+      "original": "rnnoise-main/Makefile.am",
+      "destino": "vendor/rnnoise/Makefile.am",
+      "sha256": "6b092f644a52624fa5022ce3a01264641b329dfd38c13f287ef3c9402abf9e60"
+    },
+    {
+      "original": "rnnoise-main/model_version",
+      "destino": "vendor/rnnoise/model_version",
+      "sha256": "07bebd6ed8f6f97095cc9382122c7113c6e9ad0e22773cca33679c3df1ef901a"
+    },
+    {
+      "original": "rnnoise-main/README",
+      "destino": "vendor/rnnoise/README",
+      "sha256": "87fc8de7620259a3200be2012e7c77fc9383997d3224318451eaded27691754f"
+    },
+    {
+      "original": "rnnoise-main/rnnoise-uninstalled.pc.in",
+      "destino": "vendor/rnnoise/rnnoise-uninstalled.pc.in",
+      "sha256": "d5fdfc8a2afc82d1692f755aab97c07ed4b9de220071ece7a8cd043c1f355b52"
+    },
+    {
+      "original": "rnnoise-main/rnnoise.pc.in",
+      "destino": "vendor/rnnoise/rnnoise.pc.in",
+      "sha256": "11ae2a7f1f3b560e95c1c26f6c0f5db3a165ff6f58e15b1e1bcf5a7a4d8b2e2d"
+    },
+    {
+      "original": "rnnoise-main/update_version",
+      "destino": "vendor/rnnoise/update_version",
+      "sha256": "6cda5aa913410301198d91ce3da86f4a943e8800f8d8aa70a6046545e939361c"
+    },
+    {
+      "original": "rnnoise-main/doc/Doxyfile.in",
+      "destino": "vendor/rnnoise/doc/Doxyfile.in",
+      "sha256": "675e80c1b411494ad185051ebcf562d0c8434fd96a6eabffcecefe46cf657cb1"
+    },
+    {
+      "original": "rnnoise-main/doc/Makefile",
+      "destino": "vendor/rnnoise/doc/Makefile",
+      "sha256": "b83f5993f5ff1ed95b60abeba749ceb5766c66ac252324a784ad2e6007dfc165"
+    },
+    {
+      "original": "rnnoise-main/examples/rnnoise_demo.c",
+      "destino": "vendor/rnnoise/examples/rnnoise_demo.c",
+      "sha256": "644064fcf3c1762e4d2e6341d59dc2db2e0cea4ba5d42e62767411e387014c98"
+    },
+    {
+      "original": "rnnoise-main/include/rnnoise.h",
+      "destino": "vendor/rnnoise/include/rnnoise.h",
+      "sha256": "15ca0f5c0db9dfa48907e91a32995d37e57552b0e14fef5ebb8d3dc073528f83"
+    },
+    {
+      "original": "rnnoise-main/m4/attributes.m4",
+      "destino": "vendor/rnnoise/m4/attributes.m4",
+      "sha256": "fd09bd31cb50c4a22422cb0c6e30c53537248f84681eed6774c9dca0af0ded29"
+    },
+    {
+      "original": "rnnoise-main/models/rnnoise10Ga_12.pth",
+      "destino": "vendor/rnnoise/models/rnnoise10Ga_12.pth",
+      "sha256": "1f495605b553ce1f64643e3732249ede58a72c062f42c53e9f929bbd1b1ff31c"
+    },
+    {
+      "original": "rnnoise-main/models/rnnoise10Gb_15.pth",
+      "destino": "vendor/rnnoise/models/rnnoise10Gb_15.pth",
+      "sha256": "ff1f6b2a63dcf3b74eff95a77d4deb1b75e26a3a7fa6e4921210086313f412ba"
+    },
+    {
+      "original": "rnnoise-main/scripts/dump_features_parallel.sh",
+      "destino": "vendor/rnnoise/scripts/dump_features_parallel.sh",
+      "sha256": "d2f0a4e0068c733cec76ea31bfd5f86610f3ddc79e9e850bf48ef8bc9a1f315d"
+    },
+    {
+      "original": "rnnoise-main/scripts/rir_deconv.py",
+      "destino": "vendor/rnnoise/scripts/rir_deconv.py",
+      "sha256": "5ed926ca137089d49b551a3bac8d7bb64265140509bd37c4add59112393d1180"
+    },
+    {
+      "original": "rnnoise-main/scripts/shrink_model.sh",
+      "destino": "vendor/rnnoise/scripts/shrink_model.sh",
+      "sha256": "9733a961e5ddaa41c7009f8cc1163b7b1f325d736306557ce03f30f22824244f"
+    },
+    {
+      "original": "rnnoise-main/scripts/sweep.py",
+      "destino": "vendor/rnnoise/scripts/sweep.py",
+      "sha256": "72e262040e10ebdcadb015f976fc5c8a411faf34ad0674a1752594e8be254ffa"
+    },
+    {
+      "original": "rnnoise-main/src/arch.h",
+      "destino": "vendor/rnnoise/src/arch.h",
+      "sha256": "1686a3ca5817bb7d99049a1801c6ab3a7e91a5d0a6804b1c1cafb36e5eeb62f8"
+    },
+    {
+      "original": "rnnoise-main/src/celt_lpc.c",
+      "destino": "vendor/rnnoise/src/celt_lpc.c",
+      "sha256": "58eca412376dfd954f4940709df521cf1d2cbee1b7ca2b166bd0bffbda2c5b8d"
+    },
+    {
+      "original": "rnnoise-main/src/celt_lpc.h",
+      "destino": "vendor/rnnoise/src/celt_lpc.h",
+      "sha256": "2190d9bd519c4528770a28fb0e8b599eb195782fb5dcd91378eb92e3ca7d5148"
+    },
+    {
+      "original": "rnnoise-main/src/common.h",
+      "destino": "vendor/rnnoise/src/common.h",
+      "sha256": "f4975c4ee283a030b08dff4fe26847cc84e2fae340794922fae32aba5cc8e4e6"
+    },
+    {
+      "original": "rnnoise-main/src/compile.sh",
+      "destino": "vendor/rnnoise/src/compile.sh",
+      "sha256": "7d8e1889d730bc9b651d9d89d678ea2c4fb0ae7a465497f297d3f852e0a38329"
+    },
+    {
+      "original": "rnnoise-main/src/cpu_support.h",
+      "destino": "vendor/rnnoise/src/cpu_support.h",
+      "sha256": "acb2591c1dfb97783a0a68fea76279dcb1155f0b7e6b95f51448a590f301c4b2"
+    },
+    {
+      "original": "rnnoise-main/src/denoise.c",
+      "destino": "vendor/rnnoise/src/denoise.c",
+      "sha256": "f12ac3cc97d798cdfd7c7bd4366a08a72c5516c382056c891b61a61cb17eb031"
+    },
+    {
+      "original": "rnnoise-main/src/denoise.h",
+      "destino": "vendor/rnnoise/src/denoise.h",
+      "sha256": "3ea8149b47b51b76a1eef308cc38168731693b74ed3f64330b55583f92dcc071"
+    },
+    {
+      "original": "rnnoise-main/src/dump_features.c",
+      "destino": "vendor/rnnoise/src/dump_features.c",
+      "sha256": "1088bdb98dda768e4bb9abcac4f9a8cfc919a2ccab9cea152d294af1f7d9e35a"
+    },
+    {
+      "original": "rnnoise-main/src/dump_rnnoise_tables.c",
+      "destino": "vendor/rnnoise/src/dump_rnnoise_tables.c",
+      "sha256": "32720ec28c15d0806d63b67a8d2146ed720ccbe7f160450468143df1b76398b8"
+    },
+    {
+      "original": "rnnoise-main/src/kiss_fft.c",
+      "destino": "vendor/rnnoise/src/kiss_fft.c",
+      "sha256": "2a9f9ee0d961ec6516864477640d78aedbf1c3ecbe1680727b4b93d486c09679"
+    },
+    {
+      "original": "rnnoise-main/src/kiss_fft.h",
+      "destino": "vendor/rnnoise/src/kiss_fft.h",
+      "sha256": "434613feace5466e73fb6593f3abeaca6c7da3ec5af3f4a475f54a6962324526"
+    },
+    {
+      "original": "rnnoise-main/src/nnet.c",
+      "destino": "vendor/rnnoise/src/nnet.c",
+      "sha256": "3a2c1dc09ad7e9dfe3cf32cfb94694935dc462488da8f513d1f308db39f7c087"
+    },
+    {
+      "original": "rnnoise-main/src/nnet.h",
+      "destino": "vendor/rnnoise/src/nnet.h",
+      "sha256": "3552cf2fcfc4db28ac683bcc8a5dc7b72fad7140b3df43d0f8d2d5afe3abe4dd"
+    },
+    {
+      "original": "rnnoise-main/src/nnet_arch.h",
+      "destino": "vendor/rnnoise/src/nnet_arch.h",
+      "sha256": "76068e63007b072b0c20410cee89c0ab5158438d5201b466850354c0aee33688"
+    },
+    {
+      "original": "rnnoise-main/src/nnet_default.c",
+      "destino": "vendor/rnnoise/src/nnet_default.c",
+      "sha256": "1402eb611b7fcc1fe7fa18639f0395e0af47a783ef87450318411483516e9011"
+    },
+    {
+      "original": "rnnoise-main/src/opus_types.h",
+      "destino": "vendor/rnnoise/src/opus_types.h",
+      "sha256": "e2c1075e26567b8d57706d2f0042e36d5d440721fc3fd27a6fce9f0fc8a31557"
+    },
+    {
+      "original": "rnnoise-main/src/parse_lpcnet_weights.c",
+      "destino": "vendor/rnnoise/src/parse_lpcnet_weights.c",
+      "sha256": "d523113abe3c387b5481d8aa75d61b22f5e6cbcf54110f68cf901204d443de12"
+    },
+    {
+      "original": "rnnoise-main/src/pitch.c",
+      "destino": "vendor/rnnoise/src/pitch.c",
+      "sha256": "cfe6f5ffb4b5f5967ce2e64f22cc978c1f8196eecdb2fa532d4dd1ff56f6ca58"
+    },
+    {
+      "original": "rnnoise-main/src/pitch.h",
+      "destino": "vendor/rnnoise/src/pitch.h",
+      "sha256": "020be5b3fbc5289cd76930b0534efaa25dbda0cecd8643ee345cfd9d875a3818"
+    },
+    {
+      "original": "rnnoise-main/src/rnn.c",
+      "destino": "vendor/rnnoise/src/rnn.c",
+      "sha256": "c40bbe40082448005873fe970d8963870ab2c9993b7c38d6939ca48f4f31a7bd"
+    },
+    {
+      "original": "rnnoise-main/src/rnn.h",
+      "destino": "vendor/rnnoise/src/rnn.h",
+      "sha256": "2fe9f33534fbfa35a7d5c81323f1ec4e9ec06e28328815c7c88880e83f994566"
+    },
+    {
+      "original": "rnnoise-main/src/rnnoise_data.c",
+      "destino": "vendor/rnnoise/src/rnnoise_data.c",
+      "sha256": "d6021b7697677c4d2274c912975e143765552b0e6f25500aa660fdb4a9849be5"
+    },
+    {
+      "original": "rnnoise-main/src/rnnoise_data.h",
+      "destino": "vendor/rnnoise/src/rnnoise_data.h",
+      "sha256": "09ff880bddd0fc74a2ae0e5ec6c8d65714031b08d0c3f672493acd9e189c5855"
+    },
+    {
+      "original": "rnnoise-main/src/rnnoise_data_little.c",
+      "destino": "vendor/rnnoise/src/rnnoise_data_little.c",
+      "sha256": "eea1aa6fd8726d161876508a6f7d79022bf6ec82508660b4c1ac27c4f9b76c04"
+    },
+    {
+      "original": "rnnoise-main/src/rnnoise_data_little.h",
+      "destino": "vendor/rnnoise/src/rnnoise_data_little.h",
+      "sha256": "09ff880bddd0fc74a2ae0e5ec6c8d65714031b08d0c3f672493acd9e189c5855"
+    },
+    {
+      "original": "rnnoise-main/src/rnnoise_tables.c",
+      "destino": "vendor/rnnoise/src/rnnoise_tables.c",
+      "sha256": "f81353479c6f8912755a4cf5838590c36ba2c523a4a438e4f949743fb4945623"
+    },
+    {
+      "original": "rnnoise-main/src/rnn_train.py",
+      "destino": "vendor/rnnoise/src/rnn_train.py",
+      "sha256": "7aca61a81834ca26f524a7a5c4af3223770e0082fb5cd4b1f3ff3b73e4c9264f"
+    },
+    {
+      "original": "rnnoise-main/src/vec.h",
+      "destino": "vendor/rnnoise/src/vec.h",
+      "sha256": "54b02c6922e5180e040b8be28cf878783f550efc0e425d1d90b081e8c50932f5"
+    },
+    {
+      "original": "rnnoise-main/src/vec_avx.h",
+      "destino": "vendor/rnnoise/src/vec_avx.h",
+      "sha256": "1ec412cd21043f8533dc52373b21436bc871eee8c3061deadbaa3ee184afa919"
+    },
+    {
+      "original": "rnnoise-main/src/vec_neon.h",
+      "destino": "vendor/rnnoise/src/vec_neon.h",
+      "sha256": "4e943966503518091da521d406e2627f044d3752d4aaa400bdd584571330006c"
+    },
+    {
+      "original": "rnnoise-main/src/write_weights.c",
+      "destino": "vendor/rnnoise/src/write_weights.c",
+      "sha256": "d5fc5ade4659221baefa0835ba88a57447d8f6cc6b4a11df3508597600a5f6b2"
+    },
+    {
+      "original": "rnnoise-main/src/_kiss_fft_guts.h",
+      "destino": "vendor/rnnoise/src/_kiss_fft_guts.h",
+      "sha256": "0214dfe2aabb3b81d88fe814b8253fc2ec6da12bbbc98e08c1011a5bd60e3b29"
+    },
+    {
+      "original": "rnnoise-main/src/x86/dnn_x86.h",
+      "destino": "vendor/rnnoise/src/x86/dnn_x86.h",
+      "sha256": "8b17955037daf4f9def4975d4b24c343b822abe62f6ad09a9d204ad00eb3aa33"
+    },
+    {
+      "original": "rnnoise-main/src/x86/nnet_avx2.c",
+      "destino": "vendor/rnnoise/src/x86/nnet_avx2.c",
+      "sha256": "c49cec6a38ee554660b4dd6958eb12450eac7bb6e28ce07d5a814a4a9d0fbbf2"
+    },
+    {
+      "original": "rnnoise-main/src/x86/nnet_sse4_1.c",
+      "destino": "vendor/rnnoise/src/x86/nnet_sse4_1.c",
+      "sha256": "e32fc91e403fb0c105ae9bcbbcf0339ce0b49e01110d8485520321f4a605f9ba"
+    },
+    {
+      "original": "rnnoise-main/src/x86/x86cpu.c",
+      "destino": "vendor/rnnoise/src/x86/x86cpu.c",
+      "sha256": "214502bc62afa326b1f2f97693611623df9eea90a21abd292893626cd5c8080d"
+    },
+    {
+      "original": "rnnoise-main/src/x86/x86cpu.h",
+      "destino": "vendor/rnnoise/src/x86/x86cpu.h",
+      "sha256": "84897794ee10e1ee34f8d9aa5926629fcd95d72c15767fb3d0770ff39c054db0"
+    },
+    {
+      "original": "rnnoise-main/src/x86/x86_arch_macros.h",
+      "destino": "vendor/rnnoise/src/x86/x86_arch_macros.h",
+      "sha256": "b6118942870b62ff78731edc3025e55230c3fadaf28ec2f4024d786210631505"
+    },
+    {
+      "original": "rnnoise-main/src/x86/x86_dnn_map.c",
+      "destino": "vendor/rnnoise/src/x86/x86_dnn_map.c",
+      "sha256": "2c29a555c599b146f49798b8b8e35313c2381ffae7b33637168f194bf04c4436"
+    },
+    {
+      "original": "rnnoise-main/torch/rnnoise/dump_rnnoise_weights.py",
+      "destino": "vendor/rnnoise/torch/rnnoise/dump_rnnoise_weights.py",
+      "sha256": "d31a2686e15041a4670bf9f1e670f304e4e74c1a6ea1120cccf98104fdb88ed7"
+    },
+    {
+      "original": "rnnoise-main/torch/rnnoise/rnnoise.py",
+      "destino": "vendor/rnnoise/torch/rnnoise/rnnoise.py",
+      "sha256": "9cc8a07df55f6e4afd5fe5346eb2a776f152cbb22b966ee590a9e980ba213f52"
+    },
+    {
+      "original": "rnnoise-main/torch/rnnoise/train_rnnoise.py",
+      "destino": "vendor/rnnoise/torch/rnnoise/train_rnnoise.py",
+      "sha256": "11b10dbca5f11531b20d369c2cde2916d4609fa5b93a2c0b27212d758d0284c2"
+    },
+    {
+      "original": "rnnoise-main/torch/sparsification/common.py",
+      "destino": "vendor/rnnoise/torch/sparsification/common.py",
+      "sha256": "c7b7c4ea807e5fd99a972167410fb35c1062703024d9f737619902f402055c5b"
+    },
+    {
+      "original": "rnnoise-main/torch/sparsification/gru_sparsifier.py",
+      "destino": "vendor/rnnoise/torch/sparsification/gru_sparsifier.py",
+      "sha256": "6e78371d3c2327bf76f570ae6c5c51005ad1166e79def18ee975e0241926d2d4"
+    },
+    {
+      "original": "rnnoise-main/torch/sparsification/__init__.py",
+      "destino": "vendor/rnnoise/torch/sparsification/__init__.py",
+      "sha256": "ed4ae70623fa9df13b1d60ae5c160790fb5d3c1bf429f4b0b1b74cccf64392e3"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/README.md",
+      "destino": "vendor/rnnoise/torch/weight-exchange/README.md",
+      "sha256": "79fadcbbd335052468261b50bd983c3380e55add590ecd5037a9ad025f1bb2ed"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/requirements.txt",
+      "destino": "vendor/rnnoise/torch/weight-exchange/requirements.txt",
+      "sha256": "73dd0baf8e5438da8816254a073ee43b61f8b2cdef6f393e0059cdbc55cb8d9c"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/setup.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/setup.py",
+      "sha256": "15d7d26f9368a59f355646ff95dc9d58ddc9538f911c595896d35b40838d3a95"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/__init__.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/__init__.py",
+      "sha256": "6051e9fd85dc7f1e0fe2b329beda6fe647af9ae555b008446f23f18831c7f68c"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/c_export/common.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/c_export/common.py",
+      "sha256": "e87355c5fe01a9f499a0bc03e3c0e4723f636f33d013de673a676975024eda23"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/c_export/c_writer.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/c_export/c_writer.py",
+      "sha256": "3a480697c46816c76b4c7676ba81ff5f26e55e1234eb80e4717d2e9d47e6ca53"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/c_export/__init__.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/c_export/__init__.py",
+      "sha256": "a16768faab409f5c0e3b55f71c23bce83bc6e684eeb58dd14f823b15ce25f252"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/tf/tf.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/tf/tf.py",
+      "sha256": "e82e2c89a24696292bc72386cb60ae01d50d08da4c3fa06790c296b46b4d5c0a"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/tf/__init__.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/tf/__init__.py",
+      "sha256": "fe6548792a19d4521b050b480edfe3ba596c9ad96a63301e1f12339077963674"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/torch/torch.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/torch/torch.py",
+      "sha256": "34bd761d2ad3630e095fa584d17034699c0ac927d4a3de9fab98ea01495eb7cd"
+    },
+    {
+      "original": "rnnoise-main/torch/weight-exchange/wexchange/torch/__init__.py",
+      "destino": "vendor/rnnoise/torch/weight-exchange/wexchange/torch/__init__.py",
+      "sha256": "100baca34c71e157b128f6ea5f938df0358e359413deb132ab392cfa235c296a"
+    },
+    {
+      "original": "rnnoise-main/training/bin2hdf5.py",
+      "destino": "vendor/rnnoise/training/bin2hdf5.py",
+      "sha256": "b7faeee17b058c3f18ad2615b7de2e50ddc4011621061ce896b4f256a3a78a4e"
+    },
+    {
+      "original": "rnnoise-main/training/dump_rnn.py",
+      "destino": "vendor/rnnoise/training/dump_rnn.py",
+      "sha256": "72a7f682d3a29a960123c527d36a77965b1102e352e71f3022e774e875c50874"
+    },
+    {
+      "original": "rnnoise-main/training/rnn_train.py",
+      "destino": "vendor/rnnoise/training/rnn_train.py",
+      "sha256": "a2e2b29c3c4bc60f977cdb5ed8913f2b907a98dd2cab7cb26d9edc6458bc7d66"
+    },
+    {
+      "original": "extension/discordo-atalhos/background.js",
+      "destino": "extensions/discordo-atalhos/background.js",
+      "sha256": "6bbb10ffe07ef5f34851b555b2535fdb47a89e32fee0a25dbd77c6ae8dd367f6"
+    },
+    {
+      "original": "extension/discordo-atalhos/content.js",
+      "destino": "extensions/discordo-atalhos/content.js",
+      "sha256": "60fb41d088d8bb4f16cb7ead2f05ecd78a9c42691f9b689845d40cc751ee44df"
+    },
+    {
+      "original": "extension/discordo-atalhos/LEIA-ME.txt",
+      "destino": "extensions/discordo-atalhos/LEIA-ME.txt",
+      "sha256": "b278ae2a4132007affb22352b8f034cbee2881ab060d8af38ab709b79355d6a0"
+    },
+    {
+      "original": "extension/discordo-atalhos/manifest.json",
+      "destino": "extensions/discordo-atalhos/manifest.json",
+      "sha256": "e5dd7ee15e63067d7236598378a951987ab7fa24c469b5e9727f107cb2f1a559"
+    },
+    {
+      "original": "previas-animacoes/index.html",
+      "destino": "prototypes/animations/index.html",
+      "sha256": "fd1966b33750fbcd01703fa333bd08d18459bfa8d9c4e5ca2f828590de8f8e71"
+    },
+    {
+      "original": "previas-animacoes/simulacoes-fumaca.html",
+      "destino": "prototypes/animations/simulacoes-fumaca.html",
+      "sha256": "90489bf158b1c06167b333917d72640c61f84f1cdeabd05cd1f3238c4cf00e78"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/build.mjs",
+      "destino": "prototypes/animations/sopro-cartoon/build.mjs",
+      "sha256": "952c9bbb9b35e6ed57d43a2742c547e548abdd05bb523b9d5d0a02c39221abfd"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/CREDITS",
+      "destino": "prototypes/animations/sopro-cartoon/CREDITS",
+      "sha256": "187975ae1d3c78fbe82d2e500eda799656b452fddf7d441cf176fc203487c5da"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/index.html",
+      "destino": "prototypes/animations/sopro-cartoon/index.html",
+      "sha256": "b5150c737e63ac3727bac3acb45217586e1aa396fdd6f0b358480e398f810c90"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/motion-source.mjs",
+      "destino": "prototypes/animations/sopro-cartoon/motion-source.mjs",
+      "sha256": "72e4a4a9c0b63258d1f31ca8d587ac8e7c83d52e86b748da5be91cca70b33aad"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/motion.js",
+      "destino": "prototypes/animations/sopro-cartoon/motion.js",
+      "sha256": "23a8d551913aabd842f8b25f7a4be01dba2aae1af5557c76e79e6abc841ced67"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/poster.jpg",
+      "destino": "prototypes/animations/sopro-cartoon/poster.jpg",
+      "sha256": "26d47596aedf2ba7c2af06dbf5c3413c8ef1405370e2afe13e3feb46127cb99a"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/preview.html",
+      "destino": "prototypes/animations/sopro-cartoon/preview.html",
+      "sha256": "008fb96a567af8254f5d6d27a24e4937d75507208744a9d2fcd6f5a8a23f44f7"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/smoke-physics.mjs",
+      "destino": "prototypes/animations/sopro-cartoon/smoke-physics.mjs",
+      "sha256": "deff4148a2fa9a09e58d2d140910833975b2a8aae786f80939f0ac32234d6f56"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/smoke-physics.test.mjs",
+      "destino": "prototypes/animations/sopro-cartoon/smoke-physics.test.mjs",
+      "sha256": "38f09b5889b306d4223f55ea6a0345bdb83856f2fdcef3a918a2591b7588a9d4"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/sopro-cartoon.mp4",
+      "destino": "prototypes/animations/sopro-cartoon/sopro-cartoon.mp4",
+      "sha256": "b91849509e91da8b85da6e35dcc0b102fd9b53c1f6e3fb4cd4c1c43146bc653d"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/sopro-continuo.mp4",
+      "destino": "prototypes/animations/sopro-cartoon/sopro-continuo.mp4",
+      "sha256": "e71d47ff908b96c44a9f6484a3ce83e5cbf0710fbdfb7d5c099e40fdb717e964"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/sopro.png",
+      "destino": "prototypes/animations/sopro-cartoon/sopro.png",
+      "sha256": "d228944c7dc1760a4e5254f30783e04b085d4939e4ffffb6c67735b6cde6d5c1"
+    },
+    {
+      "original": "previas-animacoes/sopro-cartoon/TREATMENT.md",
+      "destino": "prototypes/animations/sopro-cartoon/TREATMENT.md",
+      "sha256": "f88b9e850a7f888e685b0cd1172d8a9ca3e04cb651e8dfd55c9edfe859007e04"
+    },
+    {
+      "original": "publish-hostgator.py",
+      "destino": "scripts/publish-hostgator.py",
+      "sha256": "b905d9329db60f6d060d394efe5dc03fba5428be2b5902da22bef8c20909d1e9"
+    },
+    {
+      "original": "dist/discordo-atalhos.zip",
+      "destino": "archive/build-anterior/discordo-atalhos.zip",
+      "sha256": "75ebd1c538eb74ca3ee4734f604cb6e4eac5dc28d18478ada563067dcbc61e50"
+    },
+    {
+      "original": "dist/index.html",
+      "destino": "archive/build-anterior/index.html",
+      "sha256": "091521ad9f3d92df306ec11e9651da0163893059b8a6123cac0a4dfd9f5b9698"
+    },
+    {
+      "original": "dist/art/breaker.webp",
+      "destino": "archive/build-anterior/art/breaker.webp",
+      "sha256": "aa3443558c6aca1a4ee74018a91daf7b39140390e81a829eece44f6ede3a1b65"
+    },
+    {
+      "original": "dist/art/cactus.webp",
+      "destino": "archive/build-anterior/art/cactus.webp",
+      "sha256": "120c92ba7f31aca83fc1029ee34640a4e2b736cc4d8663365399bb1b840d29b3"
+    },
+    {
+      "original": "dist/art/caramelo.webp",
+      "destino": "archive/build-anterior/art/caramelo.webp",
+      "sha256": "09f1c5a7118b97623050bc4542b3f18f6361b1590ac80e6bb2ccf04e9a47f4d1"
+    },
+    {
+      "original": "dist/art/logo-pequena.webp",
+      "destino": "archive/build-anterior/art/logo-pequena.webp",
+      "sha256": "72c21945127daf611bcd8fc01c792768e74e84fa5e0b951a5d13f17b8412faa8"
+    },
+    {
+      "original": "dist/art/logo.webp",
+      "destino": "archive/build-anterior/art/logo.webp",
+      "sha256": "46fa35cf791c7b57e74173403cf780e2b21a780c7b5edae8cf48da6ba3937e12"
+    },
+    {
+      "original": "dist/art/mural.webp",
+      "destino": "archive/build-anterior/art/mural.webp",
+      "sha256": "953e62c3bd7b7df2b24bfa8b6bd04825666e01e0a6a7b4cc7a87563a7e18aead"
+    },
+    {
+      "original": "dist/art/voice-disconnected.webp",
+      "destino": "archive/build-anterior/art/voice-disconnected.webp",
+      "sha256": "b434cb33e7afc5c054cf29393c78aaab790e3382c3257d7a6c97dfbff54877a9"
+    },
+    {
+      "original": "dist/art/voice-punished.webp",
+      "destino": "archive/build-anterior/art/voice-punished.webp",
+      "sha256": "24706fad936c276e6f2c65587fbd000d600de287eedb88af84531b0d07894d30"
+    },
+    {
+      "original": "dist/art/voice-recua-fascista.webp",
+      "destino": "archive/build-anterior/art/voice-recua-fascista.webp",
+      "sha256": "b08080d28d7b96d2f595ba9c71d87433b0f7c22792d753691cea95f5e07d8fe3"
+    },
+    {
+      "original": "dist/art/voice-se-fudeu.webp",
+      "destino": "archive/build-anterior/art/voice-se-fudeu.webp",
+      "sha256": "95b34d93c31aba8df7c47f486a1f207e394e9606c5571dde4276904f405d984b"
+    },
+    {
+      "original": "dist/art/wall.webp",
+      "destino": "archive/build-anterior/art/wall.webp",
+      "sha256": "b72a3ea6dd389ed33936381fa9aaa5085e07f56a5aea23ce89493d635769b47f"
+    },
+    {
+      "original": "dist/assets/index-BivgAmfC.js",
+      "destino": "archive/build-anterior/assets/index-BivgAmfC.js",
+      "sha256": "04703f83f67f7b4b5365f899ce2c7da40aba047008718863266039465ca56b42"
+    },
+    {
+      "original": "dist/assets/index-CEYArCp5.css",
+      "destino": "archive/build-anterior/assets/index-CEYArCp5.css",
+      "sha256": "8bf16b6639c4783fecf33f2a882260cedee4997d0331db2529bc681dcf673c75"
+    },
+    {
+      "original": "dist/assets/lamejs-D2d3HPyl.js",
+      "destino": "archive/build-anterior/assets/lamejs-D2d3HPyl.js",
+      "sha256": "5b8f2a1a532a92330d9a12e1bce88a60a84c7b8ae6685a321c17f2261b057b29"
+    },
+    {
+      "original": "dist/assets/profile-opening-CUIb9lkb.js",
+      "destino": "archive/build-anterior/assets/profile-opening-CUIb9lkb.js",
+      "sha256": "c3c8d027374dabe5480f9ef9046e72dabc3f39bccf817288da86c7955cbacd2d"
+    },
+    {
+      "original": "dist/assets/rnnoise-DgwcvOYz.wasm",
+      "destino": "archive/build-anterior/assets/rnnoise-DgwcvOYz.wasm",
+      "sha256": "64a76458c23b195220fa05b1851e18eea4696e234cd0c0001f7387bd6de2a584"
+    },
+    {
+      "original": "dist/assets/rnnoise-worklet-B4XpEMBX.js",
+      "destino": "archive/build-anterior/assets/rnnoise-worklet-B4XpEMBX.js",
+      "sha256": "ba881d14e3b946fabb21a7652386703ee7a3d36c8791f726bb8ed4ec2e9e1e37"
+    },
+    {
+      "original": "dist/assets/voice-worker-D_djuluV.js",
+      "destino": "archive/build-anterior/assets/voice-worker-D_djuluV.js",
+      "sha256": "89a494b942029457c006fc37229d99fc9d0c5116b24a1b4786269db4ff3a36d5"
+    },
+    {
+      "original": "discordo-esquema-atual.sql",
+      "destino": "database/discordo-esquema-atual.sql",
+      "sha256": "d0e57c7c9098ec253e6e8a161db37251b04753568d038163a0d3e77fcc7f2e46"
+    },
+    {
+      "original": "discordo_multiservidor.sql",
+      "destino": "database/historico/discordo_multiservidor.sql",
+      "sha256": "5f38410a7fb81eb2b792202b76e00315f4a4279db493584e476890fc0b621a57"
+    },
+    {
+      "original": "discordo.sql",
+      "destino": "database/historico/discordo.sql",
+      "sha256": "c71d027cd91b95938cf503725e4939d92dc4cd2f9ddf4256c7f6806e9d731823"
+    },
+    {
+      "original": "discordoBrasil.mwb",
+      "destino": "database/modelos/discordoBrasil.mwb",
+      "sha256": "1f35694a76f7919a5f02c616a746c5c153767f6379d3161ae621fa8ef1a61f75"
+    },
+    {
+      "original": "discordoBrasil.mwb.bak",
+      "destino": "database/modelos/discordoBrasil.mwb.bak",
+      "sha256": "c3d9483a9358e34a812c54ff65a269ff3489da9e51221341e069831e2a92cf6e"
+    },
+    {
+      "original": "Referencias/animação-reference-2.jpg",
+      "destino": "Imagens/animação-reference-2.jpg",
+      "sha256": "f3e92901a208e729f105d630f00e2beb081b453439356b798b836955fbed46bb"
+    },
+    {
+      "original": "Referencias/animação-reference.jpg",
+      "destino": "Imagens/animação-reference.jpg",
+      "sha256": "3b52f87cb490f83b2a0a477234a5b38f8fd32ca5eb15531af10c472191efa6c9"
+    },
+    {
+      "original": "Referencias/background-style-1.jpg",
+      "destino": "Imagens/background-style-1.jpg",
+      "sha256": "5e3dfc3f0e9f7abe726b2d247f31f0eb4978d88c0fe045a1bb9043fe55e29abc"
+    },
+    {
+      "original": "Referencias/background-style-2.jpg",
+      "destino": "Imagens/background-style-2.jpg",
+      "sha256": "cc75780dd04b1dfe1b88eaa43373f6b8fe0be98ca662b1bb37d7b9c386a43523"
+    },
+    {
+      "original": "Referencias/background-style-3.jpg",
+      "destino": "Imagens/background-style-3.jpg",
+      "sha256": "dffae6918d0b886e3564da051df477cb82f5d87eaa5650d10b8e1116560d9d97"
+    },
+    {
+      "original": "Referencias/background-style-4.jpg",
+      "destino": "Imagens/background-style-4.jpg",
+      "sha256": "9e78e9f612cf7cd914fe621c0f1fa0b37cfdd92720723ac2fcb1c3fb6db15961"
+    },
+    {
+      "original": "Referencias/background.jpg",
+      "destino": "Imagens/background.jpg",
+      "sha256": "7f9ba57751b7d84983971e4f35aa2daa08b041e16de837aa17061ed1944dffef"
+    },
+    {
+      "original": "Referencias/caramelho-grafit.png",
+      "destino": "Imagens/caramelho-grafit.png",
+      "sha256": "58e6ac86899d5b3b0126e1e133f6b68706632c799776678b358888399180b012"
+    },
+    {
+      "original": "Referencias/desenhos 1.jpg",
+      "destino": "Imagens/desenhos 1.jpg",
+      "sha256": "80caa5e110ce385390970333244c590bb2420458c8e653fe0cee54207cff5495"
+    },
+    {
+      "original": "Referencias/desenhos 2.jpg",
+      "destino": "Imagens/desenhos 2.jpg",
+      "sha256": "515e85b04f1b25aeedc3f598daf0598c77ac8494a4aca79e0e5fa83ddf2de055"
+    },
+    {
+      "original": "Referencias/desenhos 3.jpg",
+      "destino": "Imagens/desenhos 3.jpg",
+      "sha256": "228e0d08702736c19073fd3bc39bf3c7af0f074ecdecb3b30f2736f375274d32"
+    },
+    {
+      "original": "Referencias/desenhos 4.jpg",
+      "destino": "Imagens/desenhos 4.jpg",
+      "sha256": "d55a1691500c98d7909716de3a8d14ee3a8cbb7a3a5328f9f81e3772f1b2fa66"
+    },
+    {
+      "original": "Referencias/desenhos 5.jpg",
+      "destino": "Imagens/desenhos 5.jpg",
+      "sha256": "3fe50f6b33bdd53fde7a5ab5b8c2c431a033dd7cb5308bbeb3aa6c2ffb4baba8"
+    },
+    {
+      "original": "Referencias/discord-style.png",
+      "destino": "Imagens/discord-style.png",
+      "sha256": "62f9d2843decd4b4d2922329d1c85988ee8461fbb9ddbfc5e4b6230f0a981718"
+    },
+    {
+      "original": "Referencias/new-background.png",
+      "destino": "Imagens/new-background.png",
+      "sha256": "7205c6e669c04ffa8ba6cbfa3b13c4ad1adf584baa2234d473b47f5aeae5718e"
+    }
+  ],
+  "arquivos_ajustados": [
+    {
+      "caminho": "frontend/src/voice-ui.ts",
+      "sha256_atual": "4b6b6413db19c5b97b1f594c962352fe4d021f52b0ca2d9f2ac2d9b9c59aaa69",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "backend/src/start.mjs",
+      "sha256_atual": "3a2fb86bb1ee9a3736f9f64d39da4253b982bb2d41995438e7ce84223adbef36",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "backend/src/voice.mjs",
+      "sha256_atual": "f08c387894f46bf6d0888b4b6f2a547a32c8f4e00406039eb28ce92ed22f8728",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "prototypes/animations/sopro-cartoon/build.mjs",
+      "sha256_atual": "30792e92804288c7d6a56873390d20cbf3f77dce5f71c0caa969e0f1fc52ce7d",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "prototypes/animations/sopro-cartoon/motion-source.mjs",
+      "sha256_atual": "97e301c08fb37d15ee7d186619bc71f778052c69ea7f073fe314571983a23838",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "prototypes/animations/sopro-cartoon/smoke-physics.mjs",
+      "sha256_atual": "8e7f608098eea7411fac89b77d29f0002648723a73a81f1a86aa1ec386a3fc29",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "scripts/publish-hostgator.py",
+      "sha256_atual": "cec57b89812b57c3a0594f277bfd26e7731c4098b9790e9cf988f709aa6274f4",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    },
+    {
+      "caminho": "database/discordo-esquema-atual.sql",
+      "sha256_atual": "391a37999ffbed9ce9c5045c7a270c0e2455c2dc36649cb7392cde21e78ac95a",
+      "motivo": "Ajuste de caminhos para a nova estrutura ou comentários de localização."
+    }
+  ],
+  "exclusoes_autorizadas": {
+    "autorizacao": "Usuário: pode excluir",
+    "pastas": [
+      "Referencias/",
+      "archive/build-anterior/",
+      "archive/"
+    ],
+    "arquivos_gerados": [
+      "archive/build-anterior/discordo-atalhos.zip",
+      "archive/build-anterior/index.html",
+      "archive/build-anterior/art/breaker.webp",
+      "archive/build-anterior/art/cactus.webp",
+      "archive/build-anterior/art/caramelo.webp",
+      "archive/build-anterior/art/logo-pequena.webp",
+      "archive/build-anterior/art/logo.webp",
+      "archive/build-anterior/art/mural.webp",
+      "archive/build-anterior/art/voice-disconnected.webp",
+      "archive/build-anterior/art/voice-punished.webp",
+      "archive/build-anterior/art/voice-recua-fascista.webp",
+      "archive/build-anterior/art/voice-se-fudeu.webp",
+      "archive/build-anterior/art/wall.webp",
+      "archive/build-anterior/assets/index-BivgAmfC.js",
+      "archive/build-anterior/assets/index-CEYArCp5.css",
+      "archive/build-anterior/assets/lamejs-D2d3HPyl.js",
+      "archive/build-anterior/assets/profile-opening-CUIb9lkb.js",
+      "archive/build-anterior/assets/rnnoise-DgwcvOYz.wasm",
+      "archive/build-anterior/assets/rnnoise-worklet-B4XpEMBX.js",
+      "archive/build-anterior/assets/voice-worker-D_djuluV.js"
+    ]
+  }
+}

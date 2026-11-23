@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Discordo — Atalhos globais",
+  "description": "Controle o microfone e o áudio de uma chamada do Discordo com o Chrome em segundo plano.",
+  "version": "1.0.0",
+  "background": { "service_worker": "background.js" },
+  "host_permissions": ["https://discordo.lgmartinez.com/*", "https://lgmartinez.com/discordo/*"],
+  "content_scripts": [{
+    "matches": ["https://discordo.lgmartinez.com/*", "https://lgmartinez.com/discordo/*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }],
+  "commands": {
+    "microphone": {
+      "suggested_key": { "default": "Ctrl+Shift+8" },
+      "description": "Silenciar ou reativar o microfone",
+      "global": true
+    },
+    "audio": {
+      "suggested_key": { "default": "Ctrl+Shift+9" },
+      "description": "Desativar ou reativar o áudio da chamada",
+      "global": true
+    }
+  }
+}

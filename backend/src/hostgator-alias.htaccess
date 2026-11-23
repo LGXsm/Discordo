@@ -1,0 +1,6 @@
+# BEGIN Discordo canonical address
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} !^(GET|HEAD)$
+RewriteRule ^ - [G,L]
+RewriteRule ^ https://discordo.lgmartinez.com/ [R=301,L,QSD]
+# END Discordo canonical address

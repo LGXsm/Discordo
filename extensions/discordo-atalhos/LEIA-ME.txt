@@ -1,0 +1,14 @@
+DISCORDO — ATALHOS GLOBAIS PARA CHROME
+
+1. Extraia o ZIP para uma pasta.
+2. No Chrome, abra chrome://extensions.
+3. Ative o Modo do desenvolvedor, clique em Carregar sem compactação e selecione a pasta com manifest.json.
+4. Recarregue o Discordo e entre em uma chamada.
+
+Ctrl + Shift + 8 alterna o microfone.
+Ctrl + Shift + 9 alterna o áudio da chamada.
+
+Para escolher outras combinações compatíveis, abra chrome://extensions/shortcuts,
+procure Discordo e confira se o alcance está definido como Global.
+O Chrome e a aba do Discordo precisam continuar abertos. Combinações reservadas
+pelo navegador ou pelo sistema podem não estar disponíveis.

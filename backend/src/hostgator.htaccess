@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^discordo\.lgmartinez\.com$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://discordo.lgmartinez.com%{REQUEST_URI} [R=308,L,NE]
+</IfModule>

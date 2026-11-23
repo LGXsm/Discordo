@@ -1,0 +1,29 @@
+{
+  "name": "discordo",
+  "version": "0.1.0",
+  "description": "Discordo, protótipo web",
+  "scripts": {
+    "build:rnnoise": "node scripts/build-rnnoise.mjs",
+    "test:servers": "node --test tests/multi-server-browser.test.mjs",
+    "test:rnnoise": "node --test tests/rnnoise.test.mjs",
+    "test:rnnoise:browser": "node --test tests/rnnoise-browser.test.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "check": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "start": "node backend/src/start.mjs",
+    "deploy": "python scripts/publish-hostgator.py",
+    "test:structure": "node --test tests/project-structure.test.mjs",
+    "test:categories": "node --test tests/channel-categories-browser.test.mjs"
+  },
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  },
+  "dependencies": {
+    "@breezystack/lamejs": "1.2.7",
+    "ws": "^8.22.2"
+  }
+}

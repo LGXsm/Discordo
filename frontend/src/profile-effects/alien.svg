@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 310" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="FX-alien-skin" x2=".9" y2="1">
+      <stop stop-color="#c2ffc6"/><stop offset=".4" stop-color="#67e3ad"/><stop offset="1" stop-color="#208782"/>
+    </linearGradient>
+    <linearGradient id="FX-eye" x2=".55" y2="1">
+      <stop stop-color="#081c23"/><stop offset=".66" stop-color="#102534"/><stop offset="1" stop-color="#35675f"/>
+    </linearGradient>
+    <radialGradient id="FX-backlight" cx=".6" cy=".42" r=".74">
+      <stop stop-color="#175a53"/><stop offset=".6" stop-color="#172a3b"/><stop offset="1" stop-color="#12151e"/>
+    </radialGradient>
+    <linearGradient id="FX-mist" x2=".8" y2="1">
+      <stop stop-color="#e5f6ef" stop-opacity=".88"/><stop offset=".57" stop-color="#9dbabb" stop-opacity=".68"/><stop offset="1" stop-color="#557179" stop-opacity=".82"/>
+    </linearGradient>
+    <pattern id="FX-drops" width="79" height="68" patternUnits="userSpaceOnUse">
+      <g fill="#ebfff6" stroke="#546b72" stroke-width=".55">
+        <circle cx="11" cy="9" r="1.6" opacity=".5"/><circle cx="42" cy="20" r="1" opacity=".43"/>
+        <ellipse cx="63" cy="11" rx="2.4" ry="3.6" opacity=".47"/><circle cx="29" cy="51" r="2.3" opacity=".54"/>
+        <circle cx="68" cy="55" r="1.15" opacity=".55"/><circle cx="55" cy="39" r=".7" opacity=".38"/>
+        <ellipse cx="8" cy="56" rx="1" ry="1.5" opacity=".64"/><circle cx="18" cy="34" r=".8" opacity=".48"/>
+      </g>
+    </pattern>
+    <g id="FX-hand-art" stroke="#185956" stroke-width="2.8" stroke-linejoin="round">
+      <path fill="url(#FX-alien-skin)" d="M-11 53c-1-10-10-14-17-22l-17-22c-5-8 1-13 7-9l13 13-12-37c-3-9 5-13 9-5l13 29-5-47c-1-10 8-12 10-3l7 42 3-50c1-10 11-10 11 1l1 49 8-38c2-9 11-7 10 2l-5 53 9-13c7-9 15-3 10 5l-12 23c-6 10-13 15-13 29Z"/>
+      <path fill="none" d="M-24 14q14-7 26 13m8-12q9-6 15-6M-9 5l-4-9m15 7 1-9m12 9 3-8" stroke-linecap="round" opacity=".7"/>
+      <path fill="none" d="M-8-45-4-20m11-35v27m15-14-3 18M-26 20q5 7 9 8" stroke="#c1ffe0" stroke-width="2" stroke-linecap="round" opacity=".83"/>
+    </g>
+    <g id="FX-gesture-art" stroke="#123b3a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+      <path fill="#267e66" d="M-14 50C-12 35-30 26-34 12c-5-12-2-23 5-28 6-4 10 3 10 12l39-5c16-4 24 5 20 21-4 15-15 23-16 38Z"/>
+      <path fill="url(#FX-alien-skin)" d="M-34 13c-3-8-5-18 1-25 6-5 6-14 12-13 6 2 4 11 0 20l1 12-7 9Z"/>
+      <path fill="url(#FX-alien-skin)" d="M-20 19c-5-5-4-15-4-23 0-11 1-20 7-20 7 0 9 7 9 18l1 20c-1 7-8 9-13 5Z"/>
+      <path fill="url(#FX-alien-skin)" d="M-7 16c-3-9-1-23 0-35l2-47c0-10 15-11 17-1 2 14-2 27-1 43l1 39c0 9-16 11-19 1Z"/>
+      <path fill="url(#FX-alien-skin)" d="M13 17c-3-7 0-22 1-29 2-10 15-12 16-1 1 8-3 26-5 30-2 6-9 7-12 0Z"/>
+      <path fill="url(#FX-alien-skin)" d="M28 20c-3-6 0-19 2-25 3-8 14-6 13 3-1 9-3 21-8 24-3 2-6 1-7-2Z"/>
+      <path fill="#a4ffbd" stroke-width="1.6" d="M-1-66c1-5 7-6 9-1l-1 8q-3 4-8 1Zm-19 48q3-4 6 0l1 7q-4 4-7 0Zm39 1q5-3 7 1l-1 7q-4 4-7 0Zm15 9q4-3 6 0l-1 6q-3 3-6 0Z"/>
+      <path fill="none" stroke="#dafbd2" stroke-width="1.6" d="M-2-48q4 3 10 0m-11 24q3 3 10 2m-25 5-1 24m15-25-1 23m25-7-2 10m17-1-2 8m-59 12 12 12m24-12-8 13m-15-4 5 11"/>
+      <path fill="none" stroke="#174b44" stroke-width="1.35" d="M-29 7q4-3 7-8m12 27 4 13m10-15 1 12m20-11-7 9m-27 6 5 6m22-8-5 8"/>
+    </g>
+    <clipPath id="FX-wipe-cut"><path id="FX-wipe-window"/></clipPath>
+    <mask id="FX-remaining-fog" maskUnits="userSpaceOnUse" x="0" y="0" width="350" height="310">
+      <rect width="350" height="310" fill="white"/>
+      <path id="FX-wipe-hole" fill="black"/>
+    </mask>
+  </defs>
+  <g id="FX-visitor-window" clip-path="url(#FX-wipe-cut)">
+            <g id="FX-visitor">
+              <rect width="350" height="310" fill="url(#FX-backlight)"/>
+              <path d="M0 194 350 85m-350 148L350 124m-350 150L350 164" stroke="#8bd9b9" stroke-width="1" opacity=".12"/>
+              <g id="FX-alien" transform="translate(0 0)">
+                <path d="M108 310q18-47 55-51l14-38h41l8 39q46 11 66 50Z" fill="#278c80" stroke="#123139" stroke-width="5"/>
+                <path d="M161 256q28 18 67 0m-78 16q45 20 89 1" fill="none" stroke="#6bcca6" stroke-width="2" opacity=".45"/>
+                <path d="M119 139c-16-45 10-77 47-88 47-14 101-3 120 34 17 33 3 74-15 104-13 21-37 58-66 62-29 5-58-30-74-61-6-11-10-31-12-51Z" fill="url(#FX-alien-skin)" stroke="#163941" stroke-width="5"/>
+                <path d="M131 107c16-33 45-39 68-43m52 13q17 9 23 25M148 183q8 24 28 43" fill="none" stroke="#e0ffd6" stroke-width="3" stroke-linecap="round" opacity=".64"/>
+                <path d="M132 128q28-20 53 17m40-7q18-36 49-24" fill="none" stroke="#1c685e" stroke-width="4" stroke-linecap="round"/>
+                <g id="FX-eyes">
+                  <path d="M137 143c22-18 45-2 54 26-26 7-52 0-54-26Zm80 23c8-31 31-49 56-35 0 26-25 41-56 35Z" fill="url(#FX-eye)" stroke="#164340" stroke-width="4"/>
+                  <path d="M144 144q12-8 24 2m58 4q15-17 32-17" fill="none" stroke="#e5ffea" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M150 161q11 8 26 5m53-4q18-2 30-12" fill="none" stroke="#82e9c1" stroke-width="1.8" opacity=".72" stroke-linecap="round"/>
+                </g>
+                <path d="M193 187q3-5 7 0m7-1q3-6 7-2m-23 28q13-9 27-2m-20 9q7 2 13-1" fill="none" stroke="#1e5f58" stroke-width="2.6" stroke-linecap="round"/>
+              </g>
+              <g id="FX-gesture"><use href="#FX-gesture-art"/></g>
+            </g>
+          </g>
+          <g id="FX-condensation" mask="url(#FX-remaining-fog)">
+            <rect width="350" height="310" fill="url(#FX-mist)"/>
+            <rect width="350" height="310" fill="url(#FX-drops)"/>
+            <g id="FX-condensation-light" fill="none" stroke="#f5fff3" stroke-linecap="round">
+              <path d="M-20 90 305-10m-288 133L377 12M-38 282l421-123" stroke-width="13" opacity=".16"/>
+              <path d="M-16 102 207 31m-61 20 172-54m-289 252 197-58" stroke-width="1.6" opacity=".32"/>
+            </g>
+          </g>
+          <g id="FX-wipe-rim" clip-path="url(#FX-wipe-cut)">
+            <path id="FX-wipe-stroke" fill="none" stroke="#dfffea" stroke-width="3.2" opacity=".72"/>
+            <path d="M-16 201q176-83 378-112m-296 115q140-64 293-93" fill="none" stroke="#e6fff1" stroke-width="1.6" opacity=".48"/>
+          </g>
+          <g id="FX-hand"><use href="#FX-hand-art"/></g>
+</svg>

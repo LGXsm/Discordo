@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 310" preserveAspectRatio="none">
+  <defs>
+    <radialGradient id="FX-ember-fill">
+      <stop stop-color="#fff0a0"/><stop offset=".32" stop-color="#ffaf45"/><stop offset=".65" stop-color="#f06436" stop-opacity=".7"/><stop offset="1" stop-color="#f06436" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+          <g id="FX-dragging">
+            <path id="FX-smoke-thread" d="M110 122c10-6 0-13 8-20 6-7 13-4 13-16" fill="none" stroke="#e9dded" stroke-width="2" stroke-linecap="round"/>
+            <circle id="FX-ember" cx="112" cy="123" r="17" fill="url(#FX-ember-fill)"/>
+            <g transform="rotate(8 82 119)">
+              <rect x="80" y="116" width="34" height="6" rx="2" fill="#efe0c7" stroke="#39212d" stroke-width="1.4"/>
+              <path d="M81 117h8v4h-8z" fill="#d99f61"/><path d="M109 117h4v4h-4z" fill="#ff823f"/>
+              <path d="M92 118h14" stroke="#fff8e0" stroke-width="1"/>
+            </g>
+          </g>
+          <g id="FX-sparks" fill="#ffbc63"></g>
+</svg>
