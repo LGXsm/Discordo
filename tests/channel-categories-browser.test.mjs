@@ -179,18 +179,40 @@ test('Categories mix text and voice, support editing and moves, and respect serv
       t.render();
       check(group().querySelector('[data-category-items]').hidden, 'Collapsed state was lost');
       group().querySelector('[data-collapse-category]').click();
-      group().querySelector('[data-edit-category]').click();
+      const heading = () => group().querySelector('[data-collapse-category]');
+      const context = title => title.dispatchEvent(new MouseEvent('contextmenu', { bubbles:true, cancelable:true, button:2 }));
+      const openEdit = () => {
+        const title = heading();
+        const expanded = title.getAttribute('aria-expanded');
+        check(!context(title), 'Category did not handle the right click');
+        check(title.getAttribute('aria-expanded') === expanded, 'Right click collapsed the category');
+        const edit = t.root.querySelector('.category-context-menu:popover-open [data-edit-category]');
+        check(edit?.textContent.includes('Editar categoria'), 'The category menu did not offer editing');
+        edit.click();
+        check(!t.root.querySelector('.category-context-menu:popover-open'), 'The category menu remained open');
+      };
+      heading().focus();
+      check(!group().querySelector('[data-edit-category]') && !t.root.querySelector('dialog[open]')
+        && getComputedStyle(group().querySelector('.channel-category-tools')).opacity === '0',
+        'Focusing the category title revealed controls');
+      openEdit();
+      t.root.querySelector('.category-editor-dialog [data-close]').click();
+      check(!t.root.querySelector('dialog[open]') && getComputedStyle(group().querySelector('.channel-category-tools')).opacity === '0',
+        'Closing the category editor left controls visible');
+      openEdit();
       form = t.root.querySelector('dialog form'); form.elements.name.value = 'Partidas'; form.requestSubmit(); await waitRevision(5);
       check(group().querySelector('h2').textContent.includes('Partidas'), 'Category rename did not persist');
       t.openEditor();
       check(t.root.querySelector('.server-dialog [name=category]').value === 'games', 'Channel editor did not select its category');
       t.root.querySelector('.server-dialog [data-close]').click();
       await new Promise(r => setTimeout(r,30));
-      group().querySelector('[data-edit-category]').click();
+      openEdit();
       form = t.root.querySelector('dialog form'); form.querySelector('[data-delete-category]').click(); form.requestSubmit(); await waitRevision(6);
       check(!group() && t.root.querySelector('[data-channel-category=""] [data-channel-item="292"]'), 'Deleting a category removed its channels');
       const readOnly = { ...t.server(), permissions:0 };
       t.setServer(readOnly);
+      check(context(t.root.querySelector('[data-collapse-category]')) && !t.root.querySelector('.category-context-menu:popover-open'),
+        'An ordinary member could open the edit menu');
       check(!t.root.querySelector('[data-create-category], [data-edit-category], [data-channel-direction], [draggable=true]'), 'An ordinary member can organize channels');
       window.categoryTest.server = () => readOnly;
     })()`);

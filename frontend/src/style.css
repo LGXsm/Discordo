@@ -2071,7 +2071,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
 .channel-category-heading h2 svg { width: 12px; height: 12px; flex: none; }
 .channel-category-heading [aria-expanded=false] svg { transform: rotate(-90deg); }
 .channel-category-tools { display: flex; flex: none; opacity: 0; }
-.channel-category-heading:is(:hover, :focus-within) .channel-category-tools { opacity: 1; }
+.channel-category-tools:is(:hover, :focus-within) { opacity: 1; }
 .channel-category-tools .icon-button { width: 19px; height: 25px; padding: 2px; font-size: .85rem; }
 .channel-category-tools svg { width: 13px; height: 13px; }
 .channel-category-heading[draggable=true], [data-channel-item][draggable=true] > .channel-row { cursor: grab; }
@@ -2110,6 +2110,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   max-height: calc(100dvh - 16px); overflow: auto;
 }
 .server-context-menu:not(:popover-open), .message-context-menu:not(:popover-open) { display: none; }
+.server-context-menu.category-context-menu { width: max-content; max-width: calc(100vw - 16px); }
 .server-context-menu p { margin: 6px 8px; color: var(--muted); font-size: .82rem; }
 .server-context-menu .server-delete-action, .message-context-menu .server-delete-action { border-top: 1px solid var(--border); }
 .profile-context-menu {

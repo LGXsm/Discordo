@@ -25,7 +25,6 @@ export function channelCategoriesMarkup(server: ServerDetail | undefined, render
         ${manage ? `<div class="channel-category-tools">
           <button type="button" class="icon-button" data-category-direction="-1" aria-label="Mover categoria ${safeText(category.name)} para cima"${index <= 1 ? ' disabled' : ''}>↑</button>
           <button type="button" class="icon-button" data-category-direction="1" aria-label="Mover categoria ${safeText(category.name)} para baixo"${index === groups.length - 1 ? ' disabled' : ''}>↓</button>
-          <button type="button" class="icon-button" data-edit-category="${safeText(id)}" aria-label="Editar categoria ${safeText(category.name)}">${icon('settings')}</button>
         </div>` : ''}
       </div>` : manage || channels.length ? '<h2 class="uncategorized-title">Sem categoria</h2>' : ''}
       <div class="channel-category-items" data-category-items="${safeText(id)}">
@@ -115,6 +114,44 @@ export function mountChannelCategories(workspace: HTMLElement, server: ServerDet
     workspace.append(dialog);
     dialog.showModal();
   }
+  const menu = manage ? document.createElement('div') : undefined;
+  if (menu) {
+    const signal = lifetime.signal;
+    menu.className = 'server-actions server-context-menu category-context-menu';
+    menu.popover = 'auto';
+    menu.setAttribute('role', 'group');
+    menu.setAttribute('aria-label', 'Opções da categoria');
+    menu.innerHTML = `<button type="button" data-edit-category>${icon('settings')} Editar categoria</button>`;
+    const edit = menu.querySelector('button')!;
+    let selected: ChannelCategory | undefined;
+    const dismiss = () => { if (menu.matches(':popover-open')) menu.hidePopover(); };
+    workspace.append(menu);
+    list.addEventListener('contextmenu', event => {
+      const anchor = (event.target as Element).closest<HTMLButtonElement>('[data-collapse-category]');
+      if (!anchor) return;
+      selected = groups.find(group => group.category?.id === anchor.dataset.collapseCategory)?.category ?? undefined;
+      if (!selected) return;
+      event.preventDefault();
+      if (busy) return;
+      dismiss();
+      menu.showPopover({ source: anchor });
+      const bounds = anchor.getBoundingClientRect();
+      menu.style.left = `${Math.max(8, Math.min(bounds.right + 8, innerWidth - menu.offsetWidth - 8))}px`;
+      menu.style.top = `${Math.max(8, Math.min(bounds.top, innerHeight - menu.offsetHeight - 8))}px`;
+      edit.focus({ preventScroll: true });
+    }, { signal });
+    edit.addEventListener('click', () => {
+      const category = selected;
+      dismiss();
+      if (category) editCategory(category);
+    }, { signal });
+    menu.addEventListener('toggle', () => {
+      if (!menu.matches(':popover-open')) selected = undefined;
+    }, { signal });
+    list.addEventListener('scroll', dismiss, { signal });
+    window.addEventListener('resize', dismiss, { signal });
+    signal.addEventListener('abort', () => menu.remove(), { once: true });
+  }
   workspace.querySelector('[data-create-category]')?.addEventListener('click', () => editCategory(), { signal: lifetime.signal });
   list.addEventListener('click', event => {
     const target = event.target as Element;
@@ -126,9 +163,6 @@ export function mountChannelCategories(workspace: HTMLElement, server: ServerDet
       try { localStorage.setItem(collapseKey, JSON.stringify([...collapsed])); } catch { /* Keep the state in this view. */ }
     }
     if (!manage) return;
-    const edit = target.closest<HTMLElement>('[data-edit-category]');
-    if (edit) editCategory(server.categories?.find(category => category.id === edit.dataset.editCategory)
-      ?? groups.find(group => group.category?.id === edit.dataset.editCategory)?.category ?? undefined);
     const categoryMove = target.closest<HTMLElement>('[data-category-direction]');
     if (categoryMove) {
       const id = categoryMove.closest<HTMLElement>('[data-channel-category]')!.dataset.channelCategory!;
