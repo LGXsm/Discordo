@@ -60,6 +60,10 @@ test('Settings and channel features stay in the selected server across reloads',
   const chatMessages = new Map();
   const chatDeletes = [];
   const chatUploads = [];
+  const chatSends = [];
+  const chatEdits = new Map();
+  const chatReactions = new Map();
+  let chatActionsEnabled = true;
   const visits = [];
   const invitation = 'a'.repeat(48);
   const expired = 'b'.repeat(48);
@@ -184,7 +188,31 @@ test('Settings and channel features stay in the selected server across reloads',
             chatUploads.push({ channel, text, name: media.name, type: media.type, bytes: [...new Uint8Array(await media.arrayBuffer())] });
             return reply(response, { ok: true });
           }
-          const { action, id } = JSON.parse(Buffer.concat(chunks));
+          const { action, id, text, replyTo, sourceChannel, emoji, active } = JSON.parse(Buffer.concat(chunks));
+          if (action === 'editMessage') {
+            if (!messages.some(message => message.id === id && message.own)) return reply(response, { error: 'Edit denied' }, 403);
+            chatEdits.set(id, { id, text, editedAt: '2026-11-23 12:10:00.000' });
+            return reply(response, { ok: true });
+          }
+          if (action === 'setReaction') {
+            if (!messages.some(message => message.id === id) || emoji !== '💜') return reply(response, { error: 'Unexpected reaction' }, 422);
+            if (active) chatReactions.set(id, [{ emoji, count: 1, own: true }]);
+            else chatReactions.delete(id);
+            return reply(response, { ok: true });
+          }
+          if (action === 'sendMessage' || action === 'forwardMessage') {
+            const source = chatMessages.get(sourceChannel)?.find(message => message.id === id);
+            const quote = messages.find(message => message.id === replyTo);
+            if ((action === 'forwardMessage' && (!source || sourceChannel !== 291 || channel !== 292)) ||
+                (replyTo && !quote)) return reply(response, { error: 'Unexpected source' }, 400);
+            chatSends.push({ channel, action, text, replyTo, sourceChannel, id });
+            chatMessages.set(channel, [...messages, {
+              id: 100 + chatSends.length, author: account.name, userId: 1, time: '2026-11-23T12:00:00Z',
+              text: source?.text ?? text, own: true, forwarded: Boolean(source),
+              reply: quote && { id: quote.id, author: quote.author, text: quote.text },
+            }]);
+            return reply(response, { ok: true });
+          }
           if (action !== 'deleteMessage' || !messages.some(message => message.id === id)) {
             return reply(response, { error: 'Unexpected delete' }, 404);
           }
@@ -195,7 +223,10 @@ test('Settings and channel features stay in the selected server across reloads',
         const after = Number(params.get('after'));
         const first = Number(params.get('pollsFrom'));
         return reply(response, {
-          messageActions: true,
+          messageActions: chatActionsEnabled,
+          changesEnabled: chatActionsEnabled,
+          edits: messages.flatMap(message => chatEdits.get(message.id) ?? []),
+          reactions: Object.fromEntries(messages.flatMap(message => chatReactions.has(message.id) ? [[message.id, chatReactions.get(message.id)]] : [])),
           messages: messages.filter(message => message.id > after),
           existing: first ? messages.filter(message => message.id >= first && message.id <= after).map(message => message.id) : null,
         });
@@ -1041,15 +1072,20 @@ test('Settings and channel features stay in the selected server across reloads',
       if (!options || own.querySelector('[data-delete-message]') || other.querySelector('[data-delete-message]')) {
         throw Error('Message rows must offer deletion through the options menu only');
       }
+      options.focus({ preventScroll: true });
       const rowBounds = own.getBoundingClientRect();
-      const buttonBounds = options.getBoundingClientRect();
-      if (Math.abs(rowBounds.top + rowBounds.height / 2 - buttonBounds.top - buttonBounds.height / 2) > 1) {
-        throw Error('The options button is not vertically centered on the message');
+      const toolbar = options.closest('.message-tools');
+      const toolbarBounds = toolbar.getBoundingClientRect();
+      if (toolbarBounds.top >= rowBounds.top || toolbarBounds.bottom <= rowBounds.top ||
+          Math.abs(rowBounds.right - toolbarBounds.right - 12) > 1 ||
+          getComputedStyle(toolbar).opacity !== '1') {
+        throw Error('The focused message toolbar should overlap the top edge and sit 12px from the right edge');
       }
+      options.blur();
       other.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 640, clientY: 400 }));
       const actions = await wait('.message-context-menu:popover-open');
       if ([...actions.querySelectorAll('button')].map(button => button.textContent.trim()).join('|')
-          !== 'Responder|Encaminhar|Copiar texto') throw Error('Unexpected actions on another member’s message');
+          !== 'Reagir|Responder|Encaminhar|Copiar texto') throw Error('Unexpected actions on another member’s message');
       actions.querySelector('[data-message-action=reply]').click();
       if (!document.querySelector('[data-chat-reply]:not([hidden])').textContent.includes('Mensagem de outra pessoa')) {
         throw Error('Reply did not quote the selected message');
@@ -1070,6 +1106,95 @@ test('Settings and channel features stay in the selected server across reloads',
       if (own.isConnected || !other.isConnected) throw Error('Confirmed deletion removed the wrong message');
     })()`);
     assert.deepEqual(chatDeletes, [{ channel: 291, id: 42 }]);
+    chatActionsEnabled = false;
+    await evaluate(`(async () => {
+      const messages = document.querySelector('.messages');
+      for (let i = 0; i < 100 && messages.hasAttribute('data-message-actions'); i++) {
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+      const row = document.querySelector('[data-message="43"]');
+      if (messages.hasAttribute('data-message-actions') || row.querySelector('[data-message-shortcut]').getClientRects().length) {
+        throw Error('Message actions appeared without database support');
+      }
+      row.querySelector('[data-message-options]').click();
+      if (document.querySelector('.message-context-menu [data-message-action=reply]')) throw Error('Reply appeared without database support');
+      document.querySelector('.message-context-menu:popover-open').hidePopover();
+    })()`);
+    chatActionsEnabled = true;
+    await evaluate(`(async () => {
+      const wait = async selector => {
+        for (let i = 0; i < 140; i++) {
+          const node = document.querySelector(selector);
+          if (node) return node;
+          await new Promise(resolve => setTimeout(resolve, 25));
+        }
+        throw Error('Missing ' + selector);
+      };
+      const row = await wait('[data-message="43"]');
+      await wait('.messages[data-message-actions]');
+      const composer = document.querySelector('.chat .composer');
+      const input = composer.querySelector('[name=message]');
+      row.querySelector('[data-message-shortcut=reply]').click();
+      input.value = 'Oi @guilda';
+      input.setSelectionRange(input.value.length, input.value.length);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const suggestions = await wait('.chat-mentions:popover-open');
+      if (suggestions.textContent.includes('Membro do Brasil')) throw Error('A mention from the wrong server was suggested');
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+      if (input.value !== 'Oi @Membro da guilda ') throw Error('Keyboard selection did not insert the mention');
+      composer.querySelector('[data-emoji-button]').click();
+      const picker = await wait('.chat-emoji-picker:popover-open');
+      const search = picker.querySelector('[type=search]');
+      search.value = 'coracao roxo';
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+      const available = picker.querySelectorAll('[data-emoji]:not([hidden])');
+      if (available.length !== 1 || available[0].textContent !== '💜') throw Error('Emoji search did not filter');
+      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+      if (input.value !== 'Oi @Membro da guilda 💜') throw Error('Emoji did not land at the caret');
+      composer.requestSubmit();
+      const sent = await wait('[data-message="101"]');
+      if (sent.querySelector('[data-mention-user="30"]')?.textContent !== '@Membro da guilda' ||
+          sent.querySelector('[data-reply-message="43"]') === null ||
+          !sent.querySelector('[data-message-text]').textContent.includes('💜')) throw Error('Reply, mention or emoji did not render');
+      const tools = sent.querySelector('.message-tools');
+      const order = [...tools.children].slice(0, 3).map(button => button.getAttribute('aria-label')).join('|');
+      if (order !== 'Reagir|Editar mensagem|Responder' || row.querySelector('[data-message-change=edit]')) {
+        throw Error('Chat actions are out of order or edit is offered to another member');
+      }
+      tools.querySelector('[data-message-change=edit]').click();
+      const editor = await wait('.message-edit-dialog[open]');
+      const field = editor.querySelector('textarea');
+      field.value = 'Mensagem revisada 💜';
+      editor.querySelector('form').requestSubmit();
+      await wait('[data-message="101"] .message-edited');
+      if (!sent.querySelector('[data-message-text]').textContent.includes('Mensagem revisada 💜')) throw Error('Saved edit is missing');
+      row.querySelector('[data-message-change=reaction]').click();
+      const reactions = await wait('.chat-emoji-picker[aria-label="Reagir à mensagem"]:popover-open');
+      reactions.querySelector('[data-emoji="💜"]').click();
+      const chip = await wait('[data-message="43"] [data-reaction-emoji="💜"][aria-pressed=true]');
+      if (chip.textContent !== '💜 1') throw Error('Reaction count is missing');
+      chip.click();
+      for (let i = 0; i < 140 && chip.isConnected; i++) await new Promise(resolve => setTimeout(resolve, 25));
+      if (chip.isConnected) throw Error('Reaction was not removed');
+      row.querySelector('[data-message-shortcut=forward]').click();
+      const dialog = await wait('dialog[open]:has(#message-forward-title)');
+      dialog.querySelector('select').value = '292';
+      if (!dialog.querySelector('select').value) throw Error('Guild destination is missing');
+      dialog.querySelector('[value=forward]').click();
+      for (let i = 0; i < 100 && !document.querySelector('.chat-note').textContent.includes('encaminhada'); i++) {
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+      document.querySelector('[data-channel="292"]').click();
+      await wait('[data-message="102"] .message-forwarded-label');
+      document.querySelector('[data-channel="291"]').click();
+      await wait('[data-message="43"]');
+    })()`);
+    assert.deepEqual(chatSends, [
+      { channel: 291, action: 'sendMessage', text: 'Oi @{30} 💜', replyTo: 43, sourceChannel: undefined, id: undefined },
+      { channel: 292, action: 'forwardMessage', text: undefined, replyTo: undefined, sourceChannel: 291, id: 43 },
+    ]);
+    assert.equal(chatEdits.get(101)?.text, 'Mensagem revisada 💜');
+    assert.equal(chatReactions.size, 0);
     const pastedBytes = await evaluate(`(async () => {
       const form = document.querySelector('.chat .composer');
       const input = form.querySelector('[name=message]');

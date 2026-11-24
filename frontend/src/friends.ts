@@ -1,5 +1,6 @@
 import { renderAvatar } from './avatar';
 import { icon } from './icons';
+import { emojiButtonMarkup, mountChatEmoji } from './chat-emoji';
 import { inviteLink, safeText } from './servers';
 
 export type FriendshipStatus = 'friend' | 'received' | 'sent' | null;
@@ -290,6 +291,7 @@ export function openFriends(workspace: HTMLElement, voice: PrivateVoice, close: 
       </div>
       <form class="composer friends-composer">
         <input type="text" name="message" aria-label="Mensagem privada" placeholder="Escreva uma mensagem" maxlength="2000" required autocomplete="off">
+        ${emojiButtonMarkup}
         <button class="icon-button" type="submit" aria-label="Enviar mensagem">${icon('send')}</button>
       </form>`;
     conversation.querySelector('.friends-back')!.addEventListener('click', () => {
@@ -312,6 +314,7 @@ export function openFriends(workspace: HTMLElement, voice: PrivateVoice, close: 
     });
     const form = conversation.querySelector<HTMLFormElement>('form')!;
     const field = form.elements.namedItem('message') as HTMLInputElement;
+    mountChatEmoji(form, field);
     form.addEventListener('submit', event => {
       event.preventDefault();
       const text = field.value.trim();

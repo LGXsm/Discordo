@@ -1,5 +1,7 @@
 import { renderAvatar } from './avatar';
 import { clipboardImage } from './clipboard-image';
+import { emojiButtonMarkup, mountChatEmoji, mountEmojiPicker } from './chat-emoji';
+import { mentionToken, mountChatMentions } from './chat-mentions';
 import { icon } from './icons';
 import { dismissOnBackdrop } from './dialog-dismiss';
 import type { ServerMember } from './servers';
@@ -10,9 +12,32 @@ const timeFormat = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '
 type Message = { id: number; text: string; time: string; author: string; userId: number; own?: boolean; media?: 'image' | 'video' | null; video: boolean;
   forwarded?: boolean; reply?: { id: number; author: string | null; text: string | null } | null };
 type TextDestination = { id?: number; name: string; private?: boolean };
+type MessageEdit = { id: number; text: string; editedAt: string };
+type Reaction = { emoji: string; count: number; own: boolean };
 
-function renderMessageText(body: HTMLElement, text: string) {
+function renderMessageText(body: HTMLElement, text: string, mentionName: (id: number) => string | undefined,
+  openMember: ((id: number, name: string, anchor: HTMLElement) => void) | undefined, selfId?: number) {
   let offset = 0;
+  function appendText(part: string) {
+    let position = 0;
+    for (const match of part.matchAll(mentionToken)) {
+      body.append(part.slice(position, match.index));
+      const id = Number(match[1]);
+      const name = mentionName(id);
+      const mention = document.createElement(openMember && name ? 'button' : 'span');
+      mention.className = 'chat-mention';
+      mention.dataset.mentionUser = String(id);
+      mention.toggleAttribute('data-self-mention', id === selfId);
+      mention.textContent = `@${name ?? 'usuário'}`;
+      if (mention instanceof HTMLButtonElement && name) {
+        mention.type = 'button';
+        mention.addEventListener('click', () => openMember?.(id, mentionName(id) ?? name, mention));
+      }
+      body.append(mention);
+      position = match.index + match[0].length;
+    }
+    body.append(part.slice(position));
+  }
   const links = /\[([^\]\r\n]+)\]\((https?:\/\/(?:[^\s<>"'()]|\([^\s<>"'()]*\))+)\)|(?<![\w@./:])(?:https?:\/\/|www\.)[^\s<>"']+/gi;
   for (const match of text.matchAll(links)) {
     const [candidate, markdownLabel, destination] = match;
@@ -27,7 +52,7 @@ function renderMessageText(body: HTMLElement, text: string) {
     } catch {
       continue;
     }
-    body.append(text.slice(offset, match.index));
+    appendText(text.slice(offset, match.index));
     const link = document.createElement('a');
     link.href = url.href;
     link.textContent = label;
@@ -36,7 +61,7 @@ function renderMessageText(body: HTMLElement, text: string) {
     body.append(link);
     offset = match.index + (destination === undefined ? label.length : candidate.length);
   }
-  body.append(text.slice(offset));
+  appendText(text.slice(offset));
 }
 
 export const textComposerMarkup = `
@@ -53,7 +78,8 @@ export const textComposerMarkup = `
     </div>
     <input type="file" name="media" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" hidden>
     <button type="button" class="icon-button" data-attach-media aria-label="Anexar imagem, GIF ou vídeo" title="Anexar imagem, GIF ou vídeo">${icon('clip')}</button>
-    <input type="text" name="message" maxlength="1000">
+    <input type="text" name="message" maxlength="1000" autocomplete="off">
+    ${emojiButtonMarkup}
     <button type="submit" class="icon-button" aria-label="Enviar mensagem">${icon('send')}</button>
   </form>`;
 
@@ -66,12 +92,18 @@ async function chatRequest<T>(url: URL, init: RequestInit): Promise<T> {
 
 export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number) => ServerMember | undefined,
   openAuthor?: (userId: number, name: string, anchor: HTMLElement) => void, canModerate = () => false,
-  destinations: readonly TextDestination[] = []) {
+  destinations: readonly TextDestination[] = [], members = () => [] as readonly ServerMember[]) {
   const lifetime = new AbortController();
   const scroll = workspace.querySelector<HTMLElement>('.chat-scroll')!;
   const messages = workspace.querySelector<HTMLElement>('.messages')!;
   const form = workspace.querySelector<HTMLFormElement>('.composer')!;
   const input = form.querySelector<HTMLInputElement>('[name=message]')!;
+  const emoji = mountChatEmoji(form, input);
+  const reactionPicker = mountEmojiPicker(workspace);
+  reactionPicker.panel.setAttribute('aria-label', 'Reagir à mensagem');
+  const mentions = mountChatMentions(form, input, members);
+  const mentionName = (id: number) => memberFor(id)?.name;
+  const readableText = (text: string) => text.replace(mentionToken, (_, id: string) => `@${mentionName(Number(id)) ?? 'usuário'}`);
   const file = form.querySelector<HTMLInputElement>('[name=media]')!;
   const submit = form.querySelector<HTMLButtonElement>('[type=submit]')!;
   const pick = form.querySelector<HTMLButtonElement>('[data-attach-media]')!;
@@ -91,7 +123,9 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
   menu.setAttribute('aria-label', 'Opções da mensagem');
   workspace.append(menu);
   let menuRow: HTMLElement | undefined;
-  let room: { id: number; cursor: number; lifetime: AbortController; loading: boolean; refreshQueued: boolean; messageActions?: boolean } | undefined;
+  let room: { id: number; cursor: number; lifetime: AbortController; loading: boolean; refreshQueued: boolean;
+    messageActions?: boolean; changesEnabled?: boolean } | undefined;
+  const reactionWrites = new Set<string>();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const sending = new Set<number>();
   const deleting = new Set<HTMLElement>();
@@ -102,7 +136,7 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     replyTo = row ? Number(row.dataset.message) : undefined;
     replyDraft.hidden = !row;
     replyDraft.querySelector('span')!.textContent = row
-      ? `Respondendo a ${row.dataset.authorName} · ${row.querySelector('[data-message-text]')?.textContent || 'Mensagem'}` : '';
+      ? `Respondendo a ${row.dataset.authorName} · ${readableText(row.dataset.messageCopy || 'Mensagem')}` : '';
   }
   replyCancel.addEventListener('click', () => { setReply(); input.focus(); });
 
@@ -172,6 +206,49 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     row.querySelector('[data-author-avatar]')?.setAttribute('aria-label', `Perfil de ${author}`);
   }
 
+  function updateText(row: HTMLElement, text: string) {
+    const body = row.querySelector<HTMLElement>('[data-message-text]')!;
+    body.replaceChildren();
+    row.dataset.messageCopy = text;
+    renderMessageText(body, text, mentionName, openAuthor, members().find(member => member.self)?.userId);
+  }
+
+  function applyEdit(edit: MessageEdit) {
+    const row = messages.querySelector<HTMLElement>(`[data-message="${Number(edit.id)}"]`);
+    if (!row || (row.dataset.editedAt === edit.editedAt && row.dataset.messageCopy === edit.text)) return;
+    updateText(row, edit.text);
+    row.dataset.editedAt = edit.editedAt;
+    const label = document.createElement('small');
+    label.className = 'message-edited';
+    label.textContent = '(editada)';
+    row.querySelector('[data-message-text]')!.append(' ', label);
+    for (const reference of messages.querySelectorAll<HTMLElement>(`[data-reply-message="${Number(edit.id)}"]`)) {
+      reference.textContent = `${row.dataset.authorName} · ${readableText(edit.text)}`;
+    }
+    if (replyTo === Number(edit.id)) setReply(row);
+  }
+
+  function renderReactions(row: HTMLElement, reactions: Reaction[]) {
+    const container = row.querySelector<HTMLElement>('.message-reactions')!;
+    const key = JSON.stringify(reactions);
+    if (container.dataset.state === key) return;
+    const focused = container.contains(document.activeElement)
+      ? (document.activeElement as HTMLElement).dataset.reactionEmoji : undefined;
+    container.dataset.state = key;
+    container.replaceChildren(...reactions.map(reaction => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.dataset.reactionEmoji = reaction.emoji;
+      chip.setAttribute('aria-pressed', String(reaction.own));
+      chip.setAttribute('aria-label', `${reaction.own ? 'Remover' : 'Adicionar'} reação ${reaction.emoji} · ${reaction.count}`);
+      chip.textContent = `${reaction.emoji} ${reaction.count}`;
+      return chip;
+    }));
+    if (focused) {
+      [...container.querySelectorAll('button')].find(chip => chip.dataset.reactionEmoji === focused)?.focus({ preventScroll: true });
+    }
+  }
+
   function append(message: Message, channel: number) {
     const row = document.createElement('article');
     row.className = 'message';
@@ -190,15 +267,15 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     time.dateTime = message.time;
     time.textContent = timeFormat.format(new Date(message.time));
     const messageText = row.querySelector('p')!;
-    renderMessageText(messageText, message.text);
     messageText.dataset.messageText = '';
+    updateText(row, message.text);
     if (message.reply) {
       const reference = document.createElement('button');
       reference.type = 'button';
       reference.className = 'message-reply-reference';
       reference.dataset.replyMessage = String(message.reply.id);
       reference.textContent = message.reply.author
-        ? `${message.reply.author} · ${message.reply.text || 'Mensagem'}` : 'Mensagem original indisponível';
+        ? `${message.reply.author} · ${readableText(message.reply.text || 'Mensagem')}` : 'Mensagem original indisponível';
       reference.disabled = !message.reply.author;
       row.querySelector('div')!.prepend(reference);
     }
@@ -245,14 +322,20 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
         body.append(video, open);
       }
     }
-    const more = document.createElement('button');
-    more.type = 'button';
-    more.className = 'icon-button message-more';
-    more.dataset.messageOptions = '';
-    more.setAttribute('aria-label', 'Opções da mensagem');
-    more.setAttribute('aria-haspopup', 'true');
-    more.innerHTML = icon('more');
-    row.append(more);
+    const reactions = document.createElement('div');
+    reactions.className = 'message-reactions';
+    row.querySelector('div')!.append(reactions);
+    const tools = document.createElement('div');
+    tools.className = 'message-tools';
+    tools.setAttribute('role', 'group');
+    tools.setAttribute('aria-label', 'Ações da mensagem');
+    tools.innerHTML = `
+      <button type="button" class="icon-button" data-message-change="reaction" title="Reagir" aria-label="Reagir" aria-haspopup="dialog">${icon('smile')}</button>
+      ${message.own ? `<button type="button" class="icon-button" data-message-change="edit" title="Editar mensagem" aria-label="Editar mensagem" aria-haspopup="dialog">${icon('pencil')}</button>` : ''}
+      <button type="button" class="icon-button" data-message-shortcut="reply" title="Responder" aria-label="Responder">${icon('reply')}</button>
+      <button type="button" class="icon-button" data-message-shortcut="forward" title="Encaminhar" aria-label="Encaminhar">${icon('arrow')}</button>
+      <button type="button" class="icon-button message-more" data-message-options aria-label="Opções da mensagem" aria-haspopup="true">${icon('more')}</button>`;
+    row.append(tools);
     messages.append(row);
   }
 
@@ -262,6 +345,8 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     row.setAttribute('data-message-menu-open', '');
     const hasText = !!row.dataset.messageCopy?.trim();
     menu.innerHTML = `
+      ${room?.changesEnabled ? `<button type="button" data-message-action="reaction">${icon('smile')} Reagir</button>
+      ${canEditMessage(row) ? `<button type="button" data-message-action="edit">${icon('pencil')} Editar mensagem</button>` : ''}` : ''}
       ${room?.messageActions ? `<button type="button" data-message-action="reply">${icon('reply')} Responder</button>
       <button type="button" data-message-action="forward">${icon('arrow')} Encaminhar</button>` : ''}
       <button type="button" data-message-action="copy"${hasText ? '' : ' disabled'}>${icon('copy')} Copiar texto</button>
@@ -281,6 +366,20 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
   }, { signal: lifetime.signal });
   messages.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
+    const change = event.target.closest<HTMLButtonElement>('[data-message-change], [data-reaction-emoji]');
+    const target = change?.closest<HTMLElement>('[data-message]');
+    if (change && target && room?.changesEnabled) {
+      if (change.dataset.reactionEmoji) {
+        void writeReaction(target, room, change.dataset.reactionEmoji, change.getAttribute('aria-pressed') !== 'true');
+      } else void runMessageAction(change.dataset.messageChange!, target, room, change);
+      return;
+    }
+    const shortcut = event.target.closest<HTMLElement>('[data-message-shortcut]');
+    const shortcutRow = shortcut?.closest<HTMLElement>('[data-message]');
+    if (shortcut && shortcutRow && room?.messageActions) {
+      void runMessageAction(shortcut.dataset.messageShortcut!, shortcutRow, room);
+      return;
+    }
     const more = event.target.closest<HTMLElement>('[data-message-options]');
     const row = more?.closest<HTMLElement>('[data-message]');
     if (more && row) {
@@ -332,18 +431,31 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     });
   }
 
-  menu.addEventListener('click', async event => {
+  menu.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
     const action = event.target.closest<HTMLButtonElement>('[data-message-action]')?.dataset.messageAction;
     const row = menuRow;
     const active = room;
     if (!action || !row?.isConnected || !active) return;
     hideMessageMenu();
+    void runMessageAction(action, row, active, row.querySelector<HTMLButtonElement>('[data-message-options]')!);
+  }, { signal: lifetime.signal });
+
+  async function runMessageAction(action: string, row: HTMLElement, active: NonNullable<typeof room>, anchor = row) {
     try {
+      if (action === 'edit' && canEditMessage(row)) openEdit(row, active);
+      if (action === 'reaction' && active.changesEnabled) {
+        reactionPicker.open(anchor, emoji => {
+          if (!row.isConnected || room !== active) return;
+          const chips = [...row.querySelectorAll<HTMLButtonElement>('[data-reaction-emoji]')];
+          const existing = chips.find(chip => chip.dataset.reactionEmoji === emoji);
+          void writeReaction(row, active, emoji, existing?.getAttribute('aria-pressed') !== 'true');
+        });
+      }
       if (action === 'reply') { setReply(row); input.focus(); }
       if (action === 'delete') await deleteMessage(row, active);
       if (action === 'copy') {
-        await navigator.clipboard.writeText(row.dataset.messageCopy ?? '');
+        await navigator.clipboard.writeText(readableText(row.dataset.messageCopy ?? ''));
         if (room === active) status.textContent = 'Texto copiado.';
       }
       if (action === 'forward') {
@@ -365,7 +477,80 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     } catch (error) {
       if (room === active) status.textContent = action === 'copy' ? 'Não foi possível copiar o texto.' : (error as Error).message;
     }
-  }, { signal: lifetime.signal });
+  }
+
+  function canEditMessage(row: HTMLElement) {
+    return row.hasAttribute('data-own-message') && !row.querySelector('.gameplay-card');
+  }
+
+  async function writeMessageChange(active: NonNullable<typeof room>, payload: Record<string, unknown>) {
+    const url = new URL(endpoint);
+    url.searchParams.set('channel', String(active.id));
+    await chatRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Discordo-Request': 'chat' },
+      signal: active.lifetime.signal, body: JSON.stringify(payload) });
+    if (room === active) refreshSoon();
+  }
+
+  async function writeReaction(row: HTMLElement, active: NonNullable<typeof room>, emoji: string, enabled: boolean) {
+    const key = `${row.dataset.message}:${emoji}`;
+    if (reactionWrites.has(key)) return;
+    reactionWrites.add(key);
+    try {
+      await writeMessageChange(active, { action: 'setReaction', id: Number(row.dataset.message), active: enabled, emoji });
+    } catch (error) {
+      if (room === active) status.textContent = (error as Error).message;
+    } finally {
+      reactionWrites.delete(key);
+    }
+  }
+
+  function openEdit(row: HTMLElement, active: NonNullable<typeof room>) {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'settings-dialog settings-confirm message-edit-dialog';
+    dialog.setAttribute('aria-labelledby', 'message-edit-title');
+    dialog.innerHTML = `<form>
+      <h2 id="message-edit-title">Editar mensagem</h2>
+      <textarea aria-label="Texto da mensagem" maxlength="1000" required autofocus></textarea>
+      <p role="status" hidden></p>
+      <div class="settings-footer">
+        <button type="button" class="settings-button">Cancelar</button>
+        <button type="submit" class="primary-button">Salvar</button>
+      </div>
+    </form>`;
+    const editor = dialog.querySelector('textarea')!;
+    const feedback = dialog.querySelector('p')!;
+    const save = dialog.querySelector<HTMLButtonElement>('[type=submit]')!;
+    const original = row.dataset.messageCopy ?? '';
+    const display = readableText(original);
+    editor.value = display;
+    const close = () => dialog.close();
+    dialog.querySelector('[type=button]')!.addEventListener('click', close);
+    active.lifetime.signal.addEventListener('abort', close, { once: true });
+    dialog.addEventListener('close', () => {
+      active.lifetime.signal.removeEventListener('abort', close);
+      dialog.remove();
+    }, { once: true });
+    dismissOnBackdrop(dialog);
+    dialog.querySelector('form')!.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (save.disabled) return;
+      const draft = editor.value.trim();
+      if (draft === display) { close(); return; }
+      save.disabled = editor.readOnly = true;
+      try {
+        await writeMessageChange(active, { action: 'editMessage', id: Number(row.dataset.message), text: mentions.encode(draft) });
+        if (dialog.open) close();
+      } catch (error) {
+        if (!dialog.open) return;
+        feedback.textContent = (error as Error).message;
+        feedback.hidden = false;
+      } finally {
+        save.disabled = editor.readOnly = false;
+      }
+    });
+    workspace.append(dialog);
+    dialog.showModal();
+  }
 
   function canDeleteMessage(row: HTMLElement) {
     return row.hasAttribute('data-own-message') || canModerate();
@@ -458,6 +643,8 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     const busy = !!room && sending.has(room.id);
     input.readOnly = busy;
     submit.disabled = pick.disabled = remove.disabled = busy;
+    emoji.setBusy(busy);
+    if (busy) mentions.close();
   }
 
   function refreshSoon() {
@@ -501,11 +688,15 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
       url.searchParams.set('after', String(active.cursor));
       const first = (messages.firstElementChild as HTMLElement | null)?.dataset.message;
       if (first) url.searchParams.set('pollsFrom', first);
-      const result = await chatRequest<{ messages: Message[]; polls?: GameplayPoll[]; existing?: number[] | null; messageActions?: boolean }>(url, { signal: AbortSignal.any([
+      const result = await chatRequest<{ messages: Message[]; polls?: GameplayPoll[]; existing?: number[] | null; messageActions?: boolean;
+        changesEnabled?: boolean; edits?: MessageEdit[]; reactions?: Record<number, Reaction[]> }>(url, { signal: AbortSignal.any([
         active.lifetime.signal, AbortSignal.timeout(5000),
       ]) });
       if (active !== room) return;
       active.messageActions = result.messageActions === true;
+      active.changesEnabled = result.changesEnabled === true;
+      messages.toggleAttribute('data-message-actions', active.messageActions);
+      messages.toggleAttribute('data-message-changes', active.changesEnabled);
       form.hidden = false;
       const atBottom = !active.cursor || scroll.scrollHeight - scroll.clientHeight - scroll.scrollTop < 48;
       if (result.existing) {
@@ -531,6 +722,12 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
           text.after(card);
         }
         renderGameplay(card, poll);
+      }
+      for (const edit of result.edits ?? []) applyEdit(edit);
+      if (active.changesEnabled) {
+        for (const row of messages.querySelectorAll<HTMLElement>('[data-message]')) {
+          renderReactions(row, result.reactions?.[Number(row.dataset.message)] ?? []);
+        }
       }
       if (atBottom && result.messages.length) scroll.scrollTop = scroll.scrollHeight;
     } catch (error) {
@@ -595,8 +792,13 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     const text = input.value.trim();
     const media = mediaDraft;
     if (!active || sending.has(active.id) || (!text && !media)) return;
-    sending.add(active.id);
     const reply = replyTo;
+    const tagged = mentions.encode(text);
+    if (Array.from(tagged).length > input.maxLength) {
+      status.textContent = 'Digite uma mensagem de até 1000 caracteres, incluindo as menções.';
+      return;
+    }
+    sending.add(active.id);
     updateComposer();
     status.textContent = media ? 'Enviando anexo…' : 'Enviando…';
     try {
@@ -606,11 +808,11 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
       let body: FormData | string;
       if (media) {
         body = new FormData();
-        body.set('message', JSON.stringify({ text, replyTo: reply }));
+        body.set('message', JSON.stringify({ text: tagged, replyTo: reply }));
         body.set('media', media);
       } else {
         headers['Content-Type'] = 'application/json';
-        body = JSON.stringify({ action: 'sendMessage', text, replyTo: reply });
+        body = JSON.stringify({ action: 'sendMessage', text: tagged, replyTo: reply });
       }
       await chatRequest(url, { method: 'POST', headers, body, signal: lifetime.signal });
       if (active === room) {
@@ -635,6 +837,9 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     refresh: refreshSoon,
     select(id: number | undefined, name: string) {
       hideMessageMenu();
+      emoji.close();
+      reactionPicker.close();
+      mentions.close();
       setReply();
       closeViewer?.();
       room?.lifetime.abort();
@@ -644,6 +849,8 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
       input.setAttribute('aria-label', input.placeholder);
       input.value = '';
       messages.replaceChildren();
+      messages.removeAttribute('data-message-actions');
+      messages.removeAttribute('data-message-changes');
       resetFile();
       updateComposer();
       status.textContent = room && sending.has(room.id) ? 'Enviando…' : '';
@@ -652,6 +859,9 @@ export function mountTextChat(workspace: HTMLElement, memberFor: (userId: number
     },
     refreshAuthors() {
       for (const row of messages.querySelectorAll<HTMLElement>('[data-author]')) drawAuthor(row);
+      for (const mention of messages.querySelectorAll<HTMLElement>('[data-mention-user]')) {
+        mention.textContent = `@${mentionName(Number(mention.dataset.mentionUser)) ?? 'usuário'}`;
+      }
     },
     dispose() {
       resetFile();

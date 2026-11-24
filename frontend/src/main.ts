@@ -473,7 +473,7 @@ function showWorkspace(account: Account, focus = false, server?: ServerDetail, k
   const textChat = mountTextChat(workspace, userId => members.find(member => member.userId === userId), openUserProfile, () => {
     const self = members.find(member => member.self);
     return Boolean(server?.admin || self?.roles.some(role => role.permissions & DELETE_MESSAGES));
-  }, textRooms);
+  }, textRooms, () => members);
   const note = app.querySelector<HTMLElement>('.chat-note')!;
   const menu = workspace.querySelector<HTMLButtonElement>('.chat-bar .mobile-menu')!;
   const stageMenu = workspace.querySelector<HTMLButtonElement>('[data-stage-menu]')!;
