@@ -5,11 +5,30 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
   <title>Compartilhar tela · Discordo</title>
   <style>
-    :root { color-scheme: dark; --shell: #1b1325; --well: #130e1a; --surface: #281a32; --border: #51355c; --muted: #d2b4e3; --gold: #ffdb38; }
+    :root { color-scheme: dark; --shell: #1b1325; --well: #130e1a; --surface: #281a32; --border: #53345c; --muted: #d2b4e3; --gold: #ffdb38; --titlebar-height: 31px; }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { height: 100vh; margin: 0; padding: 16px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 12px; color: #faf3ff; background: var(--shell); font: 14px system-ui, sans-serif; }
-    h1 { margin: 0; font-size: 19px; }
+    body { height: 100vh; margin: 0; padding: calc(var(--titlebar-height) + 16px) 16px 16px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; color: #faf3ff; background: var(--shell); font: 14px system-ui, sans-serif; }
+    header {
+      position: fixed;
+      inset: 0 0 auto;
+      display: grid;
+      place-items: center;
+      height: var(--titlebar-height);
+      border-bottom: 1px solid #3e2b49;
+      background: #1b1224;
+      app-region: drag;
+      user-select: none;
+    }
+    h1 {
+      max-width: max(0px, calc(2 * env(titlebar-area-width, 100vw) - 100vw - 12px));
+      overflow: hidden;
+      margin: 0;
+      color: #dbc7e6;
+      font: 600 12px "Segoe UI", sans-serif;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     [role="tablist"] { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--well); border: 1px solid var(--border); border-radius: 9px; }
     button { border: 1px solid var(--border); border-radius: 7px; padding: 8px 14px; background: #342341; color: inherit; font: inherit; cursor: pointer; }
     button:enabled:hover { border-color: var(--muted); }
@@ -31,8 +50,25 @@
     .source-caption span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .source-panel-status { margin: 0; color: var(--muted); font-size: 13px; }
     footer { display: grid; gap: 10px; }
-    #audio-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); }
-    #sound { margin: 0; width: 17px; height: 17px; accent-color: var(--gold); }
+    #audio-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); cursor: pointer; }
+    #sound {
+      appearance: none;
+      position: relative;
+      flex: none;
+      margin: 0;
+      width: 40px;
+      height: 22px;
+      border: 1px solid #80628c;
+      border-radius: 999px;
+      background: var(--surface);
+      color: #dbc7e6;
+      cursor: pointer;
+    }
+    #sound::before { position: absolute; inset: 2px auto auto 2px; width: 16px; height: 16px; border-radius: 50%; background: currentColor; content: ""; }
+    #sound:checked { border-color: var(--gold); background: var(--gold); color: var(--shell); }
+    #sound:checked::before { transform: translateX(18px); }
+    #sound:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; }
+    @media (forced-colors: active) { #sound { appearance: auto; width: 22px; } #sound::before { content: none; } }
     .actions { display: flex; justify-content: flex-end; gap: 8px; }
     #share { background: var(--gold); color: #160d1a; border-color: var(--gold); font-weight: 650; }
     button:disabled { opacity: .45; cursor: default; }
@@ -57,7 +93,7 @@
     </section>
   </div>
   <footer>
-    <label id="audio-option" hidden>Compartilhar com áudio do sistema <input id="sound" type="checkbox"></label>
+    <label id="audio-option" hidden>Compartilhar com áudio do sistema <input id="sound" type="checkbox" role="switch"></label>
     <div class="actions">
       <button id="cancel" type="button">Cancelar</button>
       <button id="share" type="button" disabled>Compartilhar</button>

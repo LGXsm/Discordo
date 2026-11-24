@@ -1,5 +1,6 @@
 const { BrowserWindow, desktopCapturer, ipcMain } = require('electron');
 const path = require('node:path');
+const windowFrame = require('./window-frame.cjs');
 
 function installScreenPicker(browserWindow, desktopSession, isDiscordo) {
   const contents = browserWindow.webContents;
@@ -46,6 +47,7 @@ function installScreenPicker(browserWindow, desktopSession, isDiscordo) {
         minHeight: 380,
         show: false,
         backgroundColor: '#1b1325',
+        ...windowFrame,
         webPreferences: {
           preload: path.join(__dirname, 'screen-picker-preload.cjs'),
           sandbox: true,

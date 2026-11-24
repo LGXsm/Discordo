@@ -49,7 +49,7 @@ jobs:
       - name: Instalar dependências
         run: npm --prefix desktop ci
       - name: Testar o cliente
-        run: node --test tests/desktop-shortcuts.test.mjs tests/desktop-updates.test.mjs
+        run: node --test tests/desktop-shortcuts.test.mjs tests/desktop-updates.test.mjs tests/desktop-screen-picker.test.mjs
       - name: Gerar instalador
         run: npm --prefix desktop run make
       - name: Criar release em rascunho

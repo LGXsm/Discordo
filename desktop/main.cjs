@@ -4,6 +4,7 @@ const path = require('node:path');
 const { installScreenPicker } = require('./screen-picker.cjs');
 const { installVoiceShortcuts } = require('./shortcuts.cjs');
 const { startUpdates } = require('./updates.cjs');
+const windowFrame = require('./window-frame.cjs');
 
 const home = new URL('https://discordo.lgmartinez.com/');
 const titleBarCss = readFileSync(path.join(__dirname, 'titlebar.css'), 'utf8');
@@ -53,9 +54,7 @@ function createWindow() {
     minWidth: 360,
     minHeight: 480,
     backgroundColor: '#190f23',
-    accentColor: '#53345c',
-    titleBarStyle: 'hidden',
-    titleBarOverlay: { color: '#1b1224', symbolColor: '#dbc7e6', height: 30 },
+    ...windowFrame,
     icon: path.join(__dirname, 'discordo.ico'),
     show: false,
     webPreferences: {
