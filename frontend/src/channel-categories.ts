@@ -18,14 +18,9 @@ export function channelCategoriesMarkup(server: ServerDetail | undefined, render
   const groups = channelGroups(server);
   const sections = groups.filter(group => (group.category || group.channels.length) && (manage || group.channels.length)).map(({ category, channels }) => {
     const id = category?.id ?? '';
-    const index = groups.findIndex(group => group.category?.id === id);
     return `<section class="channel-category" data-channel-category="${safeText(id)}">
       ${category ? `<div class="channel-category-heading"${manage ? ` draggable="true" data-category-drag="${safeText(id)}"` : ''}>
         <h2><button type="button" data-collapse-category="${safeText(id)}" aria-expanded="true">${icon('chevron')}<span>${safeText(category.name)}</span></button></h2>
-        ${manage ? `<div class="channel-category-tools">
-          <button type="button" class="icon-button" data-category-direction="-1" aria-label="Mover categoria ${safeText(category.name)} para cima"${index <= 1 ? ' disabled' : ''}>↑</button>
-          <button type="button" class="icon-button" data-category-direction="1" aria-label="Mover categoria ${safeText(category.name)} para baixo"${index === groups.length - 1 ? ' disabled' : ''}>↓</button>
-        </div>` : ''}
       </div>` : manage || channels.length ? '<h2 class="uncategorized-title">Sem categoria</h2>' : ''}
       <div class="channel-category-items" data-category-items="${safeText(id)}">
         ${channels.map(channel => `<div data-channel-item="${channel.id}"${manage ? ' draggable="true"' : ''}>${render(channel)}</div>`).join('')}
@@ -161,15 +156,6 @@ export function mountChannelCategories(workspace: HTMLElement, server: ServerDet
       if (collapsed.has(id)) collapsed.delete(id); else collapsed.add(id);
       paintCollapsed();
       try { localStorage.setItem(collapseKey, JSON.stringify([...collapsed])); } catch { /* Keep the state in this view. */ }
-    }
-    if (!manage) return;
-    const categoryMove = target.closest<HTMLElement>('[data-category-direction]');
-    if (categoryMove) {
-      const id = categoryMove.closest<HTMLElement>('[data-channel-category]')!.dataset.channelCategory!;
-      const categories = groups.flatMap(group => group.category ? [group.category] : []);
-      const index = categories.findIndex(category => category.id === id);
-      const direction = Number(categoryMove.dataset.categoryDirection);
-      void change('moveCategory', { category: id, before: direction < 0 ? categories[index - 1]?.id : categories[index + 2]?.id ?? null });
     }
   }, { signal: lifetime.signal });
   let dragged: { kind: 'channel' | 'category'; id: string } | undefined;

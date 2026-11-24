@@ -172,7 +172,13 @@ test('Categories mix text and voice, support editing and moves, and respect serv
       check(!t.root.querySelector('[data-channel-insertion]'), 'Insertion line remained visible after drop');
       await waitRevision(3);
       check(group().querySelector('[data-channel-item]').dataset.channelItem === '292', 'Dragging did not reorder channels');
-      group().querySelector('[data-category-direction="-1"]').click(); await waitRevision(4);
+      const movingCategory = group().querySelector('[data-category-drag]');
+      const previousCategory = t.root.querySelectorAll('[data-category-drag]')[1];
+      const categoryTransfer = new DataTransfer();
+      movingCategory.dispatchEvent(new DragEvent('dragstart', { bubbles:true, dataTransfer:categoryTransfer }));
+      previousCategory.dispatchEvent(new DragEvent('drop', { bubbles:true, dataTransfer:categoryTransfer,
+        clientY:previousCategory.getBoundingClientRect().top + 1 }));
+      await waitRevision(4);
       check([...t.root.querySelectorAll('[data-channel-category]')].filter(node => node.dataset.channelCategory)[1].dataset.channelCategory === 'games', 'Category did not move above the previous one');
       group().querySelector('[data-collapse-category]').click();
       check(group().querySelector('[data-category-items]').hidden, 'Category did not collapse');
@@ -192,12 +198,11 @@ test('Categories mix text and voice, support editing and moves, and respect serv
         check(!t.root.querySelector('.category-context-menu:popover-open'), 'The category menu remained open');
       };
       heading().focus();
-      check(!group().querySelector('[data-edit-category]') && !t.root.querySelector('dialog[open]')
-        && getComputedStyle(group().querySelector('.channel-category-tools')).opacity === '0',
+      check(!group().querySelector('[data-edit-category], [data-category-direction]') && !t.root.querySelector('dialog[open]'),
         'Focusing the category title revealed controls');
       openEdit();
       t.root.querySelector('.category-editor-dialog [data-close]').click();
-      check(!t.root.querySelector('dialog[open]') && getComputedStyle(group().querySelector('.channel-category-tools')).opacity === '0',
+      check(!t.root.querySelector('dialog[open]') && !group().querySelector('[data-category-direction]'),
         'Closing the category editor left controls visible');
       openEdit();
       form = t.root.querySelector('dialog form'); form.elements.name.value = 'Partidas'; form.requestSubmit(); await waitRevision(5);
@@ -218,6 +223,14 @@ test('Categories mix text and voice, support editing and moves, and respect serv
     })()`);
     assert.ok(writes.length >= 7 && writes.every(write => write.server === 29));
     assert.equal(JSON.stringify(lobby), baseline, 'Discordo Brasil changed while organizing another server');
+    const category = await evaluate(`(() => {
+      const title = document.querySelector('[data-collapse-category]');
+      const box = title.getBoundingClientRect();
+      return { x: box.left + 16, y: box.top + box.height / 2, color: getComputedStyle(title).color };
+    })()`);
+    await command('Input.dispatchMouseEvent', { type: 'mouseMoved', x: category.x, y: category.y });
+    assert.notEqual(await evaluate("getComputedStyle(document.querySelector('[data-collapse-category]')).color"),
+      category.color, 'Hover did not highlight the category title');
     await command('Emulation.setDeviceMetricsOverride', { width: 360, height: 740, deviceScaleFactor: 1, mobile: false });
     await evaluate(`(() => {
       const t = window.categoryTest;

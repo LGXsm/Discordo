@@ -2067,13 +2067,11 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
 .channel-category-heading { display: flex; align-items: center; gap: 3px; min-width: 0; margin: 14px 0 5px; }
 .channel-category-heading h2 { flex: 1; min-width: 0; margin: 0; }
 .channel-category-heading h2 button { display: flex; align-items: center; gap: 5px; width: 100%; min-width: 0; padding: 5px 0; border: 0; color: var(--muted); background: transparent; text-align: left; font: inherit; cursor: pointer; }
+.channel-category-heading h2 button:is(:hover, :focus-visible) { color: var(--ink); }
+.channel-category-heading[draggable=true] h2 button { cursor: grab; }
 .channel-category-heading h2 button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .channel-category-heading h2 svg { width: 12px; height: 12px; flex: none; }
 .channel-category-heading [aria-expanded=false] svg { transform: rotate(-90deg); }
-.channel-category-tools { display: flex; flex: none; opacity: 0; }
-.channel-category-tools:is(:hover, :focus-within) { opacity: 1; }
-.channel-category-tools .icon-button { width: 19px; height: 25px; padding: 2px; font-size: .85rem; }
-.channel-category-tools svg { width: 13px; height: 13px; }
 .channel-category-heading[draggable=true], [data-channel-item][draggable=true] > .channel-row { cursor: grab; }
 [data-channel-item] { position: relative; }
 .channel-category, .channel-category-items, .channel-category-heading { position: relative; }
