@@ -362,7 +362,10 @@ function showWorkspace(account: Account, focus = false, server?: ServerDetail, k
     : renderVoiceRoom(voiceRooms.find(room => room.channelId === channel.id)!),
     voiceRooms.filter(room => room.channelId === undefined).map(room => `<section class="demo-channel-section"><h2>Teste de vídeo</h2>${renderVoiceRoom(room)}</section>`).join(''));
   app.innerHTML = `
-    <main class="workspace" aria-label="Discordo">
+    <main class="workspace" aria-label="Discordo"
+      data-desktop-server-name="${server ? safeText(serverName) : ''}"
+      data-desktop-server-icon="${server?.lobby ? `${import.meta.env.BASE_URL}art/logo-pequena.webp`
+        : server?.hasIcon ? serverIcon(server.id) : ''}">
       <nav class="server-rail" aria-label="Amizades e servidores">
         <button class="server-icon friends-trigger" type="button" data-open-friends aria-label="Amizades" aria-pressed="false">${icon('users')}</button>
         <hr class="server-rail-divider">

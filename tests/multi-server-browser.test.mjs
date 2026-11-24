@@ -580,6 +580,7 @@ test('Settings and channel features stay in the selected server across reloads',
       }
       (await wait('.server-dialog [data-close]')).click();
       await wait('[data-server="29"][aria-label="Guilda atualizada"]');
+      await wait('.workspace[data-desktop-server-name="Guilda atualizada"]');
       (await wait('[data-edit-channel="293"]')).click();
       const channel = await wait('.server-dialog [name=name]');
       channel.value = 'Voz da guilda';
@@ -1152,6 +1153,10 @@ test('Settings and channel features stay in the selected server across reloads',
         (await wait(gear)).click();
         const editor = await wait('.channel-editor-dialog[open]');
         const frame = editor.getBoundingClientRect();
+        const header = editor.querySelector('.settings-header').getBoundingClientRect();
+        if (Math.abs(header.left - frame.left - 1) > 1 || Math.abs(frame.right - header.right - 1) > 1) {
+          throw Error('Channel editor header lost space to the scrollbar gutter');
+        }
         const save = editor.querySelector('button[type=submit]').getBoundingClientRect();
         const deleteButton = editor.querySelector('[data-delete-channel]');
         const remove = deleteButton.getBoundingClientRect();
@@ -1186,6 +1191,11 @@ test('Settings and channel features stay in the selected server across reloads',
       trigger.click();
       const input = await wait('.server-invite-dialog input[readonly]');
       const button = await wait('.server-invite-dialog .server-invite button');
+      const frame = input.closest('dialog').getBoundingClientRect();
+      const header = input.closest('dialog').querySelector('.settings-header').getBoundingClientRect();
+      if (Math.abs(header.left - frame.left - 1) > 1 || Math.abs(frame.right - header.right - 1) > 1) {
+        throw Error('Server invite header lost space to the scrollbar gutter');
+      }
       for (let i = 0; i < 150 && button.disabled; i++) {
         await new Promise(resolve => setTimeout(resolve, 25));
       }

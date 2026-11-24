@@ -1274,11 +1274,18 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
 .server-create-dialog .server-form-panel { padding: 16px 18px 18px; }
 .server-create-dialog input { min-width: 0; width: 100%; }
 .server-create-dialog .primary-button { min-height: 42px; margin: 0; padding-inline: 12px; }
-.settings-dialog.server-invite-dialog { width: min(480px, calc(100vw - 24px)); }
-.settings-dialog.channel-editor-dialog {
+.settings-dialog:is(.server-invite-dialog, .channel-editor-dialog) {
   width: min(480px, calc(100vw - 24px));
   max-width: none;
-  scrollbar-gutter: stable both-edges;
+  overflow: hidden;
+  scrollbar-gutter: auto;
+}
+.settings-dialog:is(.server-invite-dialog, .channel-editor-dialog)[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.settings-dialog:is(.server-invite-dialog, .channel-editor-dialog) > .server-dialog-layout {
+  overflow: auto;
 }
 .channel-editor-actions { display: flex; align-items: center; gap: 8px; margin-block-start: 8px; }
 .channel-editor-actions > .primary-button { min-height: 44px; margin: 0; padding-inline: 12px; }
