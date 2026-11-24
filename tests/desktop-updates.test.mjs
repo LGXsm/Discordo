@@ -48,7 +48,11 @@ test('The Windows updater checks after startup and installs only on an explicit 
   const app = { isPackaged: true, getVersion: () => '0.2.0-beta.2' };
   const net = { fetch: async () => ({ ok: true, json: async () => [release('0.2.0-beta.3')] }) };
   let response = 1;
-  const dialog = { showMessageBox: async () => { notices++; return { response }; } };
+  const dialog = { showMessageBox: async (_window, options) => {
+    assert.equal(options.message, 'A versão 0.2.0-beta.3 está pronta.');
+    notices++;
+    return { response };
+  } };
 
   startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun: true });
   mock.timers.tick(14999);

@@ -25,7 +25,7 @@ function openExternal(address) {
 
 async function loadHome(browserWindow) {
   try {
-    await browserWindow.loadURL(home.href);
+    await browserWindow.loadURL(home.href, { extraHeaders: 'Cache-Control: no-cache\r\n' });
   } catch (error) {
     if (browserWindow.isDestroyed() || error.code === 'ERR_ABORTED') return;
     browserWindow.show();

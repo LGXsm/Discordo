@@ -27,6 +27,7 @@ function startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun }) {
   if (!app.isPackaged || process.platform !== 'win32' || process.arch !== 'x64') return;
   let checking = false;
   let downloaded = false;
+  let pendingVersion;
 
   function failed(error) {
     checking = false;
@@ -44,6 +45,7 @@ function startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun }) {
         checking = false;
         return;
       }
+      pendingVersion = feed.slice(feed.lastIndexOf('/desktop-v') + '/desktop-v'.length);
       autoUpdater.setFeedURL({ url: feed });
       autoUpdater.checkForUpdates();
     } catch (error) {
@@ -61,7 +63,7 @@ function startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun }) {
       const { response } = await dialog.showMessageBox(window, {
         type: 'info',
         title: 'Atualização do Discordo',
-        message: 'Uma atualização está pronta.',
+        message: pendingVersion ? `A versão ${pendingVersion} está pronta.` : 'Uma atualização está pronta.',
         detail: 'Reinicie o Discordo para instalar agora ou deixe para a próxima vez que abrir o aplicativo.',
         buttons: ['Reiniciar agora', 'Mais tarde'],
         defaultId: 1,
