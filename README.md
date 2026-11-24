@@ -45,6 +45,18 @@ npm --prefix desktop run make
 O npm instala o Electron como dependência. O comando `make` gera
 `Discordo-Setup.exe` em `desktop/out/make/squirrel.windows/x64/`.
 
+Quem está na Beta 1 deve executar o instalador da Beta 2 por cima da versão
+instalada uma vez. A partir da Beta 2, o app verifica novas versões do
+cliente Windows ao abrir e em segundo plano. Quando termina o download,
+ele oferece a opção de reiniciar. As mudanças do site chegam pelo próprio site.
+
+Para lançar uma versão desktop, atualize a versão em `desktop/package.json`
+e no lockfile. Envie a tag `desktop-v<versão>` do commit que será lançado.
+O GitHub Actions gera o instalador e prepara uma release em rascunho com
+`Discordo-Setup.exe`, `RELEASES` e o pacote `.nupkg`. Ao publicar a release,
+ela passa a ser elegível para o atualizador. Versões estáveis recebem versões
+estáveis e instalações beta também podem receber pré-releases.
+
 Durante uma chamada, use **Tela** para escolher um monitor ou janela.
 O áudio do sistema é opcional e está disponível ao compartilhar um monitor.
 Em **Configurações de usuário → Atalhos**, use Ctrl + Alt + uma letra, número

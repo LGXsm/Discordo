@@ -1,0 +1,35 @@
+html {
+  --discordo-titlebar-height: 30px;
+  --discordo-titlebar-background: #1b1224;
+}
+
+html:has(:fullscreen) {
+  --discordo-titlebar-height: 0px;
+}
+
+#discordo-desktop-titlebar {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  height: var(--discordo-titlebar-height);
+  border-bottom: 1px solid #3e2b49;
+  background: var(--discordo-titlebar-background);
+  color: #dbc7e6;
+  font: 600 12px "Segoe UI", sans-serif;
+  user-select: none;
+  app-region: drag;
+}
+
+html:has(:fullscreen) #discordo-desktop-titlebar {
+  display: none;
+}
+
+#app > :is(.entry, .workspace) {
+  height: calc(100dvh - var(--discordo-titlebar-height)) !important;
+}
+
+@media (max-width: 720px) {
+  .workspace .chat {
+    --mobile-chat-height: calc(100dvh - var(--account-bar-height) - var(--discordo-titlebar-height)) !important;
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "discordo-desktop",
   "productName": "Discordo",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0-beta.2",
   "description": "Cliente do Discordo para Windows",
   "author": "LGXsm",
   "private": true,
@@ -19,7 +19,8 @@
     "electron": "45.4.1"
   },
   "dependencies": {
-    "electron-squirrel-startup": "1.0.1"
+    "electron-squirrel-startup": "1.0.1",
+    "semver": "7.7.4"
   },
   "allowScripts": {
     "electron-winstaller@5.4.4": true

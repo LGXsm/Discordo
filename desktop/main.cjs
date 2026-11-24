@@ -1,9 +1,12 @@
-const { app, BrowserWindow, Menu, dialog, session, shell } = require('electron');
+const { app, autoUpdater, BrowserWindow, Menu, dialog, net, session, shell } = require('electron');
+const { existsSync, readFileSync } = require('node:fs');
 const path = require('node:path');
 const { installScreenPicker } = require('./screen-picker.cjs');
 const { installVoiceShortcuts } = require('./shortcuts.cjs');
+const { startUpdates } = require('./updates.cjs');
 
 const home = new URL('https://discordo.lgmartinez.com/');
+const titleBarCss = readFileSync(path.join(__dirname, 'titlebar.css'), 'utf8');
 let window;
 
 function isDiscordo(address) {
@@ -50,6 +53,8 @@ function createWindow() {
     minWidth: 360,
     minHeight: 480,
     backgroundColor: '#190f23',
+    titleBarStyle: 'hidden',
+    titleBarOverlay: { color: '#1b1224', symbolColor: '#dbc7e6', height: 30 },
     icon: path.join(__dirname, 'discordo.ico'),
     show: false,
     webPreferences: {
@@ -66,6 +71,9 @@ function createWindow() {
   browserWindow.on('closed', () => { window = undefined; });
 
   const contents = browserWindow.webContents;
+  contents.on('dom-ready', () => {
+    if (isDiscordo(contents.getURL())) void contents.insertCSS(titleBarCss, { cssOrigin: 'user' }).catch(console.error);
+  });
   const permissions = new Set(['clipboard-sanitized-write', 'media', 'speaker-selection', 'display-capture', 'fullscreen']);
   function allows(sender, permission, origin, details) {
     return sender === contents && details.isMainFrame && isDiscordo(origin) && permissions.has(permission);
@@ -100,6 +108,9 @@ if (require('electron-squirrel-startup') || !app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     Menu.setApplicationMenu(null);
     createWindow();
+    if (existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))) {
+      startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun: process.argv.includes('--squirrel-firstrun') });
+    }
   }).catch(console.error);
   app.on('second-instance', () => {
     if (!window) return;

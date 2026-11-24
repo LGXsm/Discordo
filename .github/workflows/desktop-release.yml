@@ -1,0 +1,64 @@
+name: Instalador do Discordo para Windows
+
+on:
+  push:
+    tags:
+      - 'desktop-v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-release-${{ github.ref }}
+
+jobs:
+  windows:
+    runs-on: windows-2025
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - name: Validar a versão
+        shell: pwsh
+        run: |
+          $version = (Get-Content desktop/package.json -Raw | ConvertFrom-Json).version
+          if ($env:GITHUB_REF_NAME -cne "desktop-v$version") {
+            throw "A tag deve ser desktop-v$version."
+          }
+      - name: Instalar dependências
+        run: npm --prefix desktop ci
+      - name: Testar o cliente
+        run: node --test tests/desktop-shortcuts.test.mjs tests/desktop-updates.test.mjs
+      - name: Gerar instalador
+        run: npm --prefix desktop run make
+      - name: Criar release em rascunho
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $output = 'desktop/out/make/squirrel.windows/x64'
+          $packages = @(Get-ChildItem -LiteralPath $output -Filter '*-full.nupkg' -File)
+          if ($packages.Count -ne 1) { throw 'Esperado um pacote completo para atualização.' }
+
+          $files = @("$output/Discordo-Setup.exe", "$output/RELEASES", $packages[0].FullName)
+          foreach ($file in $files) {
+            if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Arquivo ausente: $file" }
+          }
+
+          $release = gh release view $tag --json isDraft 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            if (!(($release | ConvertFrom-Json).isDraft)) { throw 'Esta versão já foi publicada.' }
+            gh release upload $tag @files --clobber
+          } else {
+            $flags = @('--draft', '--verify-tag', '--generate-notes', '--title', "Discordo Windows $($tag.Substring(9))")
+            if ($tag.Substring(9).Contains('-')) { $flags += '--prerelease' }
+            gh release create $tag @files @flags
+          }
+          exit $LASTEXITCODE
