@@ -31,7 +31,7 @@ test('Update selection ignores draft, unrelated and incomplete releases and keep
   assert.equal(findUpdate(releases, '0.2.1'), undefined);
 });
 
-test('The Windows updater checks after startup and installs only on an explicit restart', {
+for (const accept of [false, true]) test(`The Windows update notice handles ${accept ? 'Restart now' : 'Later'}`, {
   skip: process.platform !== 'win32' || process.arch !== 'x64',
 }, async ({ mock }) => {
   mock.timers.enable({ apis: ['setTimeout', 'setInterval'] });
@@ -47,14 +47,14 @@ test('The Windows updater checks after startup and installs only on an explicit 
   autoUpdater.quitAndInstall = () => { restarts++; };
   const app = { isPackaged: true, getVersion: () => '0.2.0-beta.2' };
   const net = { fetch: async () => ({ ok: true, json: async () => [release('0.2.0-beta.3')] }) };
-  let response = 1;
-  const dialog = { showMessageBox: async (_window, options) => {
-    assert.equal(options.message, 'A versão 0.2.0-beta.3 está pronta.');
+  const showUpdateNotice = async (parent, version) => {
+    assert.equal(parent, window);
+    assert.equal(version, '0.2.0-beta.3');
     notices++;
-    return { response };
-  } };
+    return accept;
+  };
 
-  startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun: true });
+  startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun: true });
   mock.timers.tick(14999);
   assert.equal(checks, 0);
   mock.timers.tick(1);
@@ -66,13 +66,13 @@ test('The Windows updater checks after startup and installs only on an explicit 
   autoUpdater.emit('update-downloaded');
   await Promise.resolve();
   assert.equal(notices, 1);
-  assert.equal(restarts, 0);
+  assert.equal(restarts, Number(accept));
   mock.timers.tick(30 * 60 * 1000);
   assert.equal(checks, 1);
 
-  response = 0;
   autoUpdater.emit('update-downloaded');
   await Promise.resolve();
-  assert.equal(restarts, 1);
+  assert.equal(notices, 1);
+  assert.equal(restarts, Number(accept));
   window.emit('closed');
 });

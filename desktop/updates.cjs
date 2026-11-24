@@ -23,7 +23,7 @@ function findUpdate(releases, version) {
   return feed;
 }
 
-function startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun }) {
+function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun }) {
   if (!app.isPackaged || process.platform !== 'win32' || process.arch !== 'x64') return;
   let checking = false;
   let downloaded = false;
@@ -56,20 +56,12 @@ function startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun }) {
   autoUpdater.on('error', failed);
   autoUpdater.on('update-not-available', () => { checking = false; });
   autoUpdater.on('update-downloaded', async () => {
+    if (downloaded) return;
     downloaded = true;
     checking = false;
     if (window.isDestroyed()) return;
     try {
-      const { response } = await dialog.showMessageBox(window, {
-        type: 'info',
-        title: 'Atualização do Discordo',
-        message: pendingVersion ? `A versão ${pendingVersion} está pronta.` : 'Uma atualização está pronta.',
-        detail: 'Reinicie o Discordo para instalar agora ou deixe para a próxima vez que abrir o aplicativo.',
-        buttons: ['Reiniciar agora', 'Mais tarde'],
-        defaultId: 1,
-        cancelId: 1,
-      });
-      if (response === 0 && !window.isDestroyed()) autoUpdater.quitAndInstall();
+      if (await showUpdateNotice(window, pendingVersion) && !window.isDestroyed()) autoUpdater.quitAndInstall();
     } catch (error) {
       console.error(error);
     }

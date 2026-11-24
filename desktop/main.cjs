@@ -4,6 +4,7 @@ const path = require('node:path');
 const { installScreenPicker } = require('./screen-picker.cjs');
 const { installVoiceShortcuts } = require('./shortcuts.cjs');
 const { startUpdates } = require('./updates.cjs');
+const { showUpdateNotice } = require('./update-notice.cjs');
 const windowFrame = require('./window-frame.cjs');
 
 const home = new URL('https://discordo.lgmartinez.com/');
@@ -109,7 +110,7 @@ if (require('electron-squirrel-startup') || !app.requestSingleInstanceLock()) {
     Menu.setApplicationMenu(null);
     createWindow();
     if (existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))) {
-      startUpdates({ app, autoUpdater, dialog, net, window, onFirstRun: process.argv.includes('--squirrel-firstrun') });
+      startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun: process.argv.includes('--squirrel-firstrun') });
     }
   }).catch(console.error);
   app.on('second-instance', () => {

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Atualização do Discordo</title>
+  <style>
+    :root { color-scheme: dark; --background: #190f23; --border: #53345c; --ink: #faf6ff; --muted: #d1b4df; --gold: #fddd31; }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; display: grid; grid-template-rows: 31px 1fr auto; background: var(--background); color: var(--ink); font: 14px "Segoe UI", sans-serif; }
+    header {
+      display: grid;
+      place-items: center;
+      border-bottom: 1px solid #3e2b49;
+      background: #1b1224;
+      color: #dbc7e6;
+      font-size: 12px;
+      font-weight: 600;
+      app-region: drag;
+      user-select: none;
+    }
+    main { min-width: 0; padding: 20px 24px 16px; }
+    h1 { margin: 0; color: var(--ink); font-size: 20px; line-height: 1.2; overflow-wrap: anywhere; }
+    p { margin: 8px 0 0; color: var(--muted); line-height: 1.45; }
+    footer { display: flex; align-items: center; justify-content: flex-end; gap: 9px; border-top: 1px solid var(--border); padding: 12px 24px; }
+    button { min-height: 38px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--ink); font: inherit; font-weight: 650; cursor: pointer; }
+    #later:hover { background: #42274b; }
+    #restart { background: var(--gold); color: var(--background); border-color: var(--gold); }
+    #restart:hover { background: #ffe66c; }
+    button:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; }
+    @media (max-width: 375px) { main, footer { padding-inline: 16px; } }
+  </style>
+</head>
+<body>
+  <header>Atualização do Discordo</header>
+  <main>
+    <h1>Uma atualização está pronta.</h1>
+    <p>Reinicie o Discordo agora ou aplique a atualização na próxima vez que abrir o app.</p>
+  </main>
+  <footer>
+    <button id="later" type="button" autofocus>Mais tarde</button>
+    <button id="restart" type="button">Reiniciar agora</button>
+  </footer>
+</body>
+</html>
