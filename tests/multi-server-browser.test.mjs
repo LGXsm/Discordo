@@ -366,6 +366,11 @@ test('Settings and channel features stay in the selected server across reloads',
       if (!document.querySelector('.server-rail > .friends-trigger:first-child + hr + [data-lobby]')) {
         throw Error('Friends should have a separate shortcut before the server list');
       }
+      const download = document.querySelector('.server-rail > [data-create-server] + [data-download-app]');
+      if (!download || !download.href.endsWith('/desktop-v0.2.1-beta.2/Discordo-Setup.exe') ||
+          getComputedStyle(download).backgroundColor !== 'rgb(253, 221, 49)') {
+        throw Error('The Windows installer link must be yellow and directly below Create Server');
+      }
       const row = document.createElement('article');
       row.className = 'message';
       row.innerHTML = '<button class="profile-trigger message-author-avatar"><span class="avatar"></span></button><div><strong>Jogador</strong> <time>18:00</time><p>Mensagem</p></div>';
@@ -1576,6 +1581,17 @@ test('Settings and channel features stay in the selected server across reloads',
       if (tour.dataset.step !== '3' || !tour.querySelector('.gameplay-form [name=game]:disabled')
           || !tour.textContent.includes('enquete')) throw Error('The tutorial did not show Gameplay and its purpose');
       tour.querySelector('[data-tutorial-next]').click();
+      for (let i = 0; i < 160 && tour.dataset.step !== '4'; i++) await new Promise(resolve => setTimeout(resolve, 25));
+      const installer = document.querySelector('[data-download-app]');
+      const installerBounds = installer.getBoundingClientRect();
+      const downloadSpotlight = document.querySelector('.tutorial-spotlight').getBoundingClientRect();
+      if (tour.dataset.step !== '4' || !tour.hasAttribute('data-anchored') || !installerBounds.width ||
+          Math.abs(downloadSpotlight.top + 3 - installerBounds.top) > 1 ||
+          tour.querySelector('.tutorial-download')?.href !== installer.href ||
+          tour.querySelector('[data-tutorial-next]').textContent !== 'Concluir') {
+        throw Error('The final tutorial step must highlight and link to the installer');
+      }
+      tour.querySelector('[data-tutorial-next]').click();
       for (let i = 0; i < 160 && tour.isConnected; i++) await new Promise(resolve => setTimeout(resolve, 25));
       if (tour.isConnected || document.querySelector('.tutorial-spotlight')) throw Error('The completed tour stayed open');
     })()`);
@@ -1939,6 +1955,7 @@ test('Settings and channel features stay in the selected server across reloads',
       for (let i = 0; i < 150 && !document.querySelector(gear); i++) {
         await new Promise(resolve => setTimeout(resolve, 25));
       }
+      if (document.querySelector('[data-download-app]')) throw Error('The desktop client offered an installer shortcut');
       document.querySelector(gear).click();
       const settings = document.querySelector('.user-settings[open]');
       const content = settings.querySelector('.settings-content');

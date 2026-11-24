@@ -3,7 +3,8 @@ import { voiceMemberMenuActions } from './voice-member-menu';
 
 const prefix = (email: string) => `discordo:tutorial:${email}:`;
 const session = new Map<string, string>();
-const progress = ['welcome', 'sounds', 'absence', 'gameplay'] as const;
+const progress = ['welcome', 'sounds', 'absence', 'gameplay', 'download'] as const;
+type TutorialFeature = Exclude<typeof progress[number], 'welcome'>;
 
 function read(key: string) {
   try { return localStorage.getItem(key) ?? session.get(key); }
@@ -29,13 +30,17 @@ export function startNewAccountTutorial(email: string) {
 }
 
 export function mountTutorial(host: HTMLElement, email: string, previews: { sounds: string; gameplay: string },
-  findTarget: (feature?: 'sounds' | 'absence' | 'gameplay') => HTMLElement | null) {
+  findTarget: (feature?: TutorialFeature) => HTMLElement | null, installerUrl?: string) {
   const key = prefix(email) + 'tour';
   const steps = [
     { title: 'Bem-vindo ao Discordo', text: 'Personalize os sons das suas calls, chame alguém que está no mudo e combine a próxima jogatina.' },
     { title: 'Áudios personalizados', text: 'Em Configurações → Meu perfil, grave ou envie sons de até 2 segundos. Quando você entra ou sai de uma call, os outros participantes da chamada ouvem o som que você escolheu.' },
     { title: 'Verificar ausência', text: 'Na mesma call, clique com o botão direito no nome de quem está com o microfone ou o áudio desativado e escolha Verificar ausência. A opção fica abaixo de Editar cargos quando ele aparece. Só essa pessoa recebe o aviso e ouve o som que você configurou em Meu perfil.' },
     { title: 'Gameplay', text: 'Abra Gameplay no topo do chat para escolher um jogo, horário e convidados. O Discordo envia os convites por e-mail e publica uma enquete no canal escolhido.' },
+    ...(installerUrl ? [{
+      title: 'Baixar o aplicativo',
+      text: 'Use o botão amarelo abaixo de Criar servidor para baixar o Discordo para Windows.',
+    }] : []),
   ];
   let dialog: HTMLDialogElement | undefined;
   let cleanup: (() => void) | undefined;
@@ -44,7 +49,7 @@ export function mountTutorial(host: HTMLElement, email: string, previews: { soun
     const saved = read(key);
     if (dialog || (!fromSettings && (!saved || saved === 'done'))) return;
     const mandatory = !fromSettings;
-    let step = mandatory ? Math.max(0, progress.findIndex(item => item === saved)) : 0;
+    let step = mandatory ? Math.min(steps.length - 1, Math.max(0, progress.findIndex(item => item === saved))) : 0;
     const modal = document.createElement('dialog');
     dialog = modal;
     modal.className = 'settings-dialog tutorial-card';
@@ -163,12 +168,13 @@ export function mountTutorial(host: HTMLElement, email: string, previews: { soun
             <label>Silenciar para mim <input type="checkbox"></label>
           </div>
         </div>
-      </div>` : feature === 'welcome' ? '' : previews[feature];
+      </div>` : feature === 'sounds' || feature === 'gameplay' ? previews[feature] : '';
       content.innerHTML = `
         <div class="tutorial-body">
         ${step === 0 ? `<img class="tutorial-welcome-art" src="${import.meta.env.BASE_URL}art/logo-principal.webp" alt="Logo do Discordo" width="2172" height="724">` : `<p class="tutorial-progress">Etapa ${step} de ${steps.length - 1}</p>`}
         <h2 id="tutorial-title" tabindex="-1" autofocus>${title}</h2>
         <p id="tutorial-description">${text}</p>
+        ${feature === 'download' ? `<a class="primary-button tutorial-download" href="${installerUrl}">${icon('download')} Baixar para Windows</a>` : ''}
         ${preview ? `<fieldset class="tutorial-feature-preview" disabled aria-label="Exemplo de ${title}">${preview}</fieldset>` : ''}
         </div>
         <div class="tutorial-actions">

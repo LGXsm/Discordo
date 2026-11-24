@@ -17,6 +17,7 @@ const shapes = {
   send: '<path d="m22 2-7 20-4-9-9-4 20-7ZM11 13 22 2"/>',
   smile: '<circle cx="12" cy="12" r="9"/><path d="M8 14a4.5 4.5 0 0 0 8 0M9 9h.01M15 9h.01"/>',
   pencil: '<path d="m4 16-1 5 5-1L20 8l-4-4L4 16Zm10-10 4 4"/>',
+  download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/>',
   clip: '<path d="m20 11-8 8a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8-8"/>',
   bolt: '<path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/>',
   swap: '<path d="M3 7h17l-4-4m5 14H4l4 4"/>',

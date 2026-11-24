@@ -32,6 +32,8 @@ const channels: Channel[] = [
 ];
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
+const windowsInstallerUrl = 'https://github.com/LGXsm/Discordo/releases/download/desktop-v0.2.1-beta.2/Discordo-Setup.exe';
+const lobbyIconUrl = `${import.meta.env.BASE_URL}art/logo-pequena.webp?v=2`;
 const voiceCall = createVoiceCall();
 let disposeWorkspace: (keepCall?: boolean) => void = () => {};
 let workspaceEmail: string | undefined;
@@ -364,16 +366,17 @@ function showWorkspace(account: Account, focus = false, server?: ServerDetail, k
   app.innerHTML = `
     <main class="workspace" aria-label="Discordo"
       data-desktop-server-name="${server ? safeText(serverName) : ''}"
-      data-desktop-server-icon="${server?.lobby ? `${import.meta.env.BASE_URL}art/logo-pequena.webp`
+      data-desktop-server-icon="${server?.lobby ? lobbyIconUrl
         : server?.hasIcon ? serverIcon(server.id) : ''}">
       <nav class="server-rail" aria-label="Amizades e servidores">
         <button class="server-icon friends-trigger" type="button" data-open-friends aria-label="Amizades" aria-pressed="false">${icon('users')}</button>
         <hr class="server-rail-divider">
         <button type="button" class="server-icon" data-lobby aria-label="Discordo Brasil"${server?.lobby ? ' aria-current="true"' : ''}>
-          <img src="${import.meta.env.BASE_URL}art/logo-pequena.webp" alt="Discordo Brasil" width="46" height="46">
+          <img src="${lobbyIconUrl}" alt="Discordo Brasil" width="46" height="46">
         </button>
         <div class="server-rail-list" data-server-icons></div>
         <button class="server-icon server-add" type="button" data-create-server aria-label="Criar servidor" title="Criar servidor">${icon('plus')}</button>
+        ${window.discordoDesktop ? '' : `<a class="server-icon server-download" data-download-app href="${windowsInstallerUrl}" aria-label="Baixar Discordo para Windows">${icon('download')}</a>`}
       </nav>
       <aside class="channel-panel" id="channel-panel" aria-label="Canais do servidor">
         <header class="server-heading">
@@ -531,28 +534,36 @@ function showWorkspace(account: Account, focus = false, server?: ServerDetail, k
   mountButtonTooltips(workspace, memberLifetime.signal);
   let memberTimer: ReturnType<typeof setTimeout> | undefined;
   let memberRequest: AbortController | undefined;
-  let tutorialSidebar: { channels: boolean; menu: boolean; scrollTop: number } | undefined;
+  let tutorialSidebar: { channels: boolean; menu: boolean; channelScroll: number; railScroll: number } | undefined;
   const tutorialChannelList = workspace.querySelector<HTMLElement>('.channel-list')!;
+  const tutorialRail = workspace.querySelector<HTMLElement>('.server-rail')!;
+  const downloadLink = tutorialRail.querySelector<HTMLAnchorElement>('[data-download-app]');
   const tutorial = mountTutorial(workspace, account.email, { sounds: tutorialSoundsMarkup, gameplay: tutorialGameplayMarkup }, feature => {
-    if (feature === 'sounds' || feature === 'absence') {
+    if (feature === 'sounds' || feature === 'absence' || feature === 'download') {
       tutorialSidebar ??= {
-        channels: workspace.classList.contains('with-channels'), menu: accountMenu.open, scrollTop: tutorialChannelList.scrollTop,
+        channels: workspace.classList.contains('with-channels'), menu: accountMenu.open,
+        channelScroll: tutorialChannelList.scrollTop, railScroll: tutorialRail.scrollTop,
       };
       if (matchMedia('(max-width: 720px)').matches && !workspace.classList.contains('with-channels')) setChannels(true);
       accountMenu.open = feature === 'sounds';
       if (feature === 'sounds') return accountMenu.querySelector('[data-settings]');
+      if (feature === 'download') {
+        downloadLink?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        return downloadLink;
+      }
       const room = workspace.querySelector<HTMLElement>('[data-voice-room^="channel-"]');
       room?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       return room;
     }
     if (tutorialSidebar) {
       accountMenu.open = tutorialSidebar.menu;
-      tutorialChannelList.scrollTop = tutorialSidebar.scrollTop;
+      tutorialChannelList.scrollTop = tutorialSidebar.channelScroll;
+      tutorialRail.scrollTop = tutorialSidebar.railScroll;
       if (workspace.classList.contains('with-channels') !== tutorialSidebar.channels) setChannels(tutorialSidebar.channels);
       tutorialSidebar = undefined;
     }
     return feature === 'gameplay' ? workspace.querySelector('[data-open-gameplay]:not([hidden])') : null;
-  });
+  }, downloadLink?.href);
   disposeWorkspace = (keepCall = false) => {
     exitFriends();
     disposeServerContextMenu();

@@ -31,7 +31,7 @@ export function mountServerTooltips(workspace: HTMLElement) {
     tooltip.style.top = `${Math.max(8, Math.min(bounds.top + (bounds.height - tooltip.offsetHeight) / 2, innerHeight - tooltip.offsetHeight - 8))}px`;
   }
   function serverButton(target: EventTarget | null) {
-    return target instanceof Element ? target.closest<HTMLElement>('[data-server], [data-lobby]') : null;
+    return target instanceof Element ? target.closest<HTMLElement>('[data-server], [data-lobby], [data-download-app]') : null;
   }
   rail.addEventListener('pointerover', event => {
     if (event.pointerType === 'touch') return;

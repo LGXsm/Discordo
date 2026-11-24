@@ -277,6 +277,8 @@ input::placeholder { color: #a395b6; opacity: 1; }
 .server-icon[aria-current]::before { content: ""; position: absolute; left: -8px; height: 25px; width: 3px; border-radius: 0 3px 3px 0; background: var(--gold); }
 .server-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .server-add { background: var(--panel); color: var(--gold); }
+.server-download { border-color: var(--gold); background: var(--gold); color: #271930; }
+.server-download:hover { background: #ffeb65; }
 .friends-trigger { background: var(--panel); color: var(--purple); }
 .friends-trigger svg { width: 22px; height: 22px; }
 .server-add:disabled { opacity: .4; cursor: default; }
@@ -1799,7 +1801,7 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 7px;
-  background: #171220;
+  background: var(--settings-field);
   color: var(--ink);
 }
 .settings-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 5px; }
@@ -1818,7 +1820,7 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 7px;
-  background: var(--settings-field);
+  background: #171220;
   color: var(--ink);
   font: inherit;
 }
@@ -2014,6 +2016,7 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
 .tutorial-body { overflow: auto; padding: var(--tutorial-padding) var(--tutorial-padding) 0;  }
 .tutorial-actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 8px; padding: 14px var(--tutorial-padding) var(--tutorial-padding); }
 .tutorial-actions .primary-button { min-height: 44px; margin: 0 0 0 auto; padding: 6px 16px; }
+.tutorial-download { width: fit-content; min-height: 40px; padding: 6px 12px; text-decoration: none; }
 .tutorial-feature-preview {
   min-width: 0;
   margin: 14px 0 0;
