@@ -56,6 +56,8 @@ O GitHub Actions gera o instalador e prepara uma release em rascunho com
 `Discordo-Setup.exe`, `RELEASES` e o pacote `.nupkg`. Ao publicar a release,
 ela passa a ser elegível para o atualizador. Versões estáveis recebem versões
 estáveis e instalações beta também podem receber pré-releases.
+Se precisar repetir a geração, execute o workflow manualmente informando a
+mesma tag antes de publicar a release.
 
 Durante uma chamada, use **Tela** para escolher um monitor ou janela.
 O áudio do sistema é opcional e está disponível ao compartilhar um monitor.

@@ -4,20 +4,35 @@ on:
   push:
     tags:
       - 'desktop-v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag desktop existente
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: desktop-release-${{ github.ref }}
+  group: desktop-release-${{ inputs.tag || github.ref_name }}
 
 jobs:
   windows:
     runs-on: windows-2025
     timeout-minutes: 25
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
+      - name: Validar a tag
+        shell: pwsh
+        run: |
+          if ($env:RELEASE_TAG -cnotmatch '^desktop-v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
+            throw 'Informe uma tag de versão desktop existente.'
+          }
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -28,7 +43,7 @@ jobs:
         shell: pwsh
         run: |
           $version = (Get-Content desktop/package.json -Raw | ConvertFrom-Json).version
-          if ($env:GITHUB_REF_NAME -cne "desktop-v$version") {
+          if ($env:RELEASE_TAG -cne "desktop-v$version") {
             throw "A tag deve ser desktop-v$version."
           }
       - name: Instalar dependências
@@ -42,7 +57,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = $env:GITHUB_REF_NAME
+          $tag = $env:RELEASE_TAG
           $output = 'desktop/out/make/squirrel.windows/x64'
           $packages = @(Get-ChildItem -LiteralPath $output -Filter '*-full.nupkg' -File)
           if ($packages.Count -ne 1) { throw 'Esperado um pacote completo para atualização.' }
