@@ -13,6 +13,7 @@
   --green: #68cf90;
   --surface-header: #1d1126;
   --surface-selected: #42274b;
+  --settings-field: #171220;
   --profile-card-width: 350px;
 }
 .voice-moderation-alert {
@@ -1153,7 +1154,8 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   color: var(--ink);
   background: var(--settings-surface, var(--panel));
 }
-.settings-dialog:is(.user-settings, .server-dialog:has(> .with-navigation), .gameplay-dialog) {
+.settings-dialog:is(.user-settings, .server-dialog:has(> .with-navigation), .gameplay-dialog,
+  .server-create-dialog, .channel-editor-dialog, .server-invite-dialog) {
   --settings-surface: var(--dark);
 }
 .settings-dialog::backdrop { background: #100b19bd; }
@@ -1237,6 +1239,8 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
 .server-form-panel p { margin: 0; color: var(--muted); font-size: .84rem; }
 .server-form-panel p:empty { display: none; }
 .server-form-panel :is(input:not([type=checkbox], [type=radio], [data-color-hue], [data-color-hex]), select, textarea), .server-actions select { border: 1px solid var(--border); border-radius: 7px; background: #171321; color: var(--ink); padding: 8px; }
+.settings-dialog:is(.server-create-dialog, .channel-editor-dialog, .server-invite-dialog)
+  .server-form-panel :is(input:not([type=checkbox]), select) { background: var(--settings-field); }
 .server-form-panel input[type=file] {
   width: 100%;
   min-width: 0;
@@ -1256,6 +1260,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   font-weight: 700;
   cursor: pointer;
 }
+.server-create-dialog .server-form-panel input[type=file]::file-selector-button { background: transparent; }
 .server-form-panel input[type=file]:enabled::file-selector-button:hover {
   background: var(--surface-selected);
   border-color: var(--purple);
@@ -1550,7 +1555,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: #171220;
+  background: var(--settings-field);
   color: var(--ink);
   font: inherit;
 }
@@ -1759,7 +1764,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 7px;
-  background: #171220;
+  background: var(--settings-field);
   color: var(--ink);
   font: inherit;
 }

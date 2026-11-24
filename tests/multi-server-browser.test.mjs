@@ -7,6 +7,32 @@ import test from 'node:test';
 import { createServer } from 'vite';
 import { launchTestChrome } from './browser-chrome.mjs';
 
+function assertSettingsPalette(dialog) {
+  const reference = document.createElement('dialog');
+  reference.className = 'settings-dialog user-settings';
+  reference.innerHTML = '<header class="settings-header"></header><input class="profile-name">';
+  document.body.append(reference);
+  try {
+    const compare = (element, standard) => {
+      for (const key of ['backgroundColor', 'borderBottomColor', 'color']) {
+        if (getComputedStyle(element)[key] !== getComputedStyle(standard)[key]) {
+          throw Error(`${dialog.getAttribute('aria-label')} does not match user settings for ${key}`);
+        }
+      }
+    };
+    compare(dialog, reference);
+    compare(dialog.querySelector('.settings-header'), reference.querySelector('.settings-header'));
+    for (const field of dialog.querySelectorAll('input:not([type=checkbox]), select')) {
+      if (field.type !== 'file') compare(field, reference.querySelector('input'));
+      else if (getComputedStyle(field).backgroundColor !== getComputedStyle(reference.querySelector('input')).backgroundColor) {
+        throw Error('The server image field does not match user settings');
+      }
+    }
+  } finally {
+    reference.remove();
+  }
+}
+
 test('Settings and channel features stay in the selected server across reloads', { timeout: 45000 }, async () => {
   const profile = await mkdtemp(path.join(os.tmpdir(), 'discordo-servers-test-'));
   const account = { name: 'Player', email: 'player@example.test', birthDate: '2000-01-01' };
@@ -1152,6 +1178,7 @@ test('Settings and channel features stay in the selected server across reloads',
         const gear = '[data-edit-channel="' + id + '"]';
         (await wait(gear)).click();
         const editor = await wait('.channel-editor-dialog[open]');
+        (${assertSettingsPalette})(editor);
         const frame = editor.getBoundingClientRect();
         const header = editor.querySelector('.settings-header').getBoundingClientRect();
         if (Math.abs(header.left - frame.left - 1) > 1 || Math.abs(frame.right - header.right - 1) > 1) {
@@ -1190,6 +1217,7 @@ test('Settings and channel features stay in the selected server across reloads',
       Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { async writeText(value) { copied = value; } } });
       trigger.click();
       const input = await wait('.server-invite-dialog input[readonly]');
+      (${assertSettingsPalette})(input.closest('dialog'));
       const button = await wait('.server-invite-dialog .server-invite button');
       const frame = input.closest('dialog').getBoundingClientRect();
       const header = input.closest('dialog').querySelector('.settings-header').getBoundingClientRect();
@@ -1313,6 +1341,7 @@ test('Settings and channel features stay in the selected server across reloads',
       create.disabled = false;
       create.click();
       const dialog = await wait('.server-create-dialog[open]');
+      (${assertSettingsPalette})(dialog);
       const header = dialog.querySelector('.settings-header').getBoundingClientRect();
       const bounds = dialog.getBoundingClientRect();
       if (bounds.width > 520 || bounds.width < 460 ||
