@@ -46,6 +46,16 @@ if (process.isMainFrame && location.origin === 'https://discordo.lgmartinez.com'
   }, { once: true });
 
   contextBridge.exposeInMainWorld('discordoDesktop', {
+    updates: {
+      getState: () => ipcRenderer.invoke('discordo:updates:get'),
+      check: () => ipcRenderer.invoke('discordo:updates:check'),
+      restart: () => ipcRenderer.invoke('discordo:updates:restart'),
+      onStatus(listener) {
+        const handler = (_event, state) => listener(state);
+        ipcRenderer.on('discordo:update-status', handler);
+        return () => ipcRenderer.removeListener('discordo:update-status', handler);
+      },
+    },
     setVoiceShortcuts: bindings => ipcRenderer.invoke('discordo:voice-shortcuts', bindings),
     onVoiceShortcut(listener) {
       const handler = (_event, action) => listener(action);

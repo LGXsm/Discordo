@@ -42,11 +42,16 @@ for (const accept of [false, true]) test(`The Windows update notice handles ${ac
   let checks = 0;
   let restarts = 0;
   let notices = 0;
+  const statuses = [];
   autoUpdater.setFeedURL = options => { feed = options.url; };
   autoUpdater.checkForUpdates = () => { checks++; };
   autoUpdater.quitAndInstall = () => { restarts++; };
   const app = { isPackaged: true, getVersion: () => '0.2.0-beta.2' };
-  const net = { fetch: async () => ({ ok: true, json: async () => [release('0.2.0-beta.3')] }) };
+  let requests = 0;
+  const net = { fetch: async () => {
+    requests++;
+    return { ok: true, json: async () => [release('0.2.0-beta.3')] };
+  } };
   const showUpdateNotice = async (parent, version) => {
     assert.equal(parent, window);
     assert.equal(version, '0.2.0-beta.3');
@@ -54,7 +59,11 @@ for (const accept of [false, true]) test(`The Windows update notice handles ${ac
     return accept;
   };
 
-  startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun: true });
+  const updater = startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun: true,
+    onStatus: state => statuses.push(state.status) });
+  assert.equal(updater.getState().status, 'idle');
+  updater.restart();
+  assert.equal(restarts, 0);
   mock.timers.tick(14999);
   assert.equal(checks, 0);
   mock.timers.tick(1);
@@ -62,11 +71,18 @@ for (const accept of [false, true]) test(`The Windows update notice handles ${ac
   await Promise.resolve();
   assert.equal(checks, 1);
   assert.match(feed, /desktop-v0\.2\.0-beta\.3$/);
+  await updater.check();
+  assert.equal(requests, 1);
+  autoUpdater.emit('update-available');
+  await updater.check();
+  assert.equal(requests, 1);
 
   autoUpdater.emit('update-downloaded');
   await Promise.resolve();
   assert.equal(notices, 1);
   assert.equal(restarts, Number(accept));
+  assert.deepEqual(statuses, ['checking', 'downloading', 'ready']);
+  assert.equal(updater.getState().availableVersion, '0.2.0-beta.3');
   mock.timers.tick(30 * 60 * 1000);
   assert.equal(checks, 1);
 
@@ -74,5 +90,9 @@ for (const accept of [false, true]) test(`The Windows update notice handles ${ac
   await Promise.resolve();
   assert.equal(notices, 1);
   assert.equal(restarts, Number(accept));
+  if (!accept) {
+    updater.restart();
+    assert.equal(restarts, 1);
+  }
   window.emit('closed');
 });

@@ -109,9 +109,26 @@ if (require('electron-squirrel-startup') || !app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     Menu.setApplicationMenu(null);
     createWindow();
-    if (existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))) {
-      startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun: process.argv.includes('--squirrel-firstrun') });
-    }
+    const contents = window.webContents;
+    const updater = existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))
+      ? startUpdates({
+        app, autoUpdater, showUpdateNotice, net, window,
+        onFirstRun: process.argv.includes('--squirrel-firstrun'),
+        onStatus: state => {
+          if (isDiscordo(contents.getURL())) contents.send('discordo:update-status', state);
+        },
+      }) : undefined;
+    const trusted = event => event.senderFrame === contents.mainFrame && isDiscordo(event.senderFrame?.url);
+    const updateState = () => updater?.getState() ?? { version: app.getVersion(), status: 'unavailable' };
+    contents.ipc.handle('discordo:updates:get', event => trusted(event) ? updateState() : undefined);
+    contents.ipc.handle('discordo:updates:check', event => {
+      if (!trusted(event)) return;
+      void updater?.check();
+      return updateState();
+    });
+    contents.ipc.handle('discordo:updates:restart', event => {
+      if (trusted(event)) updater?.restart();
+    });
   }).catch(console.error);
   app.on('second-instance', () => {
     if (!window) return;

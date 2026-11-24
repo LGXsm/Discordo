@@ -2212,7 +2212,7 @@ button.channel:hover { background: var(--panel); color: var(--ink); }
   .account-setting-row > :last-child { grid-column: 2; grid-row: 1 / span 2; }
 }
 
-.user-settings:has(#settings-account:not([hidden])) .user-settings-footer { display: none; }
+.user-settings:has(:is(#settings-account, #settings-updates):not([hidden])) .user-settings-footer { display: none; }
 
 
 .user-settings {

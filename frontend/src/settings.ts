@@ -8,6 +8,7 @@ import { mountVoiceSettings, voiceSettingsMarkup } from './voice-settings';
 import { mountProfileSounds, profileSoundsMarkup } from './profile-sounds';
 import { dismissOnBackdrop } from './dialog-dismiss';
 import { mountShortcutSettings, shortcutSettingsMarkup } from './shortcuts';
+import { desktopUpdateSettingsMarkup, mountDesktopUpdateSettings } from './desktop-updates';
 import { mountProfileAppearance, profileAppearanceMarkup, profileDecorationsMarkup, stopProfileEffect } from './profile-appearance';
 import { confirmSettingsExit } from './settings-confirm';
 import { profileCardDetailsMarkup, renderProfileCardDetails, type ProfileCardDetails } from './profile-card-details';
@@ -33,6 +34,10 @@ export function openSettings(
   onTutorial?: () => void,
 ) {
   const dialog = document.createElement('dialog');
+  const desktopUpdates = window.discordoDesktop?.updates;
+  const navigationSections = desktopUpdates
+    ? [...settingsSections, { key: 'updates', glyph: 'clock', label: 'Atualizações', links: [] } as const]
+    : settingsSections;
   dialog.className = 'settings-dialog user-settings';
   dialog.setAttribute('aria-labelledby', 'settings-title');
   dialog.innerHTML = `
@@ -42,13 +47,13 @@ export function openSettings(
     </header>
     <div class="settings-layout">
       <nav class="settings-nav" aria-label="Seções das configurações">
-        ${settingsSections.map(({ key, glyph, label, links }) => `
-          <button type="button" aria-pressed="${initial === key}" aria-expanded="${initial === key}" aria-controls="settings-${key}" ${initial === key ? 'autofocus' : ''}>${icon(glyph)} ${label}</button>
-          <div class="settings-subnav" data-parent-tab="settings-${key}" ${initial === key ? 'data-expanded' : 'inert'}>
+        ${navigationSections.map(({ key, glyph, label, links }) => `
+          <button type="button" aria-pressed="${initial === key}" ${links.length ? `aria-expanded="${initial === key}"` : ''} aria-controls="settings-${key}" ${initial === key ? 'autofocus' : ''}>${icon(glyph)} ${label}</button>
+          ${links.length ? `<div class="settings-subnav" data-parent-tab="settings-${key}" ${initial === key ? 'data-expanded' : 'inert'}>
             <div class="settings-subnav-items">
               ${links.map(([target, text]) => `<button type="button" data-settings-jump="${target}">${text}</button>`).join('')}
             </div>
-          </div>`).join('')}
+          </div>` : ''}`).join('')}
       </nav>
       <div class="settings-content">
       <section class="settings-section" id="settings-profile" aria-labelledby="settings-profile-title" ${initial === 'voice' ? 'hidden' : ''}>
@@ -106,6 +111,7 @@ export function openSettings(
       </section>
       ${voiceSettingsMarkup}
       ${shortcutSettingsMarkup}
+      ${desktopUpdates ? desktopUpdateSettingsMarkup : ''}
       </div>
     </div>
     <div class="settings-footer user-settings-footer">
@@ -305,7 +311,7 @@ export function openSettings(
       void leaveSettings(() => {
         for (const item of navigation) {
           item.setAttribute('aria-pressed', String(item === button));
-          item.setAttribute('aria-expanded', String(item === button));
+          if (item.hasAttribute('aria-expanded')) item.setAttribute('aria-expanded', String(item === button));
         }
         for (const section of sections) section.hidden = section.id !== button.getAttribute('aria-controls');
         const targetSection = button.getAttribute('aria-controls');
@@ -326,10 +332,12 @@ export function openSettings(
     });
   }
   const submenus = dialog.querySelectorAll<HTMLElement>('.settings-subnav');
-  const sectionLinks = [...dialog.querySelectorAll<HTMLButtonElement>('[data-settings-jump]')].map(button => ({
-    button,
-    target: dialog.querySelector<HTMLElement>('#' + button.dataset.settingsJump)!,
-  }));
+  const sectionLinks = [...dialog.querySelectorAll<HTMLButtonElement>('[data-settings-jump]')].flatMap(button => {
+    const target = dialog.querySelector<HTMLElement>('#' + button.dataset.settingsJump);
+    if (target) return [{ button, target }];
+    button.remove();
+    return [];
+  });
   let jumpPosition: number | undefined;
   function selectLink(active?: HTMLButtonElement) {
     for (const { button } of sectionLinks) {
@@ -443,7 +451,12 @@ export function openSettings(
   dialog.querySelector('[data-close]')!.addEventListener('click', close);
   dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
   dismissOnBackdrop(dialog, undefined, close);
-  dialog.addEventListener('close', () => dialog.remove());
+  const updateSection = dialog.querySelector<HTMLElement>('#settings-updates');
+  const unmountUpdates = desktopUpdates && updateSection && mountDesktopUpdateSettings(updateSection, desktopUpdates);
+  dialog.addEventListener('close', () => {
+    if (unmountUpdates) unmountUpdates();
+    dialog.remove();
+  });
   refreshPreview();
   host.append(dialog);
   dialog.showModal();

@@ -1,8 +1,11 @@
+import type { DesktopUpdates } from './desktop-updates';
+
 type Action = 'microphone' | 'audio';
 type Bindings = Partial<Record<Action, string>>;
 declare global {
   interface Window {
     discordoDesktop?: {
+      updates?: DesktopUpdates;
       setVoiceShortcuts: (configuration: Bindings & { active: boolean }) => Promise<void>;
       onVoiceShortcut: (listener: (action: Action) => void) => () => void;
     };

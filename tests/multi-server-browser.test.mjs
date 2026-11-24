@@ -1762,6 +1762,64 @@ test('Settings and channel features stay in the selected server across reloads',
       back.click();
       if (dialog.isConnected) throw Error('The mobile return control did not reopen the server');
     })()`);
+    await command('Emulation.setDeviceMetricsOverride', { width: 1280, height: 920, deviceScaleFactor: 1, mobile: false });
+    await command('Page.addScriptToEvaluateOnNewDocument', {
+      source: `(() => {
+        let listener;
+        window.discordoDesktop = {
+          async setVoiceShortcuts() {},
+          onVoiceShortcut() { return () => {}; },
+          updates: {
+            async getState() { return { version: '0.2.1-beta.1', status: 'idle' }; },
+            async check() { return { version: '0.2.1-beta.1', status: 'checking' }; },
+            async restart() { window.updateRestarted = true; },
+            onStatus(callback) { listener = callback; return () => { listener = undefined; }; },
+          },
+        };
+        window.updateStatus = status => listener({ version: '0.2.1-beta.1', availableVersion: '0.2.1-beta.2', status });
+      })()`,
+    });
+    await navigatePage(vite.resolvedUrls.local[0]);
+    await evaluate(`(async () => {
+      const gear = '[data-voice-settings]';
+      for (let i = 0; i < 150 && !document.querySelector(gear); i++) {
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+      document.querySelector(gear).click();
+      const settings = document.querySelector('.user-settings[open]');
+      const content = settings.querySelector('.settings-content');
+      const active = () => settings.querySelector('[data-settings-jump][aria-current=location]')?.dataset.settingsJump;
+      if (active() !== 'profile-basic') throw Error('Desktop settings did not initially select Identity');
+      settings.querySelector('[data-settings-jump=profile-audio]').click();
+      if (content.scrollTop === 0 || active() !== 'profile-audio') throw Error('Desktop settings did not navigate to custom audio');
+      content.scrollTop = 0;
+      content.dispatchEvent(new Event('scroll'));
+      if (active() !== 'profile-basic') throw Error('Desktop settings kept the audio marker after scrolling back');
+      settings.querySelector('[aria-controls=settings-shortcuts]').click();
+      if (active() !== 'shortcut-bindings' || settings.querySelector('[data-settings-jump=shortcut-extension]')) {
+        throw Error('Desktop settings exposed a shortcut subsection that does not exist');
+      }
+      const updates = settings.querySelector('[aria-controls=settings-updates]');
+      if (updates.previousElementSibling.dataset.parentTab !== 'settings-shortcuts') throw Error('Updates is out of order');
+      await Promise.resolve();
+      updates.click();
+      await Promise.resolve();
+      const check = settings.querySelector('[data-check-updates]');
+      const status = settings.querySelector('[data-update-status]');
+      const restart = settings.querySelector('[data-restart-update]');
+      if (check.disabled || !settings.querySelector('[data-desktop-version]').textContent.includes('0.2.1-beta.1')) {
+        throw Error('Installed version is missing');
+      }
+      check.click();
+      await Promise.resolve();
+      if (!check.disabled || !status.textContent.startsWith('Verificando')) throw Error('Checking feedback is missing');
+      window.updateStatus('downloading');
+      if (!check.disabled || !status.textContent.startsWith('Baixando')) throw Error('Download feedback is missing');
+      window.updateStatus('ready');
+      if (restart.hidden || !status.textContent.includes('0.2.1-beta.2')) throw Error('Downloaded release is not displayed');
+      restart.click();
+      if (!window.updateRestarted) throw Error('Restart did not reach the updater');
+    })()`);
   } catch (error) {
     console.error(error, { visits, writes });
     throw error;

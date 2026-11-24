@@ -23,26 +23,34 @@ function findUpdate(releases, version) {
   return feed;
 }
 
-function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun }) {
+function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun, onStatus = () => {} }) {
   if (!app.isPackaged || process.platform !== 'win32' || process.arch !== 'x64') return;
-  let checking = false;
-  let downloaded = false;
+  let status = 'idle';
   let pendingVersion;
+  const getState = () => ({ version: app.getVersion(), status, availableVersion: pendingVersion });
+
+  function setStatus(next) {
+    status = next;
+    if (!window.isDestroyed()) onStatus(getState());
+  }
 
   function failed(error) {
-    checking = false;
+    pendingVersion = undefined;
+    setStatus('error');
     console.error('Não foi possível atualizar o Discordo.', error);
   }
 
   async function check() {
-    if (checking || downloaded) return;
-    checking = true;
+    if (['checking', 'downloading', 'ready'].includes(status) || window.isDestroyed()) return;
+    pendingVersion = undefined;
+    setStatus('checking');
     try {
       const response = await net.fetch(releasesApi, { signal: AbortSignal.timeout(15000) });
       if (!response.ok) throw Error(`GitHub respondeu com HTTP ${response.status}`);
       const feed = findUpdate(await response.json(), app.getVersion());
-      if (!feed || window.isDestroyed()) {
-        checking = false;
+      if (window.isDestroyed()) return;
+      if (!feed) {
+        setStatus('current');
         return;
       }
       pendingVersion = feed.slice(feed.lastIndexOf('/desktop-v') + '/desktop-v'.length);
@@ -54,14 +62,20 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
   }
 
   autoUpdater.on('error', failed);
-  autoUpdater.on('update-not-available', () => { checking = false; });
+  autoUpdater.on('update-available', () => setStatus('downloading'));
+  autoUpdater.on('update-not-available', () => {
+    pendingVersion = undefined;
+    setStatus('current');
+  });
+  function restart() {
+    if (status === 'ready' && !window.isDestroyed()) autoUpdater.quitAndInstall();
+  }
   autoUpdater.on('update-downloaded', async () => {
-    if (downloaded) return;
-    downloaded = true;
-    checking = false;
+    if (status === 'ready') return;
+    setStatus('ready');
     if (window.isDestroyed()) return;
     try {
-      if (await showUpdateNotice(window, pendingVersion) && !window.isDestroyed()) autoUpdater.quitAndInstall();
+      if (await showUpdateNotice(window, pendingVersion)) restart();
     } catch (error) {
       console.error(error);
     }
@@ -73,6 +87,7 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
     clearTimeout(firstCheck);
     clearInterval(poll);
   });
+  return { getState, check, restart };
 }
 
 module.exports = { findUpdate, startUpdates };
