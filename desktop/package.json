@@ -1,7 +1,7 @@
 {
   "name": "discordo-desktop",
   "productName": "Discordo",
-  "version": "0.2.0-beta.2",
+  "version": "0.2.0-beta.3",
   "description": "Cliente do Discordo para Windows",
   "author": "LGXsm",
   "private": true,

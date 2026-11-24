@@ -53,6 +53,7 @@ function createWindow() {
     minWidth: 360,
     minHeight: 480,
     backgroundColor: '#190f23',
+    accentColor: '#53345c',
     titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#1b1224', symbolColor: '#dbc7e6', height: 30 },
     icon: path.join(__dirname, 'discordo.ico'),

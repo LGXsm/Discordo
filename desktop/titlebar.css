@@ -1,5 +1,5 @@
 html {
-  --discordo-titlebar-height: 30px;
+  --discordo-titlebar-height: 31px;
   --discordo-titlebar-background: #1b1224;
 }
 
@@ -18,6 +18,32 @@ html:has(:fullscreen) {
   font: 600 12px "Segoe UI", sans-serif;
   user-select: none;
   app-region: drag;
+}
+
+#discordo-desktop-titlebar > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: min(60%, calc(2 * env(titlebar-area-width, 100vw) - 100vw - 12px));
+  white-space: nowrap;
+}
+
+.discordo-desktop-title-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.discordo-desktop-title-icon:not([hidden]) {
+  display: grid;
+  flex: 0 0 16px;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #43284c;
+  color: #ffdb38;
+  font-size: 9px;
+  object-fit: cover;
 }
 
 html:has(:fullscreen) #discordo-desktop-titlebar {
