@@ -1,5 +1,5 @@
 html {
-  --discordo-titlebar-height: 31px;
+  --discordo-titlebar-height: max(31px, calc(env(titlebar-area-y, 0px) + env(titlebar-area-height, 30px) + 1px));
   --discordo-titlebar-background: #1b1224;
 }
 
@@ -52,6 +52,27 @@ html:has(:fullscreen) #discordo-desktop-titlebar {
 
 #app > :is(.entry, .workspace) {
   height: calc(100dvh - var(--discordo-titlebar-height)) !important;
+}
+
+.settings-dialog:modal:not([data-anchored]) {
+  --desktop-dialog-gap: 16px;
+  inset: calc(var(--discordo-titlebar-height) + var(--desktop-dialog-gap)) 0 var(--desktop-dialog-gap) !important;
+  max-height: calc(100dvh - var(--discordo-titlebar-height) - 2 * var(--desktop-dialog-gap)) !important;
+}
+
+.settings-dialog:modal:not([data-anchored])::backdrop {
+  inset-block-start: var(--discordo-titlebar-height) !important;
+}
+
+@media (max-width: 1080px), (max-height: 740px) {
+  .settings-dialog:is(.user-settings, .server-dialog:has(> .with-navigation)):modal {
+    --desktop-dialog-gap: 0px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: calc(100dvh - var(--discordo-titlebar-height)) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
 }
 
 @media (max-width: 720px) {

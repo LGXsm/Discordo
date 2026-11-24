@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -1521,6 +1521,34 @@ test('Settings and channel features stay in the selected server across reloads',
       settings.querySelector('[aria-controls=settings-account]').click();
 
     })()`);
+    const desktopCss = await readFile(new URL('../desktop/titlebar.css', import.meta.url), 'utf8');
+    await evaluate(`(() => {
+      const style = document.createElement('style');
+      style.id = 'desktop-window-style-test';
+      style.textContent = ${JSON.stringify(desktopCss)};
+      document.head.append(style);
+    })()`);
+    for (const [width, height, compact] of [[1280, 900, false], [1060, 780, true], [390, 480, true]]) {
+      await command('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+      await evaluate(`(() => {
+        const dialog = document.querySelector('.user-settings[open]');
+        const box = dialog.getBoundingClientRect();
+        const close = dialog.querySelector('[data-close]').getBoundingClientRect();
+        const backdropTop = Number.parseFloat(getComputedStyle(dialog, '::backdrop').top);
+        if (box.top < 31 || box.bottom > innerHeight + 1 || close.top < box.top || close.right > box.right) {
+          throw Error('Desktop settings overlap the window controls or extend outside the window');
+        }
+        if (backdropTop !== 31) throw Error('Desktop settings dim the window controls');
+        if (${compact} ? (Math.abs(box.top - 31) > 1 || Math.abs(box.width - innerWidth) > 1 ||
+          Math.abs(box.bottom - innerHeight) > 1) : (box.top < 47 || box.width >= innerWidth)) {
+          throw Error('Desktop settings did not adapt to the window size');
+        }
+        const content = dialog.querySelector('.settings-content');
+        content.scrollTop = 50;
+        if (!content.scrollTop) throw Error('Desktop settings content cannot scroll');
+      })()`);
+    }
+    await evaluate("document.querySelector('#desktop-window-style-test').remove()");
     await command('Emulation.clearDeviceMetricsOverride');
     await evaluate(`(async () => {
       const settings = document.querySelector('.user-settings[open]');
