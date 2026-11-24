@@ -72,7 +72,8 @@ As contas, sessões, perfis e mensagens são gravados no MySQL ou MariaDB. O PHP
 A hierarquia de cargos fica em `discordo-role-order`, também ao lado da configuração privada do banco, e dispensa migração SQL. A administração organiza os cargos personalizados em **Configurações do servidor → Cargos**. A lista de membros usa o cargo mais alto de cada pessoa e mostra Criador e ADM antes dos cargos personalizados.
 
 Para preparar um banco local vazio, selecione-o no MariaDB e importe
-`database/discordo-esquema-atual.sql`, seguido de `database/migrations/friends.sql`.
+`database/discordo-esquema-atual.sql`, seguido de `database/migrations/friends.sql`
+e `database/migrations/chat-edits-reactions.sql`.
 O esquema consolidado contém a estrutura das demais migrações.
 Em seguida, cadastre o servidor de entrada e dois canais para testar o app.
 

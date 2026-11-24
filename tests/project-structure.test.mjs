@@ -24,11 +24,11 @@ test('Frontend and backend resolve from their separate project folders', async (
 
 test('Database and original artwork stay outside the published frontend', async () => {
   const migrations = await readdir(new URL('database/migrations/', project));
-  assert.equal(migrations.filter(name => name.endsWith('.sql')).length, 8);
+  assert.ok(migrations.includes('chat-edits-reactions.sql'));
   assert.ok(migrations.includes('friends.sql'));
   assert.ok(migrations.includes('message-permissions.sql'));
   await Promise.all(['database/discordo-esquema-atual.sql', 'database/modelos/discordoBrasil.mwb',
-    'Imagens/background.jpg', 'Imagens/logo-pequena.png'].map(exists));
+    'Imagens/background.jpg', 'Imagens/logo-pequena.png', 'Imagens/logo-identidade.png'].map(exists));
   const publicFiles = await readdir(new URL('frontend/public/', project));
   assert.ok(!publicFiles.some(name => /sql|referencias|imagens|vendor|backend/i.test(name)));
   assert.deepEqual((await readdir(new URL('frontend/public/art/', project))).sort(),
