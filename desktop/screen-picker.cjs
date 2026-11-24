@@ -24,13 +24,15 @@ function installScreenPicker(browserWindow, desktopSession, isDiscordo) {
     const requestedPage = navigation;
     const sources = await desktopCapturer.getSources({
       types: ['screen', 'window'],
-      thumbnailSize: { width: 240, height: 135 },
+      thumbnailSize: { width: 320, height: 180 },
+      fetchWindowIcons: true,
     });
     if (!sources.length || requestedPage !== navigation || !trusted(request)) return null;
     const choices = sources.map(source => ({
       name: source.name,
       screen: source.id.startsWith('screen:'),
-      thumbnail: source.thumbnail.toDataURL(),
+      thumbnail: source.thumbnail.isEmpty() ? '' : source.thumbnail.toDataURL(),
+      appIcon: source.appIcon && !source.appIcon.isEmpty() ? source.appIcon.toDataURL() : '',
     }));
 
     return new Promise(resolve => {
@@ -38,10 +40,10 @@ function installScreenPicker(browserWindow, desktopSession, isDiscordo) {
         parent: browserWindow,
         modal: true,
         title: 'Compartilhar tela · Discordo',
-        width: 650,
-        height: 590,
+        width: 700,
+        height: 570,
         minWidth: 380,
-        minHeight: 320,
+        minHeight: 380,
         show: false,
         backgroundColor: '#1b1325',
         webPreferences: {

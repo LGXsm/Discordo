@@ -5,33 +5,63 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
   <title>Compartilhar tela · Discordo</title>
   <style>
-    body { box-sizing: border-box; height: 100vh; margin: 0; padding: 20px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 16px; color: #faf3ff; background: #1b1325; font: 14px system-ui, sans-serif; color-scheme: dark; }
-    h1 { margin: 0; font-size: 20px; }
-    #status { margin: 4px 0 0; color: #d2b4e3; }
-    #sources { overflow: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-content: start; gap: 10px; padding: 3px; }
-    #sources label { position: relative; min-width: 0; border: 1px solid #51355c; border-radius: 10px; padding: 8px; background: #281a32; cursor: pointer; }
-    #sources label:has(input:checked) { border-color: #ffdb38; }
-    #sources label:focus-within { outline: 2px solid #d2b4e3; }
-    #sources input { position: absolute; top: 10px; left: 10px; accent-color: #ffdb38; }
-    #sources img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #130e1a; border-radius: 6px; }
-    #sources span { display: block; margin-top: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
-    footer label { margin-right: auto; }
-    button { border: 1px solid #694575; border-radius: 7px; padding: 8px 14px; background: #342341; color: inherit; font: inherit; cursor: pointer; }
-    #share { background: #ffdb38; color: #160d1a; border-color: #ffdb38; font-weight: 650; }
-    button:disabled { opacity: .5; cursor: default; }
+    :root { color-scheme: dark; --shell: #1b1325; --well: #130e1a; --surface: #281a32; --border: #51355c; --muted: #d2b4e3; --gold: #ffdb38; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { height: 100vh; margin: 0; padding: 16px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 12px; color: #faf3ff; background: var(--shell); font: 14px system-ui, sans-serif; }
+    h1 { margin: 0; font-size: 19px; }
+    [role="tablist"] { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--well); border: 1px solid var(--border); border-radius: 9px; }
+    button { border: 1px solid var(--border); border-radius: 7px; padding: 8px 14px; background: #342341; color: inherit; font: inherit; cursor: pointer; }
+    button:enabled:hover { border-color: var(--muted); }
+    button:focus-visible, .source:has(input:focus-visible) { outline: 2px solid var(--muted); outline-offset: 1px; }
+    [role="tab"] { min-width: 0; border-color: transparent; background: transparent; color: var(--muted); font-weight: 600; }
+    [role="tab"][aria-selected="true"] { background: #422853; border-color: #694575; color: var(--gold); }
+    #sources { overflow: hidden; background: var(--well); border: 1px solid var(--border); border-radius: 10px; }
+    [role="tabpanel"] { height: 100%; overflow: auto; padding: 12px; scrollbar-color: #694575 var(--well); }
+    .source-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    #screens .source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .source { position: relative; display: grid; gap: 8px; min-width: 0; padding: 7px; overflow: hidden; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; }
+    .source:hover { border-color: var(--muted); }
+    .source:has(input:checked) { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+    .source input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .source-preview { display: grid; place-items: center; aspect-ratio: 16 / 9; background: var(--well); border-radius: 4px; color: var(--muted); font-size: 11px; overflow: hidden; }
+    .source-preview img { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+    .source-caption { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 18px; font-size: 12px; }
+    .source-caption img { width: 16px; height: 16px; object-fit: contain; flex: none; }
+    .source-caption span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .source-panel-status { margin: 0; color: var(--muted); font-size: 13px; }
+    footer { display: grid; gap: 10px; }
+    #audio-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); }
+    #sound { margin: 0; width: 17px; height: 17px; accent-color: var(--gold); }
+    .actions { display: flex; justify-content: flex-end; gap: 8px; }
+    #share { background: var(--gold); color: #160d1a; border-color: var(--gold); font-weight: 650; }
+    button:disabled { opacity: .45; cursor: default; }
+    @media (max-width: 530px) { .source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 430px) { #screens .source-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Compartilhar tela</h1>
-    <p id="status" role="status">Escolha uma tela ou janela para transmitir.</p>
-  </header>
-  <div id="sources" role="group" aria-label="Fontes de compartilhamento"></div>
+  <header><h1>Compartilhar tela</h1></header>
+  <div role="tablist" aria-label="Tipo de compartilhamento">
+    <button id="windows-tab" type="button" role="tab" aria-selected="true" aria-controls="windows">Janela do aplicativo</button>
+    <button id="screens-tab" type="button" role="tab" aria-selected="false" aria-controls="screens" tabindex="-1">Tela inteira</button>
+  </div>
+  <div id="sources">
+    <section id="windows" role="tabpanel" aria-labelledby="windows-tab">
+      <p class="source-panel-status" role="status">Carregando janelas…</p>
+      <div class="source-grid" role="group" aria-label="Janelas disponíveis"></div>
+    </section>
+    <section id="screens" role="tabpanel" aria-labelledby="screens-tab" hidden>
+      <p class="source-panel-status" role="status">Carregando telas…</p>
+      <div class="source-grid" role="group" aria-label="Telas disponíveis"></div>
+    </section>
+  </div>
   <footer>
-    <label hidden><input id="sound" type="checkbox"> Incluir áudio do sistema</label>
-    <button id="cancel" type="button">Cancelar</button>
-    <button id="share" type="button" disabled>Compartilhar</button>
+    <label id="audio-option" hidden>Compartilhar com áudio do sistema <input id="sound" type="checkbox"></label>
+    <div class="actions">
+      <button id="cancel" type="button">Cancelar</button>
+      <button id="share" type="button" disabled>Compartilhar</button>
+    </div>
   </footer>
 </body>
 </html>
