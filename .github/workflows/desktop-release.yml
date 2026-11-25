@@ -52,6 +52,21 @@ jobs:
         run: node --test tests/desktop-shortcuts.test.mjs tests/desktop-updates.test.mjs tests/desktop-screen-picker.test.mjs tests/desktop-shortcut-icon.test.mjs
       - name: Gerar instalador
         run: npm --prefix desktop run make
+      - name: Verificar instalação limpa
+        shell: pwsh
+        run: ./desktop/test-installer.ps1 -Installer 'desktop/out/make/squirrel.windows/x64/Discordo-Setup.exe'
+      - name: Empacotar versão portátil
+        shell: pwsh
+        run: |
+          $source = (Resolve-Path 'desktop/out/Discordo-win32-x64').Path
+          $archive = Join-Path (Resolve-Path 'desktop/out/make/squirrel.windows/x64').Path 'Discordo-Portable-Windows-x64.zip'
+          [IO.Compression.ZipFile]::CreateFromDirectory($source, $archive, [IO.Compression.CompressionLevel]::Fastest, $false)
+          $zip = [IO.Compression.ZipFile]::OpenRead($archive)
+          try {
+            foreach ($name in @('Discordo.exe', 'resources/app.asar')) {
+              if ($null -eq $zip.GetEntry($name)) { throw "Arquivo ausente no ZIP: $name" }
+            }
+          } finally { $zip.Dispose() }
       - name: Criar release em rascunho
         shell: pwsh
         env:
@@ -62,7 +77,7 @@ jobs:
           $packages = @(Get-ChildItem -LiteralPath $output -Filter '*-full.nupkg' -File)
           if ($packages.Count -ne 1) { throw 'Esperado um pacote completo para atualização.' }
 
-          $files = @("$output/Discordo-Setup.exe", "$output/RELEASES", $packages[0].FullName)
+          $files = @("$output/Discordo-Setup.exe", "$output/Discordo-Portable-Windows-x64.zip", "$output/RELEASES", $packages[0].FullName)
           foreach ($file in $files) {
             if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Arquivo ausente: $file" }
           }

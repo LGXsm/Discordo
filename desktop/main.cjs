@@ -103,7 +103,10 @@ function createWindow() {
   void loadHome(browserWindow).catch(console.error);
 }
 
-if (require('electron-squirrel-startup') || !app.requestSingleInstanceLock()) {
+// The Squirrel hook quits after its shortcut command completes.
+if (require('electron-squirrel-startup')) return;
+
+if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   app.setAppUserModelId('com.squirrel.Discordo.Discordo');
