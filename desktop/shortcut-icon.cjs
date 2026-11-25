@@ -1,4 +1,4 @@
-const { existsSync } = require('node:fs');
+const { existsSync, realpathSync } = require('node:fs');
 const path = require('node:path');
 
 function refreshShortcutIcons(shell, executable, desktop, appData) {
@@ -8,12 +8,16 @@ function refreshShortcutIcons(shell, executable, desktop, appData) {
       !existsSync(path.join(root, 'Update.exe'))) return;
 
   const name = path.basename(executable).toLowerCase();
-  const normalized = value => path.normalize(value).toLowerCase();
+  const normalized = value => {
+    try { return realpathSync.native(value).toLowerCase(); }
+    catch { return path.normalize(value).toLowerCase(); }
+  };
+  const installedRoot = normalized(root);
   const ownsPath = value => {
     if (!value || path.basename(value).toLowerCase() !== name) return false;
-    const directory = path.dirname(normalized(value));
-    return directory === normalized(root) ||
-      (path.dirname(directory) === normalized(root) && /^app-[\da-z.-]+$/i.test(path.basename(directory)));
+    const directory = path.dirname(value);
+    return normalized(directory) === installedRoot ||
+      (normalized(path.dirname(directory)) === installedRoot && /^app-[\da-z.-]+$/i.test(path.basename(directory)));
   };
   const shortcuts = [
     path.join(desktop, 'Discordo.lnk'),
@@ -27,7 +31,9 @@ function refreshShortcutIcons(shell, executable, desktop, appData) {
       if (!ownsPath(details.target) || (details.icon && !ownsPath(details.icon))) continue;
       if (details.icon && normalized(details.icon) === normalized(executable) && details.iconIndex === 0) continue;
       // A version-specific icon path prevents Explorer from reusing the cached image of the launcher.
-      shell.writeShortcutLink(shortcut, 'update', { ...details, icon: executable, iconIndex: 0 });
+      if (!shell.writeShortcutLink(shortcut, 'update', { icon: executable, iconIndex: 0 })) {
+        console.warn('O Windows recusou a atualização do ícone de um atalho do Discordo.');
+      }
     } catch (error) {
       console.warn('Não foi possível atualizar o ícone de um atalho do Discordo.', error.message);
     }

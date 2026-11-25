@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -20,7 +20,8 @@ test('Installed updates point existing shell shortcuts at the version-specific i
     mkdirSync(path.dirname(file), { recursive: true });
     writeFileSync(file, '');
   }
-  const original = { target, icon: target, iconIndex: 0, args: '', appUserModelId: 'com.squirrel.Discordo.Discordo' };
+  const expandedTarget = path.join(realpathSync.native(root), 'Discordo.exe');
+  const original = { target: expandedTarget, icon: target, iconIndex: 0, args: '', appUserModelId: 'com.squirrel.Discordo.Discordo' };
   const details = new Map([
     [shortcut, original],
     [pinned, { ...original, icon: path.join(root, 'app-0.2.1-beta2', 'Discordo.exe') }],
@@ -29,12 +30,17 @@ test('Installed updates point existing shell shortcuts at the version-specific i
   const writes = [];
   const shell = {
     readShortcutLink: file => details.get(file),
-    writeShortcutLink(file, operation, update) { writes.push([file, operation, update]); details.set(file, update); return true; },
+    writeShortcutLink(file, operation, update) {
+      writes.push([file, operation, update]);
+      details.set(file, { ...details.get(file), ...update });
+      return true;
+    },
   };
   shortcutIcon.refreshShortcutIcons(shell, executable, desktop, appData);
   shortcutIcon.refreshShortcutIcons(shell, executable, desktop, appData);
   assert.deepEqual(writes, [
-    [shortcut, 'update', { ...original, icon: executable }],
-    [pinned, 'update', { ...original, icon: executable }],
+    [shortcut, 'update', { icon: executable, iconIndex: 0 }],
+    [pinned, 'update', { icon: executable, iconIndex: 0 }],
   ]);
+  assert.deepEqual(details.get(shortcut), { ...original, icon: executable });
 });
