@@ -1946,7 +1946,9 @@ test('Settings and channel features stay in the selected server across reloads',
             onStatus(callback) { listener = callback; return () => { listener = undefined; }; },
           },
         };
-        window.updateStatus = status => listener({ version: '0.2.1-beta.1', availableVersion: '0.2.1-beta.2', status });
+        window.updateStatus = (status, downloadPercent) => listener({
+          version: '0.2.1-beta.1', availableVersion: '0.2.1-beta.2', status, downloadPercent,
+        });
       })()`,
     });
     await navigatePage(vite.resolvedUrls.local[0]);
@@ -1986,8 +1988,15 @@ test('Settings and channel features stay in the selected server across reloads',
       if (!check.disabled || !status.textContent.startsWith('Verificando')) throw Error('Checking feedback is missing');
       window.updateStatus('downloading');
       if (!check.disabled || !status.textContent.startsWith('Baixando')) throw Error('Download feedback is missing');
+      const progress = settings.querySelector('[data-update-progress]');
+      const bar = progress.querySelector('progress');
+      if (progress.hidden || bar.hasAttribute('value')) throw Error('Download without a known size should be indeterminate');
+      window.updateStatus('downloading', 42);
+      if (bar.value !== 42 || progress.querySelector('span').textContent !== '42%') throw Error('Download progress is missing');
+      window.updateStatus('downloading', 100);
+      if (bar.value !== 100 || !status.textContent.startsWith('Preparando') || !restart.hidden) throw Error('Preparation should follow the download');
       window.updateStatus('ready');
-      if (restart.hidden || !status.textContent.includes('0.2.1-beta.2')) throw Error('Downloaded release is not displayed');
+      if (!progress.hidden || restart.hidden || !status.textContent.includes('0.2.1-beta.2')) throw Error('Downloaded release is not displayed');
       restart.click();
       if (!window.updateRestarted) throw Error('Restart did not reach the updater');
     })()`);

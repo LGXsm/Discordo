@@ -1,5 +1,5 @@
 type UpdateStatus = 'idle' | 'checking' | 'current' | 'downloading' | 'ready' | 'error' | 'unavailable';
-type UpdateState = { version: string; status: UpdateStatus; availableVersion?: string };
+type UpdateState = { version: string; status: UpdateStatus; availableVersion?: string; downloadPercent?: number };
 
 export type DesktopUpdates = {
   getState: () => Promise<UpdateState>;
@@ -18,6 +18,10 @@ export const desktopUpdateSettingsMarkup = `
       <button class="settings-button" type="button" data-restart-update hidden>Reiniciar agora</button>
     </div>
     <p class="settings-status" data-update-status role="status" data-state="neutral"></p>
+    <div class="settings-update-progress" data-update-progress hidden>
+      <progress max="100" aria-label="Progresso do download da atualização"></progress>
+      <span aria-hidden="true"></span>
+    </div>
   </section>`;
 
 export function mountDesktopUpdateSettings(section: HTMLElement, updates: DesktopUpdates) {
@@ -25,33 +29,43 @@ export function mountDesktopUpdateSettings(section: HTMLElement, updates: Deskto
   const status = section.querySelector<HTMLElement>('[data-update-status]')!;
   const check = section.querySelector<HTMLButtonElement>('[data-check-updates]')!;
   const restart = section.querySelector<HTMLButtonElement>('[data-restart-update]')!;
+  const progress = section.querySelector<HTMLElement>('[data-update-progress]')!;
+  const bar = progress.querySelector('progress')!;
+  const percentLabel = progress.querySelector('span')!;
   let revision = 0;
   let closed = false;
 
   function paint(state: UpdateState) {
     if (closed) return;
     const next = state.availableVersion ? `A versão ${state.availableVersion}` : 'A atualização';
+    const percent = state.downloadPercent;
     const messages: Record<UpdateStatus, string> = {
       idle: '',
       checking: 'Verificando atualizações…',
       current: 'O Discordo está atualizado.',
-      downloading: `Baixando ${state.availableVersion ? 'a versão ' + state.availableVersion : 'a atualização'}…`,
+      downloading: percent === 100 ? 'Preparando atualização…'
+        : `Baixando ${state.availableVersion ? 'a versão ' + state.availableVersion : 'a atualização'}…`,
       ready: `${next} está pronta. Reinicie o Discordo para aplicar.`,
       error: 'Não foi possível verificar ou baixar a atualização. Tente novamente.',
       unavailable: 'A atualização automática está disponível na versão instalada do Discordo para Windows.',
     };
     version.textContent = `Versão instalada · ${state.version}`;
-    status.textContent = messages[state.status];
+    if (status.textContent !== messages[state.status]) status.textContent = messages[state.status];
     status.dataset.state = state.status === 'error' ? 'error'
       : (state.status === 'current' || state.status === 'ready') ? 'success' : 'neutral';
     check.disabled = ['checking', 'downloading', 'ready', 'unavailable'].includes(state.status);
     restart.hidden = state.status !== 'ready';
+    progress.hidden = state.status !== 'downloading';
+    if (percent === undefined) bar.removeAttribute('value');
+    else bar.value = percent;
+    percentLabel.textContent = percent === undefined ? '' : `${percent}%`;
   }
 
   function showError() {
     if (closed) return;
     status.dataset.state = 'error';
     status.textContent = 'Não foi possível consultar o atualizador. Tente novamente.';
+    progress.hidden = true;
     check.disabled = false;
     restart.disabled = false;
   }

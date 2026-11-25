@@ -1,13 +1,14 @@
 const semver = require('semver');
+const { measureDownload, packageName } = require('./update-download.cjs');
 
 const releasesApi = 'https://api.github.com/repos/LGXsm/Discordo/releases?per_page=30';
 const downloads = 'https://github.com/LGXsm/Discordo/releases/download';
 const interval = 30 * 60 * 1000;
 
-function findUpdate(releases, version) {
+function selectUpdate(releases, version) {
   const beta = semver.prerelease(version) !== null;
   let newest = version;
-  let feed;
+  let update;
   for (const release of releases) {
     const candidate = /^desktop-v([\d.A-Za-z-]+)$/.exec(release.tag_name)?.[1];
     if (!candidate || !semver.valid(candidate) || !semver.gt(candidate, newest) ||
@@ -15,26 +16,40 @@ function findUpdate(releases, version) {
 
     const assets = release.assets.map(asset => asset.name);
     if (!assets.includes('RELEASES') ||
-        !assets.some(name => /^Discordo-[\d.A-Za-z-]+-full\.nupkg$/i.test(name))) continue;
+        !assets.some(name => packageName.test(name))) continue;
 
     newest = candidate;
-    feed = `${downloads}/${release.tag_name}`;
+    update = { version: candidate, feed: `${downloads}/${release.tag_name}`, assets: release.assets };
   }
-  return feed;
+  return update;
 }
 
-function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun, onStatus = () => {} }) {
+function findUpdate(releases, version) {
+  return selectUpdate(releases, version)?.feed;
+}
+
+function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirstRun,
+  onStatus = () => {}, openDownload = measureDownload }) {
   if (!app.isPackaged || process.platform !== 'win32' || process.arch !== 'x64') return;
   let status = 'idle';
   let pendingVersion;
-  const getState = () => ({ version: app.getVersion(), status, availableVersion: pendingVersion });
+  let percent;
+  let download;
+  const getState = () => ({ version: app.getVersion(), status, availableVersion: pendingVersion, downloadPercent: percent });
 
   function setStatus(next) {
     status = next;
     if (!window.isDestroyed()) onStatus(getState());
   }
 
+  function clearDownload() {
+    download?.close();
+    download = undefined;
+    percent = undefined;
+  }
+
   function failed(error) {
+    clearDownload();
     pendingVersion = undefined;
     setStatus('error');
     console.error('Não foi possível atualizar o Discordo.', error);
@@ -47,14 +62,21 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
     try {
       const response = await net.fetch(releasesApi, { signal: AbortSignal.timeout(15000) });
       if (!response.ok) throw Error(`GitHub respondeu com HTTP ${response.status}`);
-      const feed = findUpdate(await response.json(), app.getVersion());
+      const update = selectUpdate(await response.json(), app.getVersion());
       if (window.isDestroyed()) return;
-      if (!feed) {
+      if (!update) {
         setStatus('current');
         return;
       }
-      pendingVersion = feed.slice(feed.lastIndexOf('/desktop-v') + '/desktop-v'.length);
-      autoUpdater.setFeedURL({ url: feed });
+      pendingVersion = update.version;
+      const measured = await openDownload({ ...update, fetch: net.fetch.bind(net), onProgress: next => {
+        if (status !== 'downloading' || next === percent) return;
+        percent = next;
+        setStatus('downloading');
+      } }).catch(() => undefined);
+      if (window.isDestroyed()) { measured?.close(); return; }
+      download = measured;
+      autoUpdater.setFeedURL({ url: download?.url ?? update.feed });
       autoUpdater.checkForUpdates();
     } catch (error) {
       failed(error);
@@ -64,6 +86,7 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
   autoUpdater.on('error', failed);
   autoUpdater.on('update-available', () => setStatus('downloading'));
   autoUpdater.on('update-not-available', () => {
+    clearDownload();
     pendingVersion = undefined;
     setStatus('current');
   });
@@ -72,6 +95,7 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
   }
   autoUpdater.on('update-downloaded', async () => {
     if (status === 'ready') return;
+    clearDownload();
     setStatus('ready');
     if (window.isDestroyed()) return;
     try {
@@ -84,6 +108,7 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
   const firstCheck = setTimeout(check, onFirstRun ? 15000 : 3000);
   const poll = setInterval(check, interval);
   window.once('closed', () => {
+    clearDownload();
     clearTimeout(firstCheck);
     clearInterval(poll);
   });

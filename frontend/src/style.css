@@ -1809,6 +1809,9 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
 .settings-status { margin: 0; color: #ffd2a0; font-size: .82rem; }
 .settings-status[data-state="neutral"] { color: var(--muted); }
 .settings-status[data-state="success"] { color: var(--green); }
+.settings-update-progress { display: flex; align-items: center; gap: 12px; margin-top: 9px; }
+.settings-update-progress progress { flex: 1; min-width: 0; height: 9px; accent-color: var(--gold); }
+.settings-update-progress span { min-width: 3.5ch; color: var(--ink); text-align: end; font-size: .82rem; font-variant-numeric: tabular-nums; }
 [data-account-status] { margin-top: 10px; }
 .voice-settings-form, .voice-setting { display: grid; gap: 8px; }
 .voice-settings-form { gap: 14px; }
