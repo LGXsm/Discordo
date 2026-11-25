@@ -867,13 +867,13 @@ function showWorkspace(account: Account, focus = false, server?: ServerDetail, k
     resolve(anchor) {
       if (anchor.dataset.member) return members.find(member => member.id === Number(anchor.dataset.member));
       const message = anchor.closest<HTMLElement>('[data-author]');
-      const id = Number(anchor.dataset.friendId ?? anchor.dataset.voiceProfileUser ?? message?.dataset.author);
+      const id = Number(anchor.dataset.friendId ?? message?.dataset.author);
       const userId = Number.isSafeInteger(id) && id > 0 ? id : undefined;
-      const self = anchor.hasAttribute('data-voice-profile-self') || Boolean(message?.hasAttribute('data-own-message'));
+      const self = Boolean(message?.hasAttribute('data-own-message'));
       const member = members.find(person => self ? person.self : userId !== undefined && person.userId === userId);
       if (member) return member;
       const friend = userId ? friends?.person(userId) : undefined;
-      const name = friend?.name ?? anchor.dataset.voiceProfileName ?? message?.dataset.authorName;
+      const name = friend?.name ?? message?.dataset.authorName;
       if (!name) return;
       return { id: 0, userId, name, self, title: null, roles: [], avatarUrl: friend?.avatarUrl, bannerUrl: friend?.bannerUrl };
     },

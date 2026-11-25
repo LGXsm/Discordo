@@ -1032,8 +1032,26 @@ test('Settings and channel features stay in the selected server across reloads',
         throw Error('Missing ' + selector);
       };
       const profile = await wait('.voice-member-profile[aria-label="Perfil de Membro da guilda"]');
+      profile.parentElement.querySelector('.voice-member-options').click();
+      const optionsMenu = await wait('.voice-member-menu:popover-open');
+      const expected = optionsMenu.textContent;
+      optionsMenu.hidePopover();
       profile.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
-      (await wait('.profile-context-menu:popover-open [data-profile-action=roles]:not([hidden])')).click();
+      const contextMenu = await wait('.voice-member-menu:popover-open');
+      if (contextMenu.textContent !== expected || document.querySelector('.profile-context-menu:popover-open')) {
+        throw Error('Right click must open the same voice menu as the options button');
+      }
+      const reference = document.createElement('dialog');
+      reference.className = 'settings-dialog user-settings';
+      document.body.append(reference);
+      try {
+        for (const property of ['backgroundColor', 'borderBottomColor', 'color']) {
+          if (getComputedStyle(contextMenu)[property] !== getComputedStyle(reference)[property]) {
+            throw Error('Voice member menu does not match user settings for ' + property);
+          }
+        }
+      } finally { reference.remove(); }
+      contextMenu.querySelector('[data-voice-edit-roles]').click();
       const member = await wait('.server-dialog[open] [name=member]');
       if (member.value !== '2902') throw Error('The editor loaded the wrong participant');
       member.form.requestSubmit();
@@ -1057,11 +1075,11 @@ test('Settings and channel features stay in the selected server across reloads',
         if (!profile) await new Promise(resolve => setTimeout(resolve, 25));
       }
       profile.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
-      const menu = document.querySelector('.profile-context-menu:popover-open');
-      if (!menu || menu.querySelector('[data-profile-action=roles]:not([hidden])')) throw Error('Editing roles was offered without permission');
+      const menu = document.querySelector('.voice-member-menu:popover-open');
+      if (!menu || menu.querySelector('[data-voice-edit-roles]')) throw Error('Editing roles was offered without permission');
     })()`);
     await evaluate(`(async () => {
-      document.querySelector('.profile-context-menu:popover-open')?.hidePopover();
+      document.querySelector('.voice-member-menu:popover-open')?.hidePopover();
       document.querySelector('[data-channel="291"]').click();
       const wait = async selector => {
         for (let i = 0; i < 180; i++) {

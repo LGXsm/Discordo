@@ -146,8 +146,9 @@ export function mountProfileContextMenu(workspace: HTMLElement, signal: AbortSig
   }
 
   workspace.addEventListener('contextmenu', event => {
+    if (event.defaultPrevented) return;
     const anchor = (event.target as Element).closest<HTMLElement>(
-      '[data-member], [data-author-avatar], [data-author-name-button], [data-friend-id], [data-voice-profile-user]',
+      '[data-member], [data-author-avatar], [data-author-name-button], [data-friend-id]',
     );
     const person = anchor && actions.resolve(anchor);
     if (!anchor || !person) return;

@@ -975,8 +975,8 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
 .channel.voice-drop-target { outline: 1px solid var(--gold); outline-offset: -1px; }
 .voice-member-menu {
   position: fixed; inset: auto; margin: 0; width: min(265px, calc(100vw - 16px)); max-height: calc(100dvh - 16px);
-  box-sizing: border-box; overflow: auto; overscroll-behavior: contain; padding: 7px; border: 1px solid #524061; border-radius: 8px;
-  background: var(--panel); color: var(--ink); box-shadow: 0 8px 24px #100b1980; font-size: .83rem;
+  box-sizing: border-box; overflow: auto; overscroll-behavior: contain; padding: 7px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--dark); color: var(--ink); box-shadow: 0 8px 24px #100b1980; font-size: .83rem;
 }
 .voice-member-menu button {
   border: 0; border-radius: 5px; padding: 7px 8px; background: transparent; color: inherit; text-align: left;
@@ -998,7 +998,7 @@ button.chat-mention:hover, button.chat-mention:focus-visible { color: var(--gold
 .voice-menu-move { display: flex; gap: 5px; }
 .voice-menu-move select {
   min-width: 0; flex: 1; border: 1px solid var(--border); border-radius: 5px;
-  background: #171321; color: var(--ink); padding: 5px; font: inherit;
+  background: var(--settings-field); color: var(--ink); padding: 5px; font: inherit;
 }
 .voice-menu-moderation { color: #ffabb2; padding-inline: 0; }
 .voice-menu-moderation label, .voice-member-menu .voice-menu-moderation button { padding-inline: 7px; }

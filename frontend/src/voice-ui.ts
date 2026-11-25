@@ -345,11 +345,6 @@ export function mountVoice(call: ReturnType<typeof createVoiceCall>, workspace: 
         const profile = document.createElement('button');
         profile.type = 'button';
         profile.className = 'voice-member-profile';
-        if (member.userId) {
-          profile.dataset.voiceProfileUser = String(member.userId);
-          profile.dataset.voiceProfileName = member.name;
-          profile.toggleAttribute('data-voice-profile-self', selfMember);
-        }
         profile.setAttribute('aria-label', `Perfil de ${member.name}`);
         profile.setAttribute('aria-haspopup', 'dialog');
         profile.append(avatar, label, state);
