@@ -5,6 +5,7 @@ const { installScreenPicker } = require('./screen-picker.cjs');
 const { installVoiceShortcuts } = require('./shortcuts.cjs');
 const { startUpdates } = require('./updates.cjs');
 const { showUpdateNotice } = require('./update-notice.cjs');
+const { refreshShortcutIcons } = require('./shortcut-icon.cjs');
 const windowFrame = require('./window-frame.cjs');
 
 const home = new URL('https://discordo.lgmartinez.com/');
@@ -108,6 +109,9 @@ if (require('electron-squirrel-startup') || !app.requestSingleInstanceLock()) {
   app.setAppUserModelId('com.squirrel.Discordo.Discordo');
   app.whenReady().then(() => {
     Menu.setApplicationMenu(null);
+    if (process.platform === 'win32' && app.isPackaged) {
+      refreshShortcutIcons(shell, process.execPath, app.getPath('desktop'), app.getPath('appData'));
+    }
     createWindow();
     const contents = window.webContents;
     const updater = existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))
