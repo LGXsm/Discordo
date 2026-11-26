@@ -76,7 +76,7 @@ function createWindow() {
   contents.on('dom-ready', () => {
     if (isDiscordo(contents.getURL())) void contents.insertCSS(titleBarCss, { cssOrigin: 'user' }).catch(console.error);
   });
-  const permissions = new Set(['clipboard-sanitized-write', 'media', 'speaker-selection', 'display-capture', 'fullscreen']);
+  const permissions = new Set(['clipboard-sanitized-write', 'media', 'speaker-selection', 'display-capture', 'fullscreen', 'notifications']);
   function allows(sender, permission, origin, details) {
     return sender === contents && details.isMainFrame && isDiscordo(origin) && permissions.has(permission);
   }
