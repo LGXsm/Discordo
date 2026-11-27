@@ -23,6 +23,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; Flags: unchecked
 
 [Files]
 Source: "out\Discordo-win32-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "inno-installation"; DestDir: "{app}\resources"; DestName: "discordo-inno-installation"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\Discordo"; Filename: "{app}\Discordo.exe"; AppUserModelID: "com.squirrel.Discordo.Discordo"
@@ -30,3 +31,41 @@ Name: "{autodesktop}\Discordo"; Filename: "{app}\Discordo.exe"; AppUserModelID: 
 
 [Run]
 Filename: "{app}\Discordo.exe"; Description: "{cm:LaunchProgram,Discordo}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Discordo.exe"; Flags: nowait; Check: ShouldRestartDiscordo
+
+[Code]
+var
+  RestartDiscordo: Boolean;
+
+function OpenProcess(DesiredAccess: LongWord; InheritHandle: Boolean; ProcessId: LongWord): THandle;
+  external 'OpenProcess@kernel32.dll stdcall';
+function WaitForSingleObject(Handle: THandle; Milliseconds: LongWord): LongWord;
+  external 'WaitForSingleObject@kernel32.dll stdcall';
+function CloseHandle(Handle: THandle): Boolean;
+  external 'CloseHandle@kernel32.dll stdcall';
+
+function InitializeSetup: Boolean;
+var
+  UpdatePid: Integer;
+  ProcessHandle: THandle;
+  WaitResult: LongWord;
+begin
+  Result := True;
+  UpdatePid := StrToIntDef(ExpandConstant('{param:DISCORDOWAITPID|0}'), 0);
+  if UpdatePid <= 0 then Exit;
+  ProcessHandle := OpenProcess($00100000, False, UpdatePid);
+  if ProcessHandle = 0 then
+    Result := DLLGetLastError = 87
+  else begin
+    WaitResult := WaitForSingleObject(ProcessHandle, 30000);
+    CloseHandle(ProcessHandle);
+    Result := WaitResult = 0;
+  end;
+  RestartDiscordo := Result;
+  if not Result then Log('Discordo update stopped while waiting for the running app.');
+end;
+
+function ShouldRestartDiscordo: Boolean;
+begin
+  Result := RestartDiscordo;
+end;

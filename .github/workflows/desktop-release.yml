@@ -65,7 +65,13 @@ jobs:
           exit $LASTEXITCODE
       - name: Testar instalação alternativa
         shell: pwsh
-        run: ./desktop/test-alternative-installer.ps1 -Installer 'desktop/out/make/squirrel.windows/x64/Discordo-Instalador-Windows-x64.exe'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $previous = Join-Path $env:RUNNER_TEMP 'Discordo-beta9.exe'
+          gh release download desktop-v0.2.1-beta.9 --repo LGXsm/Discordo --pattern 'Discordo-Instalador-Windows-x64.exe' --output $previous
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          ./desktop/test-alternative-installer.ps1 -Installer 'desktop/out/make/squirrel.windows/x64/Discordo-Instalador-Windows-x64.exe' -PreviousInstaller $previous
       - name: Empacotar versão portátil
         shell: pwsh
         run: |

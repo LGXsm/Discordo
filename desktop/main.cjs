@@ -4,6 +4,7 @@ const path = require('node:path');
 const { installScreenPicker } = require('./screen-picker.cjs');
 const { installVoiceShortcuts } = require('./shortcuts.cjs');
 const { startUpdates } = require('./updates.cjs');
+const { startInnoUpdates } = require('./inno-updates.cjs');
 const { showUpdateNotice } = require('./update-notice.cjs');
 const { refreshShortcutIcons } = require('./shortcut-icon.cjs');
 const windowFrame = require('./window-frame.cjs');
@@ -117,14 +118,14 @@ if (!app.requestSingleInstanceLock()) {
     }
     createWindow();
     const contents = window.webContents;
-    const updater = existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))
-      ? startUpdates({
-        app, autoUpdater, showUpdateNotice, net, window,
-        onFirstRun: process.argv.includes('--squirrel-firstrun'),
-        onStatus: state => {
-          if (isDiscordo(contents.getURL())) contents.send('discordo:update-status', state);
-        },
-      }) : undefined;
+    const updateOptions = { app, showUpdateNotice, net, window, onStatus: state => {
+      if (isDiscordo(contents.getURL())) contents.send('discordo:update-status', state);
+    } };
+    const updater = existsSync(path.join(process.resourcesPath, 'discordo-inno-installation'))
+      ? startInnoUpdates(updateOptions)
+      : existsSync(path.join(path.dirname(process.execPath), '..', 'Update.exe'))
+        ? startUpdates({ ...updateOptions, autoUpdater, onFirstRun: process.argv.includes('--squirrel-firstrun') })
+        : undefined;
     const trusted = event => event.senderFrame === contents.mainFrame && isDiscordo(event.senderFrame?.url);
     const updateState = () => updater?.getState() ?? { version: app.getVersion(), status: 'unavailable' };
     contents.ipc.handle('discordo:updates:get', event => trusted(event) ? updateState() : undefined);

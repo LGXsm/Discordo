@@ -2,10 +2,15 @@ import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
 const require = createRequire(import.meta.url);
 const { findUpdate, startUpdates } = require('../desktop/updates.cjs');
 const { measureDownload } = require('../desktop/update-download.cjs');
+const { selectInnoUpdate, downloadInstaller, startInnoUpdates } = require('../desktop/inno-updates.cjs');
 
 function release(version, options = {}) {
   return {
@@ -62,6 +67,82 @@ test('Only the update package counts toward real download progress', async t => 
   body.close();
   assert.deepEqual([...new Uint8Array(await response.arrayBuffer())], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   assert.deepEqual(progress, [0, 40, 99, 100]);
+});
+
+const installerBytes = Buffer.from('MZ test installer');
+const installerAsset = {
+  name: 'Discordo-Instalador-Windows-x64.exe', state: 'uploaded', size: installerBytes.length,
+  digest: 'sha256:' + createHash('sha256').update(installerBytes).digest('hex'),
+};
+
+test('Inno only selects the expected uploaded installer with a verified-size SHA-256 declaration', () => {
+  const releases = [
+    release('0.2.1-beta.11', { assets: [installerAsset] }),
+    release('0.2.1-beta.12', { assets: [{ ...installerAsset, digest: null }] }),
+    release('0.2.1-beta.13', { assets: [{ ...installerAsset, state: 'starter' }] }),
+    release('0.2.1-beta.14', { draft: true, assets: [installerAsset] }),
+    release('0.3.0', { assets: [{ ...installerAsset, size: 0 }] }),
+  ];
+  const update = selectInnoUpdate(releases, '0.2.1-beta.10');
+  assert.equal(update.version, '0.2.1-beta.11');
+  assert.equal(update.asset, installerAsset);
+  assert.equal(selectInnoUpdate(releases, '0.2.1'), undefined);
+});
+
+test('Inno rejects a corrupted or oversized installer, then caches a verified download', async t => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'discordo-inno-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const update = selectInnoUpdate([release('0.2.1-beta.11', { assets: [installerAsset] })], '0.2.1-beta.10');
+  const options = { update, directory, onProgress: () => {} };
+  await assert.rejects(downloadInstaller({ ...options, fetch: async () => new Response(Buffer.alloc(installerBytes.length)) }),
+    /não corresponde/);
+  await assert.rejects(downloadInstaller({ ...options, fetch: async () => new Response(Buffer.alloc(installerBytes.length + 1)) }),
+    /excedeu/);
+  const progress = [];
+  const file = await downloadInstaller({ ...options, onProgress: percent => progress.push(percent),
+    fetch: async url => {
+      assert.equal(url, `${update.feed}/${installerAsset.name}`);
+      return new Response(installerBytes);
+    } });
+  assert.deepEqual(progress, [0, 99, 100]);
+  assert.deepEqual(await readFile(file), installerBytes);
+  assert.equal(await downloadInstaller({ ...options, fetch: () => assert.fail('Expected the validated cache') }), file);
+});
+
+test('Inno waits for Restart now and revalidates before launching', {
+  skip: process.platform !== 'win32' || process.arch !== 'x64',
+}, async t => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'discordo-inno-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const file = path.join(directory, installerAsset.name);
+  const appWindow = new EventEmitter();
+  appWindow.isDestroyed = () => false;
+  t.after(() => appWindow.emit('closed'));
+  let launched = 0;
+  let quits = 0;
+  const app = { isPackaged: true, getVersion: () => '0.2.1-beta.10',
+    getPath: () => directory, quit: () => { quits++; } };
+  const updater = startInnoUpdates({ app, window: appWindow, execPath: path.join(directory, 'installed', 'Discordo.exe'),
+    showUpdateNotice: async () => false,
+    net: { fetch: async () => Response.json([release('0.2.1-beta.11', { assets: [installerAsset] })]) },
+    download: async () => { await writeFile(file, installerBytes); return file; },
+    install: async (staged, installDirectory) => {
+      assert.equal(staged, file);
+      assert.equal(installDirectory, path.join(directory, 'installed'));
+      launched++;
+    } });
+  await updater.check();
+  assert.equal(updater.getState().status, 'ready');
+  assert.equal(launched, 0);
+  await writeFile(file, 'altered');
+  t.mock.method(console, 'error', () => {});
+  await updater.restart();
+  assert.equal(updater.getState().status, 'error');
+  assert.equal(quits, 0);
+  await updater.check();
+  await updater.restart();
+  assert.equal(launched, 1);
+  assert.equal(quits, 1);
 });
 
 for (const accept of [false, true]) test(`The Windows update notice handles ${accept ? 'Restart now' : 'Later'}`, {

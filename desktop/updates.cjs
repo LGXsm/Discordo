@@ -5,7 +5,7 @@ const releasesApi = 'https://api.github.com/repos/LGXsm/Discordo/releases?per_pa
 const downloads = 'https://github.com/LGXsm/Discordo/releases/download';
 const interval = 30 * 60 * 1000;
 
-function selectUpdate(releases, version) {
+function selectRelease(releases, version, pickAsset) {
   const beta = semver.prerelease(version) !== null;
   let newest = version;
   let update;
@@ -14,14 +14,17 @@ function selectUpdate(releases, version) {
     if (!candidate || !semver.valid(candidate) || !semver.gt(candidate, newest) ||
         release.draft || (!beta && (release.prerelease || semver.prerelease(candidate)))) continue;
 
-    const assets = release.assets.map(asset => asset.name);
-    if (!assets.includes('RELEASES') ||
-        !assets.some(name => packageName.test(name))) continue;
-
+    const asset = pickAsset(release.assets);
+    if (!asset) continue;
     newest = candidate;
-    update = { version: candidate, feed: `${downloads}/${release.tag_name}`, assets: release.assets };
+    update = { version: candidate, feed: `${downloads}/${release.tag_name}`, assets: release.assets, asset };
   }
   return update;
+}
+
+function selectUpdate(releases, version) {
+  return selectRelease(releases, version, assets => assets.some(asset => asset.name === 'RELEASES') &&
+    assets.find(asset => packageName.test(asset.name)));
 }
 
 function findUpdate(releases, version) {
@@ -115,4 +118,4 @@ function startUpdates({ app, autoUpdater, showUpdateNotice, net, window, onFirst
   return { getState, check, restart };
 }
 
-module.exports = { findUpdate, startUpdates };
+module.exports = { findUpdate, startUpdates, selectRelease, releasesApi, interval };
