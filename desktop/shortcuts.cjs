@@ -1,6 +1,7 @@
 const { globalShortcut, ipcMain } = require('electron');
 
 const actions = ['microphone', 'audio'];
+const functionKey = /^F(?:[1-9]|1[0-9]|2[0-4])$/;
 
 // Keep ordinary typing and common editing shortcuts available in other apps.
 function accelerator(binding) {
@@ -8,8 +9,9 @@ function accelerator(binding) {
   const [key, ...modifiers] = binding.split('+').reverse();
   if (new Set(modifiers).size !== modifiers.length ||
       modifiers.some(modifier => !['Ctrl', 'Alt', 'Shift'].includes(modifier))) return;
+  if (!modifiers.length && functionKey.test(key)) return key;
   if (modifiers.includes('Ctrl') && modifiers.includes('Alt') &&
-      /^(?:[A-Z0-9]|F(?:[1-9]|1[0-9]|2[0-4]))$/.test(key)) {
+      (/^[A-Z0-9]$/.test(key) || functionKey.test(key))) {
     return [...modifiers.sort(), key].join('+');
   }
 }
@@ -33,10 +35,11 @@ function installVoiceShortcuts(window, isDiscordo) {
       if (!key || [...registered.values()].includes(key)) continue;
       try {
         if (globalShortcut.register(key, () => {
-          if (!contents.isDestroyed() && isDiscordo(contents.getURL())) {
+          if (enabled && registered.get(action) === key && !contents.isDestroyed() && isDiscordo(contents.getURL())) {
             contents.send('discordo:voice-shortcut', action);
           }
         })) registered.set(action, key);
+        else console.warn('O Windows não disponibilizou o atalho:', key);
       } catch (error) {
         console.error('Não foi possível registrar o atalho.', error);
       }

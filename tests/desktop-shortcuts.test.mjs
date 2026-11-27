@@ -46,10 +46,19 @@ test('Desktop voice shortcuts only register for an active background call and re
   assert.deepEqual([...registered.keys()], ['Alt+Ctrl+F8']);
   registered.get('Alt+Ctrl+F8')();
   assert.deepEqual(events, [['discordo:voice-shortcut', 'microphone']]);
+  const staleCallback = registered.get('Alt+Ctrl+F8');
   window.emit('focus');
   assert.equal(registered.size, 0);
+  staleCallback();
+  assert.equal(events.length, 1);
 
   window.isFocused = () => false;
+  update(event, { active: true, microphone: 'F8', audio: 'F24' });
+  assert.deepEqual([...registered.keys()], ['F8', 'F24']);
+  registered.get('F24')();
+  assert.deepEqual(events.at(-1), ['discordo:voice-shortcut', 'audio']);
+  update(event, { active: true, microphone: 'M', audio: 'Ctrl+C' });
+  assert.equal(registered.size, 0);
   update(event, config);
   update(event, { active: false });
   assert.equal(registered.size, 0);

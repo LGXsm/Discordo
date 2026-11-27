@@ -24,6 +24,7 @@ const keyLabels = new Map([
   ['Space', 'Espaço'], ['Plus', '+'], ['Escape', 'Esc'], ['ArrowUp', '↑'],
   ['ArrowDown', '↓'], ['ArrowLeft', '←'], ['ArrowRight', '→'],
 ]);
+const desktopCallKey = /^(?:F(?:[1-9]|1[0-9]|2[0-4])|Ctrl\+Alt\+(?:Shift\+)?(?:[A-Z0-9]|F(?:[1-9]|1[0-9]|2[0-4])))$/;
 
 function combination(event: KeyboardEvent) {
   if (event.isComposing || !event.key || event.key === 'Process') return;
@@ -67,7 +68,7 @@ export const shortcutSettingsMarkup = `
       </div>`).join('')}
     <p class="settings-hint">Escolha uma tecla ou combinação. Alguns atalhos do navegador e do sistema são reservados.</p>
     ${window.discordoDesktop
-      ? '<p class="settings-hint">Durante a chamada, Ctrl + Alt + uma letra, número ou F1–F24 também funciona fora do app se a combinação estiver livre no Windows.</p>'
+      ? '<p class="settings-hint">Durante a chamada, use F1–F24 ou Ctrl + Alt + uma letra, número ou tecla de função para controlar a chamada fora do app. A combinação precisa estar livre no Windows.</p>'
       : `<h4 class="settings-group-title" id="shortcut-extension">Extensão do Chrome</h4>
          <p class="settings-hint">Para usar atalhos com outro aplicativo em foco, <a href="${import.meta.env.BASE_URL}discordo-atalhos.zip" download>baixe a extensão do Chrome</a>.</p>`}
     <p class="settings-status" role="status" data-shortcut-status></p>
@@ -186,10 +187,11 @@ export function listenForVoiceShortcuts(email: string, controls: Record<Action, 
     syncDesktop();
   }
   let pendingModifier: string | undefined;
-  function available(event: KeyboardEvent) {
-    return inCall() && !event.defaultPrevented && !document.querySelector('dialog[open], :popover-open') &&
-      !event.composedPath().some(target => target instanceof HTMLElement &&
-        (target.isContentEditable || target.matches('input, textarea, select')));
+  function available(event: KeyboardEvent, key?: string) {
+    if (!inCall() || event.defaultPrevented || document.querySelector('dialog[open]')) return false;
+    if (desktop && key && desktopCallKey.test(key)) return true;
+    return !document.querySelector(':popover-open') && !event.composedPath().some(target => target instanceof HTMLElement &&
+      (target.isContentEditable || target.matches('input, textarea, select')));
   }
   function activate(key: string, event: KeyboardEvent) {
     const bindings = readBindings(email);
@@ -199,8 +201,8 @@ export function listenForVoiceShortcuts(email: string, controls: Record<Action, 
     if (!event.repeat) button.click();
   }
   document.addEventListener('keydown', event => {
-    if (!available(event)) { pendingModifier = undefined; return; }
     const key = combination(event);
+    if (!available(event, key)) { pendingModifier = undefined; return; }
     if (modifiers.has(event.key)) {
       if (!event.repeat) pendingModifier = key;
       return;
