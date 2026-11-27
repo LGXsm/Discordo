@@ -34,32 +34,37 @@ Filename: "{app}\Discordo.exe"; Description: "{cm:LaunchProgram,Discordo}"; Flag
 Filename: "{app}\Discordo.exe"; Flags: nowait; Check: ShouldRestartDiscordo
 
 [Code]
+const
+  SynchronizeAccess = $00100000;
+  ErrorInvalidParameter = 87;
+  WaitObjectSignaled = 0;
+
 var
   RestartDiscordo: Boolean;
 
-function OpenProcess(DesiredAccess: LongWord; InheritHandle: Boolean; ProcessId: LongWord): THandle;
+function OpenProcess(DesiredAccess, InheritHandle, ProcessId: LongWord): LongWord;
   external 'OpenProcess@kernel32.dll stdcall';
-function WaitForSingleObject(Handle: THandle; Milliseconds: LongWord): LongWord;
+function WaitForSingleObject(Handle, Milliseconds: LongWord): LongWord;
   external 'WaitForSingleObject@kernel32.dll stdcall';
-function CloseHandle(Handle: THandle): Boolean;
+function CloseHandle(Handle: LongWord): LongWord;
   external 'CloseHandle@kernel32.dll stdcall';
 
 function InitializeSetup: Boolean;
 var
   UpdatePid: Integer;
-  ProcessHandle: THandle;
+  ProcessHandle: LongWord;
   WaitResult: LongWord;
 begin
   Result := True;
   UpdatePid := StrToIntDef(ExpandConstant('{param:DISCORDOWAITPID|0}'), 0);
   if UpdatePid <= 0 then Exit;
-  ProcessHandle := OpenProcess($00100000, False, UpdatePid);
+  ProcessHandle := OpenProcess(SynchronizeAccess, 0, UpdatePid);
   if ProcessHandle = 0 then
-    Result := DLLGetLastError = 87
+    Result := DLLGetLastError = ErrorInvalidParameter
   else begin
     WaitResult := WaitForSingleObject(ProcessHandle, 30000);
     CloseHandle(ProcessHandle);
-    Result := WaitResult = 0;
+    Result := WaitResult = WaitObjectSignaled;
   end;
   RestartDiscordo := Result;
   if not Result then Log('Discordo update stopped while waiting for the running app.');
