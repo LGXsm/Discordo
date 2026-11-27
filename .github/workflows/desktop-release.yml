@@ -55,6 +55,17 @@ jobs:
       - name: Verificar instalação limpa
         shell: pwsh
         run: ./desktop/test-installer.ps1 -Installer 'desktop/out/make/squirrel.windows/x64/Discordo-Setup.exe'
+      - name: Gerar instalador alternativo
+        shell: pwsh
+        run: |
+          $compiler = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          $version = (Get-Content desktop/package.json -Raw | ConvertFrom-Json).version
+          $output = (Resolve-Path 'desktop/out/make/squirrel.windows/x64').Path
+          & $compiler "/DAppVersion=$version" "/O$output" 'desktop/installer.iss'
+          exit $LASTEXITCODE
+      - name: Testar instalação alternativa
+        shell: pwsh
+        run: ./desktop/test-alternative-installer.ps1 -Installer 'desktop/out/make/squirrel.windows/x64/Discordo-Instalador-Windows-x64.exe'
       - name: Empacotar versão portátil
         shell: pwsh
         run: |
@@ -77,7 +88,7 @@ jobs:
           $packages = @(Get-ChildItem -LiteralPath $output -Filter '*-full.nupkg' -File)
           if ($packages.Count -ne 1) { throw 'Esperado um pacote completo para atualização.' }
 
-          $files = @("$output/Discordo-Setup.exe", "$output/Discordo-Portable-Windows-x64.zip", "$output/RELEASES", $packages[0].FullName)
+          $files = @("$output/Discordo-Instalador-Windows-x64.exe", "$output/Discordo-Setup.exe", "$output/Discordo-Portable-Windows-x64.zip", "$output/RELEASES", $packages[0].FullName)
           foreach ($file in $files) {
             if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Arquivo ausente: $file" }
           }
